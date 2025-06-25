@@ -188,6 +188,7 @@
               <h5 class="fw-bold mb-3">Login</h5>
               <div id="loginErrorAlert" class="alert alert-danger" style="display:none;"></div>
               <form action="<?= base_url('login') ?>" method="post">
+                <?= csrf_field() ?>
                   <div class="mb-3">
                       <input type="text" class="form-control" name="username" placeholder="Username atau Email" required>
                   </div>

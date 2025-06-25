@@ -54,6 +54,7 @@
           <button class="btn btn-google mb-3"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google"> Sign in with Google</button>
           <p>Or</p>
           <form action="<?= base_url('login') ?>" method="post">
+            <?= csrf_field() ?>
               <input type="hidden" name="login_type" value="<?= esc($login_type ?? 'customer') ?>" id="loginTypeHiddenInput">
               <div class="mb-3">
                   <input type="email" class="form-control" name="username" placeholder="Email" required>
