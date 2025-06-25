@@ -1,0 +1,21 @@
+# --- Lingkungan Pengembangan ---
+CI_ENVIRONMENT = development
+
+# --- URL Dasar Aplikasi ---
+app.baseURL = 'http://localhost:8080'
+
+#--------------------------------------------------------------------
+# DATABASE
+#--------------------------------------------------------------------
+
+database.default.hostname = localhost
+database.default.database = pengaspalan
+database.default.username = root
+database.default.password = 
+database.default.DBDriver = MySQLi
+
+#--------------------------------------------------------------------
+# ENCRYPTION
+#--------------------------------------------------------------------
+# Pastikan baris ini sudah terisi setelah Anda menjalankan 'php spark key:generate'
+encryption.key = hex2bin:0b3a8150a7e4dad5851436e818c898a01dba3b49dd22303230fb6bf114edf28a
