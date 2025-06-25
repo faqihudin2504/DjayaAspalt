@@ -40,7 +40,7 @@ $routes->group('', ['filter' => 'auth:customer'], function($routes) {
     
     // Alur form
     $routes->get('pemesanan-jasa-barang-form1', 'Pages::pemesananJasaBarangForm1');
-    $routes->get('pemesanan-jasa-barang-form2', 'Pages/::pemesananJasaBarangForm2');
+    $routes->get('pemesanan-jasa-barang-form2', 'Pages::pemesananJasaBarangForm2');
     $routes->get('pemesanan-paket', 'Pages::pemesananPaket');
     $routes->get('penyewaan-barang/cek-alat/(:segment)', 'Pages::cekAlat/$1');
     $routes->get('penyewaan-barang/form/(:segment)', 'Pages::penyewaanForm/$1');
@@ -51,9 +51,47 @@ $routes->group('', ['filter' => 'auth:customer'], function($routes) {
 // RUTE HALAMAN ADMIN (DENGAN FILTER AUTH)
 // ===================================================================
 $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
+    // Dashboard Admin
     $routes->get('/', 'Admin::index');
+
+    // Manajemen Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
-    // Tambahkan rute admin lainnya di sini...
+    $routes->get('pelanggan/tambah', 'Admin::tambahPelanggan');
+    $routes->post('pelanggan/simpan', 'Admin::simpanPelanggan');
+    $routes->get('pelanggan/edit/(:any)', 'Admin::editPelanggan/$1');
+    $routes->post('pelanggan/update/(:any)', 'Admin::updatePelanggan/$1');
+    $routes->get('pelanggan/hapus/(:any)', 'Admin::hapusPelanggan/$1');
+    $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
+    
+    // Manajemen Pelaksanaan
+    $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
+    $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
+    $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
+    $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
+    $routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
+    $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
+
+    // Manajemen Pemesanan
+    $routes->get('pemesanan', 'Admin::dataPemesanan');
+    // ... Tambahkan rute untuk tambah, simpan, edit, update, hapus pemesanan jika ada
+
+    // Manajemen Penyewaan
+    $routes->get('penyewaan', 'Admin::dataPenyewaan');
+    // ... Tambahkan rute untuk tambah, simpan, edit, update, hapus penyewaan jika ada
+
+    // Manajemen Alat
+    $routes->get('alat', 'Admin::dataAlat');
+    // ... Tambahkan rute untuk CRUD alat jika ada
+
+    // Manajemen Pembayaran
+    $routes->get('pembayaran', 'Admin::dataPembayaran');
+    // ... Tambahkan rute untuk CRUD pembayaran jika ada
+
+    // Manajemen Pengembalian
+    $routes->get('pengembalian', 'Admin::dataPengembalian');
+    // ... Tambahkan rute untuk CRUD pengembalian jika ada
+
+    // Profil Admin
     $routes->get('profile', 'Admin::adminProfile');
     $routes->get('profile/edit', 'Admin::editAdminProfile');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
