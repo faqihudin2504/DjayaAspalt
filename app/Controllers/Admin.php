@@ -19,7 +19,7 @@ class Admin extends BaseController
         if (empty($data)) { return []; }
         $grouped = [];
         foreach ($data as $item) {
-            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM yyyy');
+            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM YYYY');
             if (!isset($grouped[$monthYear])) {
                 $grouped[$monthYear] = [];
             }
@@ -108,12 +108,22 @@ class Admin extends BaseController
         $pelangganModel = new \App\Models\PelangganModel();
         $data = [
             'page_title' => 'Tambah Pelaksanaan',
-            'pelanggan_list' => $pelangganModel->findAll() // Mengambil semua pelanggan untuk dropdown
+            'pelanggan_list' => $pelangganModel->findAll()
         ];
         return view('admin/tambah_pelaksanaan', $data); 
     }
 
-    public function tambahPemesanan() { return view('admin/tambah_pemesanan', ['page_title' => 'Tambah Pemesanan']); }
+    public function tambahPemesanan() 
+    { 
+        // INI BAGIAN YANG DIPERBAIKI
+        $model = new PelaksanaanModel(); // Gunakan PelaksanaanModel, bukan PemesananModel
+        $data = [
+            'page_title' => 'Tambah Pemesanan',
+            'pelaksanaan_list' => $model->findAll() // Ambil data dari tabel pelaksanaan
+        ];
+        return view('admin/tambah_pemesanan', $data);
+    }
+
     public function tambahPenyewaan() { return view('admin/tambah_penyewaan', ['page_title' => 'Tambah Penyewaan']); }
     public function tambahAlat() { return view('admin/tambah_alat', ['page_title' => 'Tambah Alat']); }
     public function tambahPembayaran() { return view('admin/tambah_pembayaran', ['page_title' => 'Tambah Pembayaran']); }
@@ -123,8 +133,15 @@ class Admin extends BaseController
     // PROSES SIMPAN DATA (CREATE)
     public function simpanPelanggan()
     {
+        $data = $this->request->getPost();
+        $nama_lengkap = $this->request->getPost('nama_lengkap');
+        $inisial = strtoupper(substr($nama_lengkap, 0, 1));
+        $data['id_pelanggan'] = $inisial . date('dmy') . random_int(100, 999);
+        if (empty($data['id_namasewa'])) {
+            $data['id_survey'] = 'Survey' . date('dmy') . random_int(100, 999);
+        }
         $model = new PelangganModel();
-        $model->save($this->request->getPost());
+        $model->save($data);
         session()->setFlashdata('success', 'Data pelanggan berhasil ditambahkan.');
         return redirect()->to('/admin/pelanggan');
     }
@@ -132,7 +149,9 @@ class Admin extends BaseController
     public function simpanPelaksanaan()
     {
         $model = new PelaksanaanModel();
-        $model->save($this->request->getPost());
+        $data = $this->request->getPost();
+        $data['id_pelaksanaan'] = 'PLK' . date('ymdHis');
+        $model->save($data);
         session()->setFlashdata('success', 'Data pelaksanaan berhasil ditambahkan.');
         return redirect()->to('/admin/pelaksanaan');
     }
@@ -140,7 +159,9 @@ class Admin extends BaseController
     public function simpanPemesanan()
     {
         $model = new PemesananModel();
-        $model->save($this->request->getPost());
+        $data = $this->request->getPost();
+        $data['id_pesanan'] = 'PES' . date('ymdHis');
+        $model->save($data);
         session()->setFlashdata('success', 'Data pemesanan berhasil ditambahkan.');
         return redirect()->to('/admin/pemesanan');
     }
@@ -219,8 +240,8 @@ class Admin extends BaseController
     {
         $userModel = new UserModel();
         $userId = session()->get('user_id');
-        $data['user'] = $userModel->find($userId);
-        if (!$data['user']) { throw new \CodeIgniter\Exceptions\PageNotFoundException('User tidak ditemukan'); }
+        $data = $userModel->find($userId);
+        if (!$data) { throw new \CodeIgniter\Exceptions\PageNotFoundException('User tidak ditemukan'); }
         return view('admin/admin_profile', $data);
     }
 
@@ -228,7 +249,7 @@ class Admin extends BaseController
     {
         $userModel = new UserModel();
         $userId = session()->get('user_id');
-        $data['user'] = $userModel->find($userId);
+        $data = $userModel->find($userId);
         return view('admin/edit_admin_profile', $data);
     }
 

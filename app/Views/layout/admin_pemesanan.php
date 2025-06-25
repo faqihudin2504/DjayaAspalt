@@ -1,65 +1,27 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemesanan - Djaya Aspalt Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
-        .admin-wrapper { display: flex; }
-        .admin-sidebar {
-            width: 250px; min-height: 100vh; background-color: #ffffff;
-            padding-top: 1.5rem; position: fixed; height: 100%;
-            border-right: 1px solid #e0e0e0;
-        }
-        .sidebar-header { padding: 0 1.5rem; margin-bottom: 2rem; }
-        .sidebar-header a { text-decoration: none; color: black; display: flex; align-items: center; }
-        .sidebar-header img { width: 32px; height: 32px; margin-right: 10px; }
-        .sidebar-header h5 { margin: 0; font-weight: 600; }
-        .sidebar-menu { flex-grow: 1; }
-        .sidebar-menu a {
-            display: block; padding: 12px 1.5rem; color: #555;
-            text-decoration: none; font-weight: 500;
-        }
-        .admin-main-content-wrapper { margin-left: 250px; width: calc(100% - 250px); }
-        .admin-topbar {
-            background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e0e0e0;
-            display: flex; justify-content: space-between; align-items: center; height: 70px;
-        }
-        .search-container { position: relative; width: 50%; }
-        .search-container input { width: 100%; padding: 8px 15px 8px 40px; border-radius: 20px; border: 1px solid #ccc; background-color: #f5f5f5; }
-        .topbar-profile a { text-decoration: none; color: #0d6efd; font-weight: 500; }
-        .admin-main-content { padding: 2rem; background-color: #FFDAB9; min-height: calc(100vh - 70px); }
-    </style>
-</head>
-<body>
-    <div class="admin-wrapper">
-        <div class="admin-sidebar">
-            <div class="sidebar-header">
-                <a href="<?= base_url('admin') ?>">
-                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
-                    <h5>Pemesanan</h5>
-                </a>
-            </div>
-            <div class="sidebar-menu">
-                <a href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
-                <a href="<?= base_url('admin/cek-stok') ?>">Cek Stok</a>
-                <a href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
-            </div>
-        </div>
-        <div class="admin-main-content-wrapper">
-            <div class="admin-topbar">
-                <div class="search-container">
-                    <input class="form-control" type="search" placeholder="Cari...">
-                </div>
-                <div class="topbar-profile"><a href="#">Foto Profil</a></div>
-            </div>
-            <div class="admin-main-content">
-                <?= $this->renderSection('content') ?>
-            </div>
+<?= $this->extend('layout/admin_main') ?>
+
+<?= $this->section('content') ?>
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-4 text-gray-800">Pemesanan</h1>
+        <div>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
         </div>
     </div>
-</body>
-</html>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">Cek Paket</a>
+                <a href="#" class="list-group-item list-group-item-action">Cek Stok</a>
+                <a href="#" class="list-group-item list-group-item-action">Cek Pekerja</a>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <?= $this->renderSection('table_content') ?>
+        </div>
+    </div>
+</div>
+<?= $this->endSection() ?>

@@ -73,7 +73,8 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
 
     // Manajemen Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');
-    // ... Tambahkan rute untuk tambah, simpan, edit, update, hapus pemesanan jika ada
+    $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
+    $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
 
     // Manajemen Penyewaan
     $routes->get('penyewaan', 'Admin::dataPenyewaan');

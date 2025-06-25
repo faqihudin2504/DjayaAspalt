@@ -8,15 +8,24 @@ class PelaksanaanModel extends Model
 {
     protected $table            = 'pelaksanaan';
     protected $primaryKey       = 'id_pelaksanaan';
+    protected $useAutoIncrement = false;
     protected $allowedFields    = [
-        'id_pelanggan', 'tanggal_pelaksanaan',
-        'alamat_pelaksanaan', 'waktu_pengerjaan'
+        'id_pelaksanaan',
+        'id_pelanggan', 
+        'tanggal_pelaksanaan',
+        'alamat_pelaksanaan', 
+        'waktu_pengerjaan'
     ];
 
-    /**
-     * Mengambil semua data pelaksanaan dengan menggabungkan data pengguna (users).
-     * PERBAIKAN: Menambahkan 'pelaksanaan.id_pelanggan' ke dalam SELECT
-     */
+    protected $useTimestamps = false;
+
+    // Validation
+    protected $validationRules      = [];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
+
+    
     public function getPelaksanaanWithPelanggan()
     {
         return $this->select('
