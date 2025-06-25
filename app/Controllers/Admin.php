@@ -19,7 +19,7 @@ class Admin extends BaseController
         if (empty($data)) { return []; }
         $grouped = [];
         foreach ($data as $item) {
-            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM yyyy');
+            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM YYYY');
             $grouped[$monthYear][] = $item;
         }
         krsort($grouped);
@@ -52,18 +52,64 @@ class Admin extends BaseController
         return view('admin/pelaksanaan', $data);
     }
     
-    public function dataPemesanan() { /* ... kode asli ... */ }
-    public function dataPenyewaan() { /* ... kode asli ... */ }
-    public function dataAlat() { /* ... kode asli ... */ }
-    public function dataPembayaran() { /* ... kode asli ... */ }
-    public function dataPengembalian() { /* ... kode asli ... */ }
+    public function dataPemesanan() { 
+        $model = new PemesananModel();
+        $data = [
+            'page_title' => 'Data Pemesanan',
+            'pemesanan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pemesanan', 'DESC')->findAll(), 'tanggal_pemesanan')
+        ];
+        return view('admin/pemesanan', $data);
+    }
+
+    public function dataPenyewaan() { 
+        $model = new PenyewaanModel();
+        $data = [
+            'page_title' => 'Data Penyewaan',
+            'penyewaan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_penyewaan', 'DESC')->findAll(), 'tanggal_penyewaan')
+        ];
+        return view('admin/penyewaan', $data);
+    }
+
+    public function dataAlat() { 
+        $model = new AlatModel();
+        $data = [
+            'page_title' => 'Data Alat',
+            'alat' => $model->findAll()
+        ];
+        return view('admin/alat', $data);
+    }
+
+    public function dataPembayaran() { 
+        $model = new PembayaranModel();
+        $data = [
+            'page_title' => 'Data Pembayaran',
+            'pembayaran_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pembayaran', 'DESC')->findAll(), 'tanggal_pembayaran')
+        ];
+        return view('admin/pembayaran', $data);
+    }
+    
+    public function dataPengembalian() { 
+        $model = new PengembalianModel();
+        $data = [
+            'page_title' => 'Data Pengembalian',
+            'pengembalian_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pengembalian', 'DESC')->findAll(), 'tanggal_pengembalian')
+        ];
+        return view('admin/pengembalian', $data);
+    }
 
     // FORM TAMBAH DATA
     public function tambahPelanggan() { return view('admin/tambah_pelanggan', ['page_title' => 'Tambah Pelanggan']); }
     public function tambahPelaksanaan() { return view('admin/tambah_pelaksanaan', ['page_title' => 'Tambah Pelaksanaan']); }
-    // ... (Fungsi-fungsi tambah lainnya)
+    public function tambahPemesanan() { return view('admin/tambah_pemesanan', ['page_title' => 'Tambah Pemesanan']); }
+    public function tambahPenyewaan() { return view('admin/tambah_penyewaan', ['page_title' => 'Tambah Penyewaan']); }
+    public function tambahAlat() { return view('admin/tambah_alat', ['page_title' => 'Tambah Alat']); }
+    public function tambahPembayaran() { return view('admin/tambah_pembayaran', ['page_title' => 'Tambah Pembayaran']); }
+    public function tambahPengembalian() { return view('admin/tambah_pengembalian', ['page_title' => 'Tambah Pengembalian']); }
 
-    // CRUD UNTUK PELANGGAN
+
+    // ===================================================================
+    // PROSES SIMPAN DATA (CREATE)
+    // ===================================================================
     public function simpanPelanggan()
     {
         $model = new PelangganModel();
@@ -72,6 +118,28 @@ class Admin extends BaseController
         return redirect()->to('/admin/pelanggan');
     }
 
+    public function simpanPelaksanaan()
+    {
+        $model = new PelaksanaanModel();
+        $model->save($this->request->getPost());
+        session()->setFlashdata('success', 'Data pelaksanaan berhasil ditambahkan.');
+        return redirect()->to('/admin/pelaksanaan');
+    }
+
+    public function simpanPemesanan()
+    {
+        $model = new PemesananModel();
+        $model->save($this->request->getPost());
+        session()->setFlashdata('success', 'Data pemesanan berhasil ditambahkan.');
+        return redirect()->to('/admin/pemesanan');
+    }
+    
+    // ... Tambahkan fungsi simpan lainnya dengan pola yang sama ...
+
+
+    // ===================================================================
+    // PROSES EDIT & UPDATE
+    // ===================================================================
     public function editPelanggan($id)
     {
         $model = new PelangganModel();
@@ -88,25 +156,7 @@ class Admin extends BaseController
         session()->setFlashdata('success', 'Data pelanggan berhasil diperbarui.');
         return redirect()->to('/admin/pelanggan');
     }
-
-    public function hapusPelanggan($id)
-    {
-        $model = new PelangganModel();
-        $model->delete($id);
-        session()->setFlashdata('success', 'Data pelanggan berhasil dihapus.');
-        return redirect()->to('/admin/pelanggan');
-    }
-
-    public function viewPelanggan($id)
-    {
-        $model = new PelangganModel();
-        $pelangganData = $model->find($id);
-        if (empty($pelangganData)) { throw new \CodeIgniter\Exceptions\PageNotFoundException('Pelanggan tidak ditemukan'); }
-        $data = [ 'page_title' => 'Detail Pelanggan', 'pelanggan'  => $pelangganData ];
-        return view('admin/view_pelanggan', $data);
-    }
     
-    // CRUD UNTUK PELAKSANAAN
     public function editPelaksanaan($id)
     {
         $model = new PelaksanaanModel();
@@ -130,6 +180,27 @@ class Admin extends BaseController
         return redirect()->to('/admin/pelaksanaan');
     }
 
+
+    // ===================================================================
+    // PROSES HAPUS (DELETE) & LIHAT (VIEW)
+    // ===================================================================
+    public function hapusPelanggan($id)
+    {
+        $model = new PelangganModel();
+        $model->delete($id);
+        session()->setFlashdata('success', 'Data pelanggan berhasil dihapus.');
+        return redirect()->to('/admin/pelanggan');
+    }
+
+    public function viewPelanggan($id)
+    {
+        $model = new PelangganModel();
+        $pelangganData = $model->find($id);
+        if (empty($pelangganData)) { throw new \CodeIgniter\Exceptions\PageNotFoundException('Pelanggan tidak ditemukan'); }
+        $data = [ 'page_title' => 'Detail Pelanggan', 'pelanggan'  => $pelangganData ];
+        return view('admin/view_pelanggan', $data);
+    }
+    
     public function hapusPelaksanaan($id)
     {
         $model = new PelaksanaanModel();
@@ -138,7 +209,10 @@ class Admin extends BaseController
         return redirect()->to('/admin/pelaksanaan');
     }
 
+
+    // ===================================================================
     // FUNGSI UNTUK PROFIL ADMIN
+    // ===================================================================
     public function adminProfile()
     {
         $userModel = new UserModel();
