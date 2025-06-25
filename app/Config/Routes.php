@@ -50,7 +50,10 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
 
     // Manajemen Pemesanan
+    $routes->get('pemesanan', 'Admin::dataPemesanan');
     $routes->get('pemesanan/edit/(:any)', 'Admin::editPemesanan/$1');
+    $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
+    $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
     $routes->post('pemesanan/update/(:any)', 'Admin::updatePemesanan/$1');
     $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1');
 
@@ -58,10 +61,10 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('penyewaan', 'Admin::dataPenyewaan');
     $routes->get('penyewaan/tambah', 'Admin::tambahPenyewaan');
     $routes->post('penyewaan/simpan', 'Admin::simpanPenyewaan');
-    $routes->get('penyewaan/view/(:any)', 'Admin::viewPenyewaan/$1');   // <-- TAMBAHKAN INI
-    $routes->get('penyewaan/edit/(:any)', 'Admin::editPenyewaan/$1');   // <-- TAMBAHKAN INI
-    $routes->post('penyewaan/update/(:any)', 'Admin::updatePenyewaan/$1'); // <-- TAMBAHKAN INI
-    $routes->get('penyewaan/hapus/(:any)', 'Admin::hapusPenyewaan/$1');   // <-- TAMBAHKAN INI
+    $routes->get('penyewaan/view/(:any)', 'Admin::viewPenyewaan/$1');  
+    $routes->get('penyewaan/edit/(:any)', 'Admin::editPenyewaan/$1');  
+    $routes->post('penyewaan/update/(:any)', 'Admin::updatePenyewaan/$1');
+    $routes->get('penyewaan/hapus/(:any)', 'Admin::hapusPenyewaan/$1');  
     // ... rute untuk CRUD penyewaan lainnya akan menyusul
 
     // Manajemen Alat
