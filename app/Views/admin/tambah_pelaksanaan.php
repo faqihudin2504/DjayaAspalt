@@ -10,9 +10,21 @@
             <?= csrf_field() ?>
 
             <div class="mb-3">
-                <label for="id_pelanggan" class="form-label">ID Pelanggan</label>
-                <input type="text" class="form-control" name="id_pelanggan" id="id_pelanggan" required placeholder="Masukkan ID Pelanggan yang terdaftar">
+                <label for="id_pelanggan" class="form-label">Pilih Pelanggan</label>
+                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
+                    <option value="">-- Pilih Nama Klien --</option>
+                    <?php if (!empty($pelanggan_list)): ?>
+                        <?php foreach($pelanggan_list as $pelanggan): ?>
+                            <option value="<?= esc($pelanggan['id_pelanggan']) ?>">
+                                <?= esc($pelanggan['nama_lengkap']) ?> (ID: <?= esc($pelanggan['id_pelanggan']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="" disabled>Tidak ada data pelanggan tersedia</option>
+                    <?php endif; ?>
+                </select>
             </div>
+
             <div class="mb-3">
                 <label for="tanggal_pelaksanaan" class="form-label">Tanggal Pelaksanaan</label>
                 <input type="datetime-local" class="form-control" id="tanggal_pelaksanaan" name="tanggal_pelaksanaan" required>

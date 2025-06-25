@@ -19,7 +19,10 @@ class Admin extends BaseController
         if (empty($data)) { return []; }
         $grouped = [];
         foreach ($data as $item) {
-            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM YYYY');
+            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM yyyy');
+            if (!isset($grouped[$monthYear])) {
+                $grouped[$monthYear] = [];
+            }
             $grouped[$monthYear][] = $item;
         }
         krsort($grouped);
@@ -99,7 +102,17 @@ class Admin extends BaseController
 
     // FORM TAMBAH DATA
     public function tambahPelanggan() { return view('admin/tambah_pelanggan', ['page_title' => 'Tambah Pelanggan']); }
-    public function tambahPelaksanaan() { return view('admin/tambah_pelaksanaan', ['page_title' => 'Tambah Pelaksanaan']); }
+
+    public function tambahPelaksanaan() 
+    { 
+        $pelangganModel = new \App\Models\PelangganModel();
+        $data = [
+            'page_title' => 'Tambah Pelaksanaan',
+            'pelanggan_list' => $pelangganModel->findAll() // Mengambil semua pelanggan untuk dropdown
+        ];
+        return view('admin/tambah_pelaksanaan', $data); 
+    }
+
     public function tambahPemesanan() { return view('admin/tambah_pemesanan', ['page_title' => 'Tambah Pemesanan']); }
     public function tambahPenyewaan() { return view('admin/tambah_penyewaan', ['page_title' => 'Tambah Penyewaan']); }
     public function tambahAlat() { return view('admin/tambah_alat', ['page_title' => 'Tambah Alat']); }
@@ -107,9 +120,7 @@ class Admin extends BaseController
     public function tambahPengembalian() { return view('admin/tambah_pengembalian', ['page_title' => 'Tambah Pengembalian']); }
 
 
-    // ===================================================================
     // PROSES SIMPAN DATA (CREATE)
-    // ===================================================================
     public function simpanPelanggan()
     {
         $model = new PelangganModel();
@@ -134,12 +145,7 @@ class Admin extends BaseController
         return redirect()->to('/admin/pemesanan');
     }
     
-    // ... Tambahkan fungsi simpan lainnya dengan pola yang sama ...
-
-
-    // ===================================================================
     // PROSES EDIT & UPDATE
-    // ===================================================================
     public function editPelanggan($id)
     {
         $model = new PelangganModel();
@@ -181,9 +187,7 @@ class Admin extends BaseController
     }
 
 
-    // ===================================================================
     // PROSES HAPUS (DELETE) & LIHAT (VIEW)
-    // ===================================================================
     public function hapusPelanggan($id)
     {
         $model = new PelangganModel();
@@ -210,15 +214,13 @@ class Admin extends BaseController
     }
 
 
-    // ===================================================================
     // FUNGSI UNTUK PROFIL ADMIN
-    // ===================================================================
     public function adminProfile()
     {
         $userModel = new UserModel();
         $userId = session()->get('user_id');
-        $data = $userModel->find($userId);
-        if (!$data) { throw new \CodeIgniter\Exceptions\PageNotFoundException('User tidak ditemukan'); }
+        $data['user'] = $userModel->find($userId);
+        if (!$data['user']) { throw new \CodeIgniter\Exceptions\PageNotFoundException('User tidak ditemukan'); }
         return view('admin/admin_profile', $data);
     }
 
@@ -226,7 +228,7 @@ class Admin extends BaseController
     {
         $userModel = new UserModel();
         $userId = session()->get('user_id');
-        $data = $userModel->find($userId);
+        $data['user'] = $userModel->find($userId);
         return view('admin/edit_admin_profile', $data);
     }
 
