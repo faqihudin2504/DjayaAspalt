@@ -85,7 +85,16 @@ class Admin extends BaseController
         return view('admin/tambah_pemesanan', $data);
     }
     // ... (fungsi tambah lainnya tetap sama) ...
-    public function tambahPenyewaan() { /* ... */ }
+    public function tambahPenyewaan() 
+    {
+        // Mengambil data pelanggan untuk ditampilkan di form
+        $pelangganModel = new \App\Models\PelangganModel();
+        $data = [
+            'page_title' => 'Tambah Data Penyewaan',
+            'pelanggan_list' => $pelangganModel->findAll(),
+        ];
+        return view('admin/tambah_penyewaan', $data);
+    }
     public function tambahAlat() { /* ... */ }
     public function tambahPembayaran() { /* ... */ }
     public function tambahPengembalian() { /* ... */ }
@@ -93,6 +102,26 @@ class Admin extends BaseController
     // PROSES SIMPAN DATA (CREATE)
     public function simpanPelanggan() { /* ... */ }
     public function simpanPelaksanaan() { /* ... */ }
+
+    public function simpanPenyewaan()
+    {
+        $model = new PenyewaanModel();
+        $data = $this->request->getPost();
+
+        // Buat ID Sewa unik secara manual
+        $data['id_sewa'] = 'SEWA' . date('ymdHis');
+
+        // Karena di form tidak ada input nama_penyewa, kita ambil dari data pelanggan
+        $pelangganModel = new PelangganModel();
+        $pelanggan = $pelangganModel->find($this->request->getPost('id_pelanggan'));
+        if ($pelanggan) {
+            $data['nama_penyewa'] = $pelanggan['nama_lengkap'];
+        }
+
+        $model->save($data);
+        session()->setFlashdata('success', 'Data penyewaan berhasil ditambahkan.');
+        return redirect()->to('/admin/penyewaan');
+    }
 
     public function simpanPemesanan()
     {
@@ -151,6 +180,70 @@ class Admin extends BaseController
         session()->setFlashdata('success', 'Data pemesanan berhasil dihapus.');
         return redirect()->to('/admin/pemesanan');
     }
+
+    // FUNGSI BARU UNTUK CRUD PENYEWAAN
+
+    public function viewPenyewaan($id)
+    {
+        $penyewaanModel = new PenyewaanModel();
+        // Anda bisa membuat join di sini jika perlu menampilkan detail lebih lanjut
+        $penyewaanData = $penyewaanModel->find($id); 
+
+        if (empty($penyewaanData)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data Penyewaan tidak ditemukan');
+        }
+
+        $data = [
+            'page_title' => 'Detail Penyewaan',
+            'penyewaan' => $penyewaanData
+        ];
+        // Anda perlu membuat file view 'admin/view_penyewaan.php' untuk ini
+        return view('admin/view_penyewaan', $data);
+    }
+
+    public function editPenyewaan($id)
+    {
+        $penyewaanModel = new PenyewaanModel();
+        $penyewaanData = $penyewaanModel->find($id);
+        if (empty($penyewaanData)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data Penyewaan tidak ditemukan');
+        }
+
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Edit Penyewaan',
+            'penyewaan' => $penyewaanData,
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/edit_penyewaan', $data);
+    }
+
+    public function updatePenyewaan($id)
+    {
+        $model = new PenyewaanModel();
+        $data = $this->request->getPost();
+        
+        // Update juga nama penyewa jika id_pelanggan berubah
+        $pelangganModel = new PelangganModel();
+        $pelanggan = $pelangganModel->find($this->request->getPost('id_pelanggan'));
+        if ($pelanggan) {
+            $data['nama_penyewa'] = $pelanggan['nama_lengkap'];
+        }
+
+        $model->update($id, $data);
+        session()->setFlashdata('success', 'Data penyewaan berhasil diperbarui.');
+        return redirect()->to('/admin/penyewaan');
+    }
+
+    public function hapusPenyewaan($id)
+    {
+        $model = new PenyewaanModel();
+        $model->delete($id);
+        session()->setFlashdata('success', 'Data penyewaan berhasil dihapus.');
+        return redirect()->to('/admin/penyewaan');
+    }
+
+
 
     // FUNGSI UNTUK PROFIL ADMIN
     public function adminProfile() { /* ... */ }

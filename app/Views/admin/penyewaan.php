@@ -3,17 +3,25 @@
 <?= $this->section('content') ?>
 <style>
     .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
-    .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
+    .card-revisi .card-header { background-color: #1cc88a; color: white; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
     .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
     .table tbody td { text-align: center; vertical-align: middle; }
     .action-buttons .btn { color: white !important; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; border: none; }
-    .empty-state { padding: 4rem; text-align: center; } .empty-state img { max-width: 150px; margin-bottom: 1.5rem; }
+    .empty-state { padding: 4rem; text-align: center; } 
+    .empty-state img { max-width: 150px; margin-bottom: 1.5rem; }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Data Penyewaan') ?></h4>
-    <a href="#" class="btn btn-success">Tambahkan Penyewaan</a>
+    <h4 class="fw-bold m-0">Data Penyewaan</h4>
+    <a href="<?= base_url('admin/penyewaan/tambah') ?>" class="btn btn-primary">Tambahkan Penyewaan</a>
 </div>
+
+<?php if (session()->getFlashdata('success')) : ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= session()->getFlashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
 <?php if (empty($penyewaan_per_bulan)): ?>
     <div class="card card-revisi">
@@ -32,34 +40,28 @@
                 <thead>
                     <tr>
                         <th>ID Sewa</th>
-                        <th>ID Alat</th>
-                        <th>ID Penyewa</th>
-                        <th>Harga</th>
+                        <th>Nama Penyewa</th>
                         <th>Tanggal Sewa</th>
-                        <th>Alamat</th>
+                        <th>Total Harga</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($items)): ?>
-                        <tr><td colspan="7" class="p-5">Tidak ada data untuk bulan ini.</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($items as $item): ?>
-                            <tr>
-                                <td><?= esc($item['id_sewa']) ?></td>
-                                <td><?= esc($item['id_alat']) ?></td>
-                                <td><?= esc($item['id_namasewa']) ?></td>
-                                <td>Rp. <?= number_format($item['harga_alatdisewa'], 0, ',', '.') ?></td>
-                                <td><?= date('d-m-Y', strtotime($item['tanggal_penyewaan'])) ?></td>
-                                <td><?= esc($item['alamat_penyewa']) ?></td>
-                                <td class="action-buttons">
-                                    <a href="#" class="btn btn-dark btn-sm">View</a>
-                                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php foreach ($items as $item): ?>
+                        <tr>
+                            <td><?= esc($item['id_sewa']) ?></td>
+                            <td><?= esc($item['nama_penyewa']) ?></td>
+                            <td><?= date('d-m-Y', strtotime($item['tanggal_penyewaan'])) ?></td>
+                            <td>Rp. <?= number_format($item['total_harga'], 0, ',', '.') ?></td>
+                            <td><span class="badge bg-success"><?= esc($item['status']) ?></span></td>
+                            <td class="action-buttons">
+                                <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">View</a>
+                                <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
