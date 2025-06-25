@@ -75,6 +75,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('pemesanan', 'Admin::dataPemesanan');
     $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
     $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
+    $routes->get('pemesanan/edit/(:any)', 'Admin::editPemesanan/$1');  
+    $routes->post('pemesanan/update/(:any)', 'Admin::updatePemesanan/$1'); 
+    $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1'); 
 
     // Manajemen Penyewaan
     $routes->get('penyewaan', 'Admin::dataPenyewaan');
