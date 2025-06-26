@@ -257,15 +257,21 @@ class Admin extends BaseController
         ];
         return view('admin/penyewaan', $data);
     }
-    
-    public function tambahPenyewaan()
+
+   public function tambahPenyewaan()
     {
-        $pelangganModel = new \App\Models\PelangganModel();
-        $data = [
-            'page_title' => 'Tambah Data Penyewaan',
-            'pelanggan_list' => $pelangganModel->findAll(),
-        ];
-        return view('admin/tambah_penyewaan', $data);
+    // Panggil kedua model yang dibutuhkan
+    $pelangganModel = new \App\Models\PelangganModel();
+    $alatModel = new \App\Models\AlatModel(); // 1. Panggil Model Alat
+
+    $data = [
+        'page_title' => 'Tambah Data Penyewaan',
+        'pelanggan_list' => $pelangganModel->findAll(),
+        'alat_list' => $alatModel->findAll() // 2. Tambahkan daftar alat ke data
+    ];
+
+    // Kirim data yang sudah lengkap ke view
+    return view('admin/tambah_penyewaan', $data);
     }
     
    public function simpanPenyewaan()
@@ -304,14 +310,19 @@ class Admin extends BaseController
 
     public function editPenyewaan($id)
     {
-        $penyewaanModel = new \App\Models\PenyewaanModel();
-        $pelangganModel = new \App\Models\PelangganModel();
-        $data = [
-            'page_title' => 'Edit Penyewaan',
-            'penyewaan' => $penyewaanModel->find($id),
-            'pelanggan_list' => $pelangganModel->findAll()
-        ];
-        return view('admin/edit_penyewaan', $data);
+    // Panggil semua model yang dibutuhkan
+    $penyewaanModel = new \App\Models\PenyewaanModel();
+    $pelangganModel = new \App\Models\PelangganModel();
+    $alatModel = new \App\Models\AlatModel(); // 1. Panggil juga model Alat
+
+    $data = [
+        'page_title' => 'Edit Penyewaan',
+        'penyewaan' => $penyewaanModel->find($id),
+        'pelanggan_list' => $pelangganModel->findAll(),
+        'alat_list' => $alatModel->findAll() // 2. Ambil dan kirim daftar alat
+    ];
+    
+    return view('admin/edit_penyewaan', $data);
     }
 
     public function updatePenyewaan($id)
@@ -343,7 +354,7 @@ class Admin extends BaseController
     }
     
    // ===================================================================
-    // MODUL ALAT (CRUD LENGKAP)
+    // MODUL
     // ===================================================================
 
     public function dataAlat()
@@ -453,56 +464,135 @@ class Admin extends BaseController
     // ===================================================================
 
     public function dataPembayaran()
-    {
-        $model = new PembayaranModel();
-        $data = [
-            'page_title' => 'Data Pembayaran',
-            'pembayaran_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pembayaran', 'DESC')->findAll(), 'tanggal_pembayaran')
-        ];
-        return view('admin/pembayaran', $data);
+{
+    $model = new \App\Models\PembayaranModel();
+    $data = [
+        'page_title' => 'Data Pembayaran',
+        'pembayaran_list' => $model->getPembayaranWithDetails()
+    ];
+    return view('admin/pembayaran', $data);
+}
+
+public function tambahPembayaran()
+{
+    $pemesananModel = new \App\Models\PemesananModel();
+    $penyewaanModel = new \App\Models\PenyewaanModel();
+
+    $data = [
+        'page_title'      => 'Tambah Data Pembayaran',
+        'pemesanan_list'  => $pemesananModel->getPemesananWithDetails(),
+        'penyewaan_list'  => $penyewaanModel->findAll(),
+        'validation'      => \Config\Services::validation()
+    ];
+    return view('admin/tambah_pembayaran', $data);
+}
+
+public function simpanPembayaran()
+{
+    // Validasi disesuaikan dengan kolom database
+    $rules = [
+        'total_harga' => 'required|numeric',
+        'no_rekening' => 'required|numeric',
+        'tanggal_pembayaran' => 'required|valid_date',
+        'metode_pembayaran' => 'required'
+    ];
+    
+    if (empty($this->request->getPost('id_pesanan')) && empty($this->request->getPost('id_sewa'))) {
+        return redirect()->back()->withInput()->with('error', 'Anda harus memilih salah satu: ID Pesanan atau ID Sewa.');
     }
 
-    public function tambahPembayaran()
-    {
-        $data['page_title'] = 'Tambah Data Pembayaran';
-        return view('admin/tambah_pembayaran', $data);
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
 
-    public function simpanPembayaran()
-    {
-        $model = new PembayaranModel();
-        $model->save($this->request->getPost());
-        session()->setFlashdata('success', 'Data pembayaran berhasil ditambahkan.');
-        return redirect()->to('admin/pembayaran');
+    $model = new \App\Models\PembayaranModel();
+    $data = $this->request->getPost();
+    
+    $data['id_bayar'] = 'PAY' . date('ymdHis');
+    
+    $model->save($data);
+    
+    session()->setFlashdata('success', 'Data pembayaran berhasil ditambahkan.');
+    return redirect()->to('admin/pembayaran');
+}
+
+public function hapusPembayaran($id)
+{
+    $model = new \App\Models\PembayaranModel();
+    if ($model->find($id)) {
+        $model->delete($id);
+        session()->setFlashdata('success', 'Data pembayaran berhasil dihapus.');
+    } else {
+        session()->setFlashdata('error', 'Data pembayaran tidak ditemukan.');
     }
+    return redirect()->to('admin/pembayaran');
+}
     
     // ===================================================================
     // MODUL PENGEMBALIAN
     // ===================================================================
 
     public function dataPengembalian()
-    {
-        $model = new PengembalianModel();
-        $data = [
-            'page_title' => 'Data Pengembalian',
-            'pengembalian_list' => $model->getPengembalianWithDetails()
-        ];
-        return view('admin/pengembalian', $data);
+{
+    $model = new \App\Models\PengembalianModel();
+    $data = [
+        'page_title' => 'Data Pengembalian',
+        'pengembalian_list' => $model->getPengembalianWithDetails()
+    ];
+    return view('admin/pengembalian', $data);
+}
+
+public function tambahPengembalian()
+{
+    // Ambil data penyewaan untuk ditampilkan di dropdown
+    $penyewaanModel = new \App\Models\PenyewaanModel();
+    $data = [
+        'page_title' => 'Tambah Data Pengembalian',
+        'penyewaan_list' => $penyewaanModel->findAll(), // Di sini Anda bisa filter hanya yg statusnya 'Disewa'
+        'validation' => \Config\Services::validation()
+    ];
+    return view('admin/tambah_pengembalian', $data);
+}
+
+public function simpanPengembalian()
+{
+    $rules = [
+        'id_sewa' => 'required|is_unique[pengembalian.id_sewa,id_kembali,{id_kembali}]',
+        'denda_kembali' => 'required|numeric',
+        'tanggal_pengembalian' => 'required|valid_date'
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
 
-    public function tambahPengembalian()
-    {
-        $data['page_title'] = 'Tambah Data Pengembalian';
-        return view('admin/tambah_pengembalian', $data);
-    }
+    $pengembalianModel = new \App\Models\PengembalianModel();
+    $data = $this->request->getPost();
+    
+    // Buat ID Kembali yang unik
+    $data['id_kembali'] = 'KMB' . date('ymdHis');
+    
+    $pengembalianModel->save($data);
 
-    public function simpanPengembalian()
-    {
-        $model = new PengembalianModel();
-        $model->save($this->request->getPost());
-        session()->setFlashdata('success', 'Data pengembalian berhasil ditambahkan.');
-        return redirect()->to('admin/pengembalian');
+    // Opsional: Update status di tabel penyewaan menjadi 'Selesai'
+    $penyewaanModel = new \App\Models\PenyewaanModel();
+    $penyewaanModel->update($data['id_sewa'], ['status' => 'Selesai']);
+    
+    session()->setFlashdata('success', 'Data pengembalian berhasil ditambahkan.');
+    return redirect()->to('admin/pengembalian');
+}
+
+public function hapusPengembalian($id)
+{
+    $model = new \App\Models\PengembalianModel();
+    if ($model->find($id)) {
+        $model->delete($id);
+        session()->setFlashdata('success', 'Data pengembalian berhasil dihapus.');
+    } else {
+        session()->setFlashdata('error', 'Data pengembalian tidak ditemukan.');
     }
+    return redirect()->to('admin/pengembalian');
+}
     
 
     // ===================================================================

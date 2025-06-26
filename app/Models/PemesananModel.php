@@ -26,9 +26,11 @@ class PemesananModel extends Model
      * Mengambil semua data pemesanan dengan menggabungkan data pelanggan (users).
      * pemesanan -> pelaksanaan -> users
      */
+
+    
     public function getPemesananWithDetails()
     {
-        return $this->select('pemesanan.*, users.nama_lengkap, pelaksanaan.alamat_pelaksanaan')
+        return $this->select('pemesanan.*, users.nama_lengkap')
                     ->join('pelaksanaan', 'pelaksanaan.id_pelaksanaan = pemesanan.id_pelaksanaan', 'left')
                     ->join('users', 'users.id = pelaksanaan.id_pelanggan', 'left')
                     ->findAll();

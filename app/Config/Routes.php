@@ -77,11 +77,15 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
 
     // Manajemen Pembayaran
     $routes->get('pembayaran', 'Admin::dataPembayaran');
-    // ... rute untuk CRUD pembayaran bisa ditambahkan di sini
+    $routes->get('pembayaran/tambah', 'Admin::tambahPembayaran');
+    $routes->post('pembayaran/simpan', 'Admin::simpanPembayaran');
+    $routes->get('pembayaran/hapus/(:any)', 'Admin::hapusPembayaran/$1');
 
     // Manajemen Pengembalian
     $routes->get('pengembalian', 'Admin::dataPengembalian');
-    // ... rute untuk CRUD pengembalian bisa ditambahkan di sini
+    $routes->get('pengembalian/tambah', 'Admin::tambahPengembalian');
+    $routes->post('pengembalian/simpan', 'Admin::simpanPengembalian');
+    $routes->get('pengembalian/hapus/(:any)', 'Admin::hapusPengembalian/$1');
 
     // Profil Admin
     $routes->get('profile', 'Admin::adminProfile');

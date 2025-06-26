@@ -20,7 +20,7 @@
             <div class="mb-3">
                 <label for="id_alat" class="form-label">ID Alat</label>
                 <input type="text" class="form-control" id="id_alat" name="id_alat" value="<?= old('id_alat') ?>" required>
-                 <small class="form-text text-muted">Contoh: ALAT001, BABYROLLER, dll.</small>
+                 <small class="form-text text-muted">Contoh: ALAT001, ALAT002, dll.</small>
             </div>
              <div class="mb-3">
                 <label for="cek_alat" class="form-label">Status Awal</label>
