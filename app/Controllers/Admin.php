@@ -342,15 +342,15 @@ class Admin extends BaseController
         return redirect()->to('/admin/penyewaan');
     }
     
+   // ===================================================================
+    // MODUL ALAT (CRUD LENGKAP)
     // ===================================================================
-    // MODUL ALAT
-    // ===================================================================
-    
+
     public function dataAlat()
     {
-        $model = new AlatModel();
+        $model = new \App\Models\AlatModel();
         $data = [
-            'page_title' => 'Data Alat',
+            'page_title' => 'Manajemen Data Alat',
             'alat_list'  => $model->findAll()
         ];
         return view('admin/alat', $data);
@@ -358,16 +358,88 @@ class Admin extends BaseController
 
     public function tambahAlat()
     {
-        $data['page_title'] = 'Tambah Data Alat';
+        $data = [
+            'page_title' => 'Tambah Alat Baru',
+            'validation' => \Config\Services::validation() // Kirim validation service ke view
+        ];
         return view('admin/tambah_alat', $data);
     }
 
     public function simpanAlat()
     {
-        $model = new AlatModel();
-        $model->save($this->request->getPost());
+        // Aturan validasi
+        $rules = [
+            'id_alat' => 'required|is_unique[alat.id_alat]',
+            'nama_alat' => 'required',
+            'stok_alat' => 'required|numeric'
+        ];
+
+        if (!$this->validate($rules)) {
+            // Jika validasi gagal, kembali ke form dengan error
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $model = new \App\Models\AlatModel();
+        $model->save([
+            'id_alat'        => $this->request->getPost('id_alat'),
+            'cek_alat'       => $this->request->getPost('cek_alat'),
+            'nama_alat'      => $this->request->getPost('nama_alat'),
+            'stok_alat'      => $this->request->getPost('stok_alat'),
+            'informasi_alat' => $this->request->getPost('informasi_alat')
+        ]);
+        
         session()->setFlashdata('success', 'Data alat berhasil ditambahkan.');
-        return redirect()->to('admin/alat');
+        return redirect()->to('/admin/alat');
+    }
+
+    public function editAlat($id)
+    {
+        $model = new \App\Models\AlatModel();
+        $data = [
+            'page_title' => 'Edit Data Alat',
+            'validation' => \Config\Services::validation(),
+            'alat'       => $model->find($id)
+        ];
+
+        if (empty($data['alat'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data alat tidak ditemukan.');
+        }
+
+        return view('admin/edit_alat', $data);
+    }
+
+    public function updateAlat($id)
+    {
+        // Aturan validasi (is_unique diubah untuk mengabaikan data saat ini)
+        $rules = [
+            'id_alat'   => 'required|is_unique[alat.id_alat,id_alat,' . $id . ']',
+            'nama_alat' => 'required',
+            'stok_alat' => 'required|numeric'
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $model = new \App\Models\AlatModel();
+        $model->update($id, [
+            'id_alat'        => $this->request->getPost('id_alat'),
+            'cek_alat'       => $this->request->getPost('cek_alat'),
+            'nama_alat'      => $this->request->getPost('nama_alat'),
+            'stok_alat'      => $this->request->getPost('stok_alat'),
+            'informasi_alat' => $this->request->getPost('informasi_alat')
+        ]);
+
+        session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
+        return redirect()->to('/admin/alat');
+    }
+
+    public function hapusAlat($id)
+    {
+        $model = new \App\Models\AlatModel();
+        $model->delete($id);
+        session()->setFlashdata('success', 'Data alat berhasil dihapus.');
+        return redirect()->to('/admin/alat');
     }
     
     // ===================================================================
