@@ -4,7 +4,7 @@
 
 <?php if (session()->getFlashdata('errors')): ?>
     <div class="alert alert-danger">
-        <h5 class="alert-heading">Gagal Menyimpan!</h5>
+        <h5 class="alert-heading">Maaf, Data anda gagal tersimpan!</h5>
         <ul class="mb-0">
         <?php foreach (session()->getFlashdata('errors') as $error): ?>
             <li><?= esc($error) ?></li>
