@@ -2,13 +2,10 @@
 
 <?= $this->section('content') ?>
 <style>
-    .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
-    .card-revisi .card-header { background-color: #1cc88a; color: white; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
-    .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
-    .table tbody td { text-align: center; vertical-align: middle; }
-    .action-buttons .btn { color: white !important; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; border: none; }
-    .empty-state { padding: 4rem; text-align: center; } 
-    .empty-state img { max-width: 150px; margin-bottom: 1.5rem; }
+    .action-buttons .btn { margin-right: 5px; }
+    .empty-state { text-align: center; padding: 50px; }
+    .empty-state img { max-width: 150px; margin-bottom: 20px; }
+    .card-revisi { border: 1px solid #dee2e6; }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,17 +31,18 @@
 <?php else: ?>
     <?php foreach ($penyewaan_per_bulan as $bulan => $items): ?>
     <div class="card card-revisi mb-4">
-        <div class="card-header">Data Penyewaan bulan <?= $bulan ?></div>
+        <div class="card-header fw-bold">Data Penyewaan bulan <?= $bulan ?></div>
         <div class="card-body table-responsive p-0">
-            <table class="table table-bordered table-striped mb-0">
-                <thead>
+            <table class="table table-bordered table-striped table-hover mb-0">
+                <thead class="table-light">
                     <tr>
                         <th>ID Sewa</th>
                         <th>Nama Penyewa</th>
-                        <th>Tanggal Sewa</th>
-                        <th>Total Harga</th>
+                        <th>ID Alat</th>
+                        <th>Tgl Sewa</th>
+                        <th>Harga</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th style="width: 180px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,9 +50,10 @@
                         <tr>
                             <td><?= esc($item['id_sewa']) ?></td>
                             <td><?= esc($item['nama_penyewa']) ?></td>
-                            <td><?= date('d-m-Y', strtotime($item['tanggal_penyewaan'])) ?></td>
-                            <td>Rp. <?= number_format($item['total_harga'], 0, ',', '.') ?></td>
-                            <td><span class="badge bg-success"><?= esc($item['status']) ?></span></td>
+                            <td><?= esc($item['id_alat']) ?></td>
+                            <td><?= date('d M Y', strtotime($item['tanggal_penyewaan'])) ?></td>
+                            <td>Rp. <?= number_format($item['harga_alatdisewa'] ?? 0, 0, ',', '.') ?></td>
+                            <td><span class="badge bg-primary"><?= esc($item['status']) ?></span></td>
                             <td class="action-buttons">
                                 <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">View</a>
                                 <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Edit</a>

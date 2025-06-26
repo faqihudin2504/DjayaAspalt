@@ -6,25 +6,24 @@ use CodeIgniter\Model;
 
 class PenyewaanModel extends Model
 {
-    // 1. Konfigurasi dasar tabel
     protected $table            = 'penyewaan';
     protected $primaryKey       = 'id_sewa';
-
-    // 2. Kunci penting #1: Memberitahu CodeIgniter
-    //    ID-nya kita buat manual (SEWA...), bukan dari database.
-    protected $useAutoIncrement = false; 
-    
+    protected $useAutoIncrement = false; // Karena kita buat ID manual
     protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
 
-    // 3. Kunci penting #2: Ini adalah "daftar izin".
-    //    HANYA kolom yang ada di sini yang boleh disimpan ke database.
-    //    Ini yang memperbaiki masalah data "ghoib".
+    // Sesuaikan dengan semua kolom di tabel penyewaan
     protected $allowedFields    = [
         'id_sewa',
-        'id_pelanggan',
+        'id_alat',
+        'id_namasewa',
         'nama_penyewa',
+        'harga_alatdisewa',
         'tanggal_penyewaan',
-        'total_harga',
+        'alamat_penyewa',
         'status'
     ];
+
+    // Dates
+    protected $useTimestamps = false;
 }

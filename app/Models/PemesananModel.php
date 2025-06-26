@@ -15,7 +15,7 @@ class PemesananModel extends Model
 
     // Daftarkan 'id_pesanan' sebagai kolom yang boleh diisi
     protected $allowedFields    = [
-        'id_pesanan', // <-- INI KUNCINYA
+        'id_pesanan',
         'id_pelaksanaan',
         'nama_paketdipesan',
         'harga_paketdipesan',

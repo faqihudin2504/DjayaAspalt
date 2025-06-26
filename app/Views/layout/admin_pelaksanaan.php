@@ -39,7 +39,7 @@
             <div class="sidebar-header">
                 <a href="<?= base_url('admin') ?>">
                     <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
-                    <h5>Kembali ke Home</h5>
+                    <h5>Manajemen Pelaksanaan</h5>
                 </a>
             </div>
             <div class="sidebar-menu">

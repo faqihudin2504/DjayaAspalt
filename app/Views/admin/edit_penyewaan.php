@@ -8,47 +8,56 @@
     <div class="card-body">
         <form action="<?= base_url('admin/penyewaan/update/' . $penyewaan['id_sewa']) ?>" method="post">
             <?= csrf_field() ?>
-            
-            <div class="mb-3">
-                <label for="id_sewa" class="form-label">ID Sewa</label>
-                <input type="text" class="form-control" value="<?= esc($penyewaan['id_sewa']) ?>" readonly>
-            </div>
 
             <div class="mb-3">
-                <label for="id_pelanggan" class="form-label">Pilih Pelanggan Penyewa</label>
-                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
-                    <option value="">-- Pilih Nama Pelanggan --</option>
-                    <?php if (!empty($pelanggan_list)): ?>
-                        <?php foreach($pelanggan_list as $pelanggan): ?>
-                            <option value="<?= esc($pelanggan['id_pelanggan']) ?>" <?= ($pelanggan['id_pelanggan'] == $penyewaan['id_pelanggan']) ? 'selected' : '' ?>>
-                                <?= esc($pelanggan['nama_lengkap']) ?> (ID: <?= esc($pelanggan['id_pelanggan']) ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <label for="id_namasewa" class="form-label fw-bold">Pilih Pelanggan Penyewa</label>
+                <select class="form-control" name="id_namasewa" id="id_namasewa" required>
+                    <?php foreach($pelanggan_list as $pelanggan): ?>
+                        <option value="<?= esc($pelanggan['id_pelanggan']) ?>" <?= ($pelanggan['id_pelanggan'] == $penyewaan['id_namasewa']) ? 'selected' : '' ?>>
+                            <?= esc($pelanggan['nama_lengkap']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="mb-3">
-                <label for="tanggal_penyewaan" class="form-label">Tanggal Penyewaan</label>
-                <input type="date" class="form-control" id="tanggal_penyewaan" name="tanggal_penyewaan" value="<?= esc($penyewaan['tanggal_penyewaan']) ?>" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="total_harga" class="form-label">Total Harga (Rp)</label>
-                <input type="number" class="form-control" name="total_harga" id="total_harga" value="<?= esc($penyewaan['total_harga']) ?>" required>
+                <label for="id_alat" class="form-label fw-bold">Pilih Alat</label>
+                <select class="form-control" name="id_alat" id="id_alat" required>
+                     <?php foreach($alat_list as $alat): ?>
+                        <option value="<?= esc($alat['id_alat']) ?>" <?= ($alat['id_alat'] == $penyewaan['id_alat']) ? 'selected' : '' ?>>
+                            <?= esc($alat['nama_alat']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             
             <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
+                <label for="alamat_penyewa" class="form-label fw-bold">Alamat Pengiriman Alat</label>
+                <textarea class="form-control" name="alamat_penyewa" id="alamat_penyewa" rows="3" required><?= esc($penyewaan['alamat_penyewa']) ?></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="tanggal_penyewaan" class="form-label fw-bold">Tanggal Penyewaan</label>
+                <input type="date" class="form-control" name="tanggal_penyewaan" id="tanggal_penyewaan" value="<?= esc($penyewaan['tanggal_penyewaan']) ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="harga_alatdisewa" class="form-label fw-bold">Harga Sewa (Rp)</label>
+                <input type="number" class="form-control" name="harga_alatdisewa" id="harga_alatdisewa" value="<?= esc($penyewaan['harga_alatdisewa']) ?>" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="status" class="form-label fw-bold">Status</label>
                 <select class="form-control" name="status" id="status" required>
+                    <option value="Booking" <?= ($penyewaan['status'] == 'Booking') ? 'selected' : '' ?>>Booking</option>
                     <option value="Disewa" <?= ($penyewaan['status'] == 'Disewa') ? 'selected' : '' ?>>Disewa</option>
                     <option value="Selesai" <?= ($penyewaan['status'] == 'Selesai') ? 'selected' : '' ?>>Selesai</option>
-                    <option value="Booking" <?= ($penyewaan['status'] == 'Booking') ? 'selected' : '' ?>>Booking</option>
+                    <option value="Batal" <?= ($penyewaan['status'] == 'Batal') ? 'selected' : '' ?>>Batal</option>
                 </select>
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <button type="submit" class="btn btn-primary">Update Data</button>
                 <a href="<?= base_url('admin/penyewaan') ?>" class="btn btn-secondary">Batal</a>
             </div>
         </form>
