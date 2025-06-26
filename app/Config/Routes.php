@@ -69,7 +69,11 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
 
     // Manajemen Alat
     $routes->get('alat', 'Admin::dataAlat');
-    // ... rute untuk CRUD alat bisa ditambahkan di sini
+    $routes->get('alat/tambah', 'Admin::tambahAlat');
+    $routes->post('alat/simpan', 'Admin::simpanAlat');
+    $routes->get('alat/edit/(:any)', 'Admin::editAlat/$1');
+    $routes->post('alat/update/(:any)', 'Admin::updateAlat/$1');
+    $routes->get('alat/hapus/(:any)', 'Admin::hapusAlat/$1');
 
     // Manajemen Pembayaran
     $routes->get('pembayaran', 'Admin::dataPembayaran');

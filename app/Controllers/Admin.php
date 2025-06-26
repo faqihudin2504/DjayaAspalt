@@ -347,14 +347,20 @@ class Admin extends BaseController
     // ===================================================================
 
     public function dataAlat()
-    {
-        $model = new \App\Models\AlatModel();
-        $data = [
-            'page_title' => 'Manajemen Data Alat',
-            'alat_list'  => $model->findAll()
-        ];
-        return view('admin/alat', $data);
-    }
+{
+    // 1. Buat instance dari AlatModel
+    $model = new \App\Models\AlatModel();
+    
+    // 2. Siapkan data untuk dikirim ke view
+    $data = [
+        'page_title' => 'Manajemen Data Alat',
+        // 3. Ambil SEMUA data dari tabel alat dan masukkan ke 'alat_list'
+        'alat_list'  => $model->findAll()
+    ];
+    
+    // 4. Kirim data tersebut ke view 'admin/alat'
+    return view('admin/alat', $data);
+}
 
     public function tambahAlat()
     {
