@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_kosong') ?>
+<?= $this->extend('layout/admin_main') ?>
 
 <?= $this->section('content') ?>
 
@@ -10,12 +10,12 @@
             <?= csrf_field() ?>
 
             <div class="mb-3">
-                <label for="id_namasewa" class="form-label fw-bold">Pilih Pelanggan Penyewa</label>
-                <select class="form-control" name="id_namasewa" id="id_namasewa" required>
+                <label for="id_pelanggan" class="form-label fw-bold">Pilih Pelanggan Penyewa</label>
+                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
                     <option value="">-- Pilih Nama Pelanggan --</option>
                     <?php if (!empty($pelanggan_list)): ?>
                         <?php foreach($pelanggan_list as $pelanggan): ?>
-                            <option value="<?= esc($pelanggan['id_pelanggan']) ?>" <?= set_select('id_namasewa', $pelanggan['id_pelanggan']) ?>>
+                            <option value="<?= esc($pelanggan['id']) ?>" <?= set_select('id_pelanggan', $pelanggan['id']) ?>>
                                 <?= esc($pelanggan['nama_lengkap']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -37,6 +37,14 @@
                 </select>
             </div>
             
+            <hr>
+            <h5 class="text-muted">Detail Otomatis</h5>
+            <div class="mb-3">
+                <label for="harga_alatdisewa" class="form-label fw-bold">Harga Sewa (Rp)</label>
+                <input type="number" class="form-control" name="harga_alatdisewa" id="harga_alatdisewa" placeholder="Pilih alat untuk melihat harga" readonly required>
+            </div>
+            <hr>
+
             <div class="mb-3">
                 <label for="alamat_penyewa" class="form-label fw-bold">Alamat Pengiriman Alat</label>
                 <textarea class="form-control" name="alamat_penyewa" id="alamat_penyewa" rows="3" placeholder="Masukkan alamat pengiriman alat" required><?= set_value('alamat_penyewa') ?></textarea>
@@ -47,21 +55,6 @@
                 <input type="date" class="form-control" name="tanggal_penyewaan" id="tanggal_penyewaan" value="<?= set_value('tanggal_penyewaan', date('Y-m-d')) ?>" required>
             </div>
 
-            <div class="mb-3">
-                <label for="harga_alatdisewa" class="form-label fw-bold">Harga Sewa (Rp)</label>
-                <input type="number" class="form-control" name="harga_alatdisewa" id="harga_alatdisewa" value="<?= set_value('harga_alatdisewa') ?>" placeholder="Contoh: 500000" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="status" class="form-label fw-bold">Status</label>
-                <select class="form-control" name="status" id="status" required>
-                    <option value="Booking" <?= set_select('status', 'Booking', true) ?>>Booking</option>
-                    <option value="Disewa" <?= set_select('status', 'Disewa') ?>>Disewa</option>
-                    <option value="Selesai" <?= set_select('status', 'Selesai') ?>>Selesai</option>
-                    <option value="Batal" <?= set_select('status', 'Batal') ?>>Batal</option>
-                </select>
-            </div>
-
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Simpan Data Penyewaan</button>
                 <a href="<?= base_url('admin/penyewaan') ?>" class="btn btn-secondary">Batal</a>
@@ -70,4 +63,37 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Fungsi untuk mengisi harga sewa secara otomatis saat alat dipilih
+        $('#id_alat').change(function() {
+            var id_alat = $(this).val();
+            if (id_alat) {
+                // Panggil rute di controller untuk mengambil detail alat
+                $.ajax({
+                    url: '<?= base_url('admin/penyewaan/get-alat-detail') ?>/' + id_alat,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        // Isi nilai harga sewa ke dalam input
+                        if(data && data.harga_sewa) {
+                            $('#harga_alatdisewa').val(data.harga_sewa);
+                        } else {
+                            $('#harga_alatdisewa').val(''); // Kosongkan jika tidak ada harga
+                        }
+                    },
+                    error: function() {
+                         $('#harga_alatdisewa').val('');
+                         alert('Gagal mengambil detail harga alat.');
+                    }
+                });
+            } else {
+                // Kosongkan harga jika tidak ada alat yang dipilih
+                $('#harga_alatdisewa').val('');
+                $('#harga_alatdisewa').attr('placeholder', 'Pilih alat untuk melihat harga');
+            }
+        });
+    });
+</script>
 <?= $this->endSection() ?>

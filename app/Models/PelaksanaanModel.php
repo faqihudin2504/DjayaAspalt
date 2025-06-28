@@ -8,14 +8,9 @@ class PelaksanaanModel extends Model
 {
     protected $table            = 'pelaksanaan';
     protected $primaryKey       = 'id_pelaksanaan';
-    protected $useAutoIncrement = false;
-    protected $allowedFields    = [
-        'id_pelaksanaan',
-        'id_pelanggan', 
-        'tanggal_pelaksanaan',
-        'alamat_pelaksanaan', 
-        'waktu_pengerjaan'
-    ];
+    protected $useAutoIncrement = false; // <-- WAJIB
+    protected $returnType       = 'array';
+    protected $allowedFields    = [ 'id_pelaksanaan', 'id_pelanggan', 'tanggal_pelaksanaan', 'alamat_pelaksanaan', 'waktu_pengerjaan' ];
 
     protected $useTimestamps = false;
 

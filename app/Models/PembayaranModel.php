@@ -4,25 +4,13 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PembayaranModel extends Model
+class PengembalianModel extends Model
 {
-    protected $table            = 'pembayaran';
-    protected $primaryKey       = 'id_bayar';
-    protected $useAutoIncrement = false;
+    protected $table            = 'pengembalian';
+    protected $primaryKey       = 'id_kembali';
+    protected $useAutoIncrement = false; // <-- WAJIB
     protected $returnType       = 'array';
-
-    /**
-     * Disesuaikan 100% dengan screenshot struktur tabel database Anda.
-     */
-    protected $allowedFields    = [
-        'id_bayar',
-        'id_pesanan',
-        'id_sewa',
-        'tanggal_pembayaran',
-        'metode_pembayaran',
-        'no_rekening',
-        'total_harga'
-    ];
+    protected $allowedFields    = [ 'id_kembali', 'id_sewa', 'denda_kembali', 'tanggal_pengembalian' ];
 
     /**
      * Mengambil data pembayaran dengan detail nama pelanggan yang benar.
