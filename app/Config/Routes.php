@@ -24,31 +24,30 @@ $routes->get('artikel', 'Pages::artikel');
 $routes->get('bantuan', 'Pages::bantuan');
 $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
 
-
 // ===================================================================
-// RUTE HALAMAN ADMIN (SESUAI REVISI DOSEN)
+// RUTE HALAMAN ADMIN
 // ===================================================================
-$routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
+    $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     // Dashboard Admin
     $routes->get('/', 'Admin::index', ['as' => 'admin_dashboard']);
 
-    // 1. Pendaftaran & Manajemen Pelanggan
+    // 1. Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
     $routes->get('pelanggan/tambah', 'Admin::tambahPelanggan');
     $routes->post('pelanggan/simpan', 'Admin::simpanPelanggan');
     $routes->get('pelanggan/edit/(:any)', 'Admin::editPelanggan/$1');
     $routes->post('pelanggan/update/(:any)', 'Admin::updatePelanggan/$1');
     $routes->get('pelanggan/hapus/(:any)', 'Admin::hapusPelanggan/$1');
+    
+    // 2. Survey & Pelaksanaan (Dikembalikan)
+    $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
+    $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
+    $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
+    $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
+    $routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
+    $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
 
-    // 2. Survey Lokasi
-    $routes->get('survey', 'Admin::dataSurvey');
-    $routes->get('survey/tambah', 'Admin::tambahSurvey');
-    $routes->post('survey/simpan', 'Admin::simpanSurvey');
-    $routes->get('survey/edit/(:any)', 'Admin::editSurvey/$1');
-    $routes->post('survey/update/(:any)', 'Admin::updateSurvey/$1');
-    $routes->get('survey/hapus/(:any)', 'Admin::hapusSurvey/$1');
-
-    // 3. Pemesanan (Jasa/Paket)
+    // 3. Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');
     $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
     $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
@@ -56,7 +55,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('pemesanan/update/(:any)', 'Admin::updatePemesanan/$1');
     $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1');
 
-    // 4. Manajemen Alat (Cek Alat)
+    // 4. Alat
     $routes->get('alat', 'Admin::dataAlat');
     $routes->get('alat/tambah', 'Admin::tambahAlat');
     $routes->post('alat/simpan', 'Admin::simpanAlat');
@@ -71,7 +70,10 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('penyewaan/edit/(:any)', 'Admin::editPenyewaan/$1');
     $routes->post('penyewaan/update/(:any)', 'Admin::updatePenyewaan/$1');
     $routes->get('penyewaan/hapus/(:any)', 'Admin::hapusPenyewaan/$1');
-    $routes->get('penyewaan/get-alat-detail/(:any)', 'Admin::getAlatDetail/$1'); // <-- Rute untuk otomatisasi harga
+    $routes->get('penyewaan/get-alat-detail/(:any)', 'Admin::getAlatDetail/$1');
+
+    // Redirect untuk menu Pembayaran lama
+    $routes->addRedirect('pembayaran', 'admin/pembayaran/pemesanan');
 
     // 6. Pembayaran Pemesanan (Tanpa Hapus)
     $routes->get('pembayaran/pemesanan', 'Admin::dataPembayaranPemesanan');
@@ -98,8 +100,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('profile/update', 'Admin::updateAdminProfile');
 });
 
+
 // ===================================================================
-// RUTE HALAMAN CUSTOMER (TIDAK BERUBAH)
+// RUTE HALAMAN CUSTOMER
 // ===================================================================
 $routes->group('', ['filter' => 'auth:customer'], function($routes) {
     // Profil

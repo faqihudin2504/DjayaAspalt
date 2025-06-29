@@ -59,18 +59,49 @@ class Admin extends BaseController
     }
 
     public function simpanPelanggan()
-    {
-        $model = new PelangganModel();
-        $data = $this->request->getPost();
-        $prefix = substr(strtoupper($data['nama_lengkap']), 0, 1);
-        $data['id_pelanggan'] = $prefix . date('dmyHis');
-        if (empty($data['id_namasewa'])) {
-            $data['id_survey'] = 'SURVEY' . date('dmyHis');
-        }
-        $model->save($data);
-        session()->setFlashdata('success', 'Data pelanggan berhasil ditambahkan.');
-        return redirect()->to('admin/pelanggan');
+{
+    // Validasi dasar
+    $rules = [
+        'tipe_transaksi' => 'required|in_list[SURVEY,SEWA]',
+        'nama_lengkap' => 'required',
+        'no_telpon' => 'required',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+
+    $model = new PelangganModel();
+    $data = $this->request->getPost();
+
+    // 1. Ambil tipe transaksi dari dropdown ('SURVEY' atau 'SEWA')
+    $tipeTransaksi = $data['tipe_transaksi'];
+    
+    // 2. Buat ID Pelanggan (logika lama Anda, sudah bagus)
+    $prefix = substr(strtoupper($data['nama_lengkap']), 0, 1);
+    $data['id_pelanggan'] = $prefix . date('dmyHis');
+
+    // 3. Panggil fungsi di model untuk buat ID otomatis
+    $generatedId = $model->generateTransactionalId($tipeTransaksi);
+
+    // 4. Masukkan ID otomatis ke kolom yang sesuai
+    if ($tipeTransaksi === 'SEWA') {
+        $data['id_namasewa'] = $generatedId;
+        $data['id_survey'] = '-'; // Isi kolom survey dengan placeholder
+    } else { // SURVEY
+        $data['id_survey'] = $generatedId;
+        $data['id_namasewa'] = '-'; // Isi kolom sewa dengan placeholder
+    }
+
+    // Hapus 'tipe_transaksi' dari array agar tidak ikut disimpan ke DB
+    unset($data['tipe_transaksi']);
+
+    // 5. Simpan ke database
+    $model->save($data);
+
+    session()->setFlashdata('success', 'Data pelanggan baru untuk ' . $tipeTransaksi . ' berhasil ditambahkan.');
+    return redirect()->to('admin/pelanggan');
+}
 
     public function editPelanggan($id)
     {
