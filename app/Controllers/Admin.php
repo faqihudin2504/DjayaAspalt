@@ -358,79 +358,72 @@ class Admin extends BaseController
         return view('admin/penyewaan', $data);
     }
 
-   public function tambahPenyewaan()
+    public function tambahPenyewaan()
     {
-        // Ganti UserModel dengan PelangganModel
         $pelangganModel = new PelangganModel();
         $alatModel = new AlatModel();
 
         $data = [
-            'page_title' => 'Tambah Penyewaan Baru',
-            // Ambil pelanggan yang kolom id_namasewa-nya TIDAK kosong
-            'pelanggan_list' => $pelangganModel->where('id_namasewa !=', '')->findAll(),
-            'alat_list' => $alatModel->where('cek_alat', 'Tersedia')->findAll()
+            'page_title' => 'Tambah Data Penyewaan Baru',
+            // Ambil pelanggan yang mendaftar untuk 'Sewa'
+            'pelanggan_list' => $pelangganModel->where('id_namasewa IS NOT NULL')->where('id_namasewa !=', '')->findAll(),
+            // Ambil HANYA alat yang stoknya > 0 DAN statusnya 'Tersedia'
+            'alat_list' => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
         ];
         
         return view('admin/tambah_penyewaan', $data);
     }
-
+    
     public function simpanPenyewaan()
     {
-        // Siapkan semua model yang dibutuhkan
         $penyewaanModel = new PenyewaanModel();
         $alatModel = new AlatModel();
         $pelangganModel = new PelangganModel();
 
-        // Ambil ID dari form
         $id_alat = $this->request->getPost('id_alat');
         $id_pelanggan = $this->request->getPost('id_pelanggan');
         
-        // --- BLOK VALIDASI BARU ---
-        // Cari data pendukung berdasarkan ID dari form
+        // --- VALIDASI SEBELUM SIMPAN ---
+        if (empty($id_alat) || empty($id_pelanggan)) {
+            return redirect()->back()->withInput()->with('error', 'Gagal: Pelanggan dan Alat wajib dipilih.');
+        }
+        
         $alat = $alatModel->find($id_alat);
         $pelanggan = $pelangganModel->find($id_pelanggan);
 
-        // Cek apakah data alat dan pelanggan ditemukan.
         if (!$alat) {
-            session()->setFlashdata('error', 'Gagal menyimpan: Data Alat yang dipilih tidak ditemukan atau tidak valid.');
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('error', 'Gagal: Data Alat tidak ditemukan di database.');
         }
         if (!$pelanggan) {
-            session()->setFlashdata('error', 'Gagal menyimpan: Data Pelanggan yang dipilih tidak ditemukan atau tidak valid.');
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('error', 'Gagal: Data Pelanggan tidak ditemukan di database.');
         }
-        // --- AKHIR BLOK VALIDASI ---
+        // --- AKHIR VALIDASI ---
 
-        // Buat ID Sewa yang baru
         $idSewaBaru = 'SEWA' . date('ymdHis');
 
-        // Susun data untuk disimpan (Sekarang kita yakin $alat dan $pelanggan ada isinya)
         $data = [
             'id_sewa' => $idSewaBaru,
             'id_namasewa' => $id_pelanggan,
             'nama_penyewa' => $pelanggan['nama_lengkap'],
             'id_alat' => $id_alat,
             'nama_alatdisewa' => $alat['nama_alat'],
-            'harga_alatdisewa' => $alat['harga_sewa'],
+            'harga_alatdisewa' => $this->request->getPost('harga_alatdisewa'), // Ambil dari form
             'tanggal_penyewaan' => $this->request->getPost('tanggal_penyewaan'),
             'alamat_penyewa' => $this->request->getPost('alamat_penyewa'),
             'status' => 'Disewa'
         ];
         
-        // Cek apakah proses save berhasil
         if ($penyewaanModel->save($data)) {
-            // Jika berhasil, update status alat
-            $alatModel->update($id_alat, ['cek_alat' => 'Disewa']);
+            // Jika berhasil, kurangi stok alat & ubah status jika stok jadi 0
+            $stokBaru = $alat['stok_alat'] - 1;
+            $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa'; // Jika stok habis, langsung set jadi Disewa/Tidak Tersedia
+            $alatModel->update($id_alat, ['stok_alat' => $stokBaru, 'cek_alat' => $statusAlatBaru]);
             
-            // Buat pesan sukses
-            session()->setFlashdata('success', 'Data penyewaan dengan ID ' . $idSewaBaru . ' berhasil ditambahkan.');
+            session()->setFlashdata('success', 'Data penyewaan ' . $idSewaBaru . ' berhasil ditambahkan.');
         } else {
-            // Jika gagal, berikan pesan error
-            session()->setFlashdata('error', 'Gagal menyimpan data penyewaan ke database.');
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data ke database.');
         }
         
-        // Arahkan kembali ke halaman daftar penyewaan
         return redirect()->to('admin/penyewaan');
     }
     
