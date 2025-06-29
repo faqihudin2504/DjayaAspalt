@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -31,6 +31,10 @@
                             <td><strong>Nomor Telepon</strong></td>
                             <td>: <?= esc($pelanggan['no_telpon']) ?></td>
                         </tr>
+                        <tr>
+                            <td><strong>Email</strong></td>
+                            <td>: <?= esc($pelanggan['email']) ?></td>
+                        </tr>
                     </table>
                 </div>
                 <div class="col-md-6">
@@ -49,7 +53,7 @@
                             <td>: <?= esc(date('d F Y', strtotime($pelanggan['tanggal_survey']))) ?></td>
                         </tr>
                         <tr>
-                            <td class="align-top"><strong>Lokasi</strong></td>
+                            <td class="align-top"><strong>Alamat Lengkap</strong></td>
                             <td class="align-top">: <?= esc($pelanggan['lokasi_survey']) ?></td>
                         </tr>
                     </table>

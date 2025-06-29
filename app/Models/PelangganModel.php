@@ -16,6 +16,7 @@ class PelangganModel extends Model
         'id_namasewa',
         'nama_lengkap',
         'no_telpon',
+        'email',
         'tanggal_survey',
         'lokasi_survey'
     ];

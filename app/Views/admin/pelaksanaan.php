@@ -28,6 +28,7 @@
         <div class="card-body empty-state">
             <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
             <h5 class="text-danger">Tidak Ada Data Pelaksanaan</h5>
+            <p>Silakan klik tombol "Tambahkan Data Pelaksanaan" untuk memulai.</p>
         </div>
     </div>
 <?php else: ?>

@@ -59,22 +59,17 @@ class Admin extends BaseController
     }
 
     public function simpanPelanggan()
-    {
+{
     $model = new PelangganModel();
     $data = $this->request->getPost();
 
-    // Buat ID Pelanggan
     $prefix = substr(strtoupper($data['nama_lengkap']), 0, 1);
     $data['id_pelanggan'] = $prefix . date('dmyHis');
 
-    // Ambil nilai dari dropdown 'tujuan'
     $tujuan = $this->request->getPost('tujuan');
-
-    // Kosongkan dulu kedua ID
     $data['id_survey'] = null;
     $data['id_namasewa'] = null;
 
-    // Logika baru berdasarkan pilihan tujuan
     if ($tujuan === 'survey') {
         $data['id_survey'] = 'SURVEY' . date('dmyHis');
         session()->setFlashdata('success', 'Data pelanggan baru untuk SURVEY berhasil ditambahkan.');
@@ -83,9 +78,11 @@ class Admin extends BaseController
         session()->setFlashdata('success', 'Data pelanggan baru untuk SEWA berhasil ditambahkan.');
     }
 
-    // Hapus 'tujuan' dari array data karena tidak ada di tabel database
-    unset($data['tujuan']);
+    // Mengatur tanggal pendaftaran secara otomatis dari waktu server
+    // Kolom database 'tanggal_survey' sekarang kita fungsikan sebagai 'tanggal_daftar'
+    $data['tanggal_survey'] = date('Y-m-d'); // Menyimpan tanggal saja (YYYY-MM-DD)
 
+    unset($data['tujuan']);
     $model->save($data);
 
     return redirect()->to('admin/pelanggan');
@@ -100,10 +97,15 @@ class Admin extends BaseController
 
     public function updatePelanggan($id)
     {
-        $model = new PelangganModel();
-        $model->update($id, $this->request->getPost());
-        session()->setFlashdata('success', 'Data pelanggan berhasil diperbarui.');
-        return redirect()->to('admin/pelanggan');
+    $model = new PelangganModel();
+    $data = $this->request->getPost();
+    
+    // Hapus tanggal dari data yang diupdate agar tidak bisa diubah
+    unset($data['tanggal_survey']);
+
+    $model->update($id, $data);
+    session()->setFlashdata('success', 'Data pelanggan berhasil diperbarui.');
+    return redirect()->to('admin/pelanggan');
     }
 
     public function hapusPelanggan($id)

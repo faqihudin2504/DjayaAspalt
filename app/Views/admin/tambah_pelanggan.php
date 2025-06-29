@@ -27,13 +27,14 @@
                 <label for="no_telpon" class="form-label">No. Telepon</label>
                 <input type="tel" class="form-control" id="no_telpon" name="no_telpon" required placeholder="Contoh: 081234567890">
             </div>
+
             <div class="mb-3">
-                <label for="tanggal_survey" class="form-label">Tanggal Survey / Mulai Sewa</label>
-                <input type="date" class="form-control" id="tanggal_survey" name="tanggal_survey" value="<?= date('Y-m-d') ?>" required>
+                <label for="email" class="form-label">Alamat Email</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="Contoh: pelanggan@email.com">
             </div>
             <div class="mb-3">
-                <label for="lokasi_survey" class="form-label">Lokasi Survey / Pengiriman</label>
-                <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required placeholder="Masukkan alamat lengkap"></textarea>
+                <label for="lokasi_survey" class="form-label">Alamat Lengkap</label>
+                <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required placeholder="Masukkan alamat lengkap pelanggan"></textarea>
             </div>
 
             <div class="mt-4">

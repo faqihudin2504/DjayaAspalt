@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -17,11 +17,15 @@
                 <input type="text" class="form-control" id="no_telpon" name="no_telpon" value="<?= esc($pelanggan['no_telpon']) ?>" required>
             </div>
             <div class="mb-3">
-                <label for="tanggal_survey" class="form-label">Tanggal Survey</label>
-                <input type="date" class="form-control" id="tanggal_survey" name="tanggal_survey" value="<?= esc($pelanggan['tanggal_survey']) ?>" required>
+                <label for="email" class="form-label">Alamat Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?= esc($pelanggan['email']) ?>" required>
             </div>
-            <div class="mb-3">
-                <label for="lokasi_survey" class="form-label">Lokasi Survey / Pengiriman</label>
+           <div class="mb-3">
+                <label for="tanggal_survey" class="form-label">Tanggal Daftar</label>
+                <input type="text" class="form-control" id="tanggal_survey" name="tanggal_survey" value="<?= date('d F Y', strtotime($pelanggan['tanggal_survey'])) ?>" readonly>
+            </div>
+             <div class="mb-3">
+                <label for="lokasi_survey" class="form-label">Alamat Lengkap</label>
                 <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required><?= esc($pelanggan['lokasi_survey']) ?></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
