@@ -15,10 +15,12 @@
                     <option value="">-- Pilih Nama Pelanggan --</option>
                     <?php if (!empty($pelanggan_list)): ?>
                         <?php foreach($pelanggan_list as $pelanggan): ?>
-                            <option value="<?= esc($pelanggan['id']) ?>" <?= set_select('id_pelanggan', $pelanggan['id']) ?>>
-                                <?= esc($pelanggan['nama_lengkap']) ?>
+                            <option value="<?= esc($pelanggan['id_pelanggan']) ?>">
+                                <?= esc($pelanggan['nama_lengkap']) ?> (ID: <?= esc($pelanggan['id_pelanggan']) ?>)
                             </option>
                         <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="" disabled>Tidak ada pelanggan tujuan sewa yang tersedia.</option>
                     <?php endif; ?>
                 </select>
             </div>

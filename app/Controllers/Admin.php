@@ -361,34 +361,49 @@ class Admin extends BaseController
         return view('admin/penyewaan', $data);
     }
 
-    public function tambahPenyewaan()
+   public function tambahPenyewaan()
     {
-        $userModel = new UserModel();
+        // Ganti UserModel dengan PelangganModel
+        $pelangganModel = new PelangganModel();
         $alatModel = new AlatModel();
+
         $data = [
             'page_title' => 'Tambah Penyewaan Baru',
-            'pelanggan_list' => $userModel->where('role', 'customer')->findAll(),
+            // Ambil pelanggan yang kolom id_namasewa-nya TIDAK kosong
+            'pelanggan_list' => $pelangganModel->where('id_namasewa !=', '')->findAll(),
             'alat_list' => $alatModel->where('cek_alat', 'Tersedia')->findAll()
         ];
+        
         return view('admin/tambah_penyewaan', $data);
     }
 
     public function simpanPenyewaan()
     {
+        // Siapkan semua model yang dibutuhkan
         $penyewaanModel = new PenyewaanModel();
         $alatModel = new AlatModel();
-        $userModel = new UserModel();
+        $pelangganModel = new PelangganModel(); // Ganti dari UserModel ke PelangganModel
 
+        // Ambil ID dari form
         $id_alat = $this->request->getPost('id_alat');
         $id_pelanggan = $this->request->getPost('id_pelanggan');
         
+        // Cari data menggunakan model yang benar
         $alat = $alatModel->find($id_alat);
-        $pelanggan = $userModel->find($id_pelanggan);
+        $pelanggan = $pelangganModel->find($id_pelanggan); // <-- INI PERUBAHANNYA
 
+        // Cek jika pelanggan ditemukan untuk menghindari error
+        if (!$pelanggan) {
+            // Jika karena suatu hal pelanggan tidak ditemukan, kembali dengan pesan error
+            session()->setFlashdata('error', 'Data pelanggan tidak valid atau tidak ditemukan.');
+            return redirect()->back()->withInput();
+        }
+
+        // Susun data untuk disimpan
         $data = [
             'id_sewa' => 'SEWA' . date('ymdHis'),
             'id_pelanggan' => $id_pelanggan,
-            'nama_penyewa' => $pelanggan['nama_lengkap'],
+            'nama_penyewa' => $pelanggan['nama_lengkap'], // Sekarang ini tidak akan error
             'id_alat' => $id_alat,
             'nama_alat' => $alat['nama_alat'],
             'harga_alatdisewa' => $alat['harga_sewa'],
