@@ -147,9 +147,29 @@ class Admin extends BaseController
     {
         $model = new PelaksanaanModel();
         $data = $this->request->getPost();
-        $data['id_pelaksanaan'] = 'PLK' . date('dmyHis');
+
+        // 1. Ambil tanggal dari form input
+        $tanggalInput = $this->request->getPost('tanggal_pelaksanaan');
+        
+        // 2. Ambil hanya bagian tanggal (YYYY-MM-DD) untuk query
+        $tanggalUntukQuery = date('Y-m-d', strtotime($tanggalInput));
+
+        // 3. Hitung berapa banyak pelaksanaan yang sudah ada di tanggal tersebut
+        $jumlahHariIni = $model->where('DATE(tanggal_pelaksanaan)', $tanggalUntukQuery)->countAllResults();
+
+        // 4. Buat nomor urut berikutnya (jumlah + 1) dengan format 2 digit (01, 02, dst)
+        $nomorUrut = str_pad($jumlahHariIni + 1, 2, '0', STR_PAD_LEFT);
+        
+        // 5. Format tanggal menjadi ddmmyyyy sesuai Figma
+        $formatTanggalFigma = date('dmY', strtotime($tanggalInput));
+
+        // 6. Gabungkan semua menjadi ID baru
+        $data['id_pelaksanaan'] = 'Pelaksanaan' . $formatTanggalFigma . $nomorUrut;
+
+        // Simpan data ke database
         $model->save($data);
-        session()->setFlashdata('success', 'Data pelaksanaan berhasil ditambahkan.');
+        session()->setFlashdata('success', 'Data pelaksanaan dengan ID baru berhasil ditambahkan.');
+
         return redirect()->to('admin/pelaksanaan');
     }
 

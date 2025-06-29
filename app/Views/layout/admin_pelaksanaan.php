@@ -21,7 +21,7 @@
         .sidebar-header a { text-decoration: none; color: black; display: flex; align-items: center; }
         .sidebar-header img { width: 32px; height: 32px; margin-right: 10px; }
         .sidebar-header h5 { margin: 0; font-weight: 600; }
-        .sidebar-menu { flex-grow: 1; } /* Dibiarkan untuk menjaga struktur */
+        .sidebar-menu { flex-grow: 1; }
         .admin-main-content-wrapper { margin-left: 250px; width: calc(100% - 250px); }
         .admin-topbar {
             background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e0e0e0;
@@ -57,5 +57,8 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
