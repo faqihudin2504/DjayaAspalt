@@ -6,7 +6,7 @@
     .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
     .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
     .table tbody td { text-align: center; vertical-align: middle; }
-    .action-buttons .btn { color: white !important; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; border: none; }
+    .action-buttons .btn { margin: 0 2px; }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -36,20 +36,28 @@
             <table class="table table-bordered table-striped mb-0">
                 <thead>
                     <tr>
-                        <th>ID Pelanggan</th><th>ID Survey</th><th>ID Sewa</th><th>Nama Lengkap</th>
-                        <th>No Telpon</th><th>Tgl Survey</th><th>Lokasi</th><th>Aksi</th>
+                        <th>ID Pelanggan</th>
+                        <th>Nama Lengkap</th>
+                        <th>Tujuan</th>
+                        <th>Tanggal Daftar</th>
+                        <th style="width: 200px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td><?= esc($item['id_pelanggan']) ?></td>
-                            <td><?= esc($item['id_survey']) ?: '-' ?></td>
-                            <td><?= esc($item['id_namasewa']) ?: '-' ?></td>
                             <td><?= esc($item['nama_lengkap']) ?></td>
-                            <td><?= esc($item['no_telpon']) ?></td>
-                            <td><?= date('d-m-Y', strtotime($item['tanggal_survey'])) ?></td>
-                            <td><?= esc($item['lokasi_survey']) ?></td>
+                            <td>
+                                <?php if (!empty($item['id_survey'])): ?>
+                                    <span class="badge bg-info">Survey</span>
+                                <?php elseif (!empty($item['id_namasewa'])): ?>
+                                    <span class="badge bg-warning">Sewa</span>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
+                            <td><?= date('d M Y', strtotime($item['tanggal_survey'])) ?></td>
                             <td class="action-buttons">
                                 <a href="<?= base_url('admin/pelanggan/view/' . $item['id_pelanggan']) ?>" class="btn btn-dark btn-sm" title="Lihat Detail">View</a>
                                 <a href="<?= base_url('admin/pelanggan/edit/' . $item['id_pelanggan']) ?>" class="btn btn-warning btn-sm" title="Edit Data">Edit</a>

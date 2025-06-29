@@ -27,17 +27,18 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
 // ===================================================================
 // RUTE HALAMAN ADMIN
 // ===================================================================
-    $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
+    $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     // Dashboard Admin
     $routes->get('/', 'Admin::index', ['as' => 'admin_dashboard']);
 
-    // 1. Pelanggan
+     // 1. Pendaftaran & Manajemen Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
     $routes->get('pelanggan/tambah', 'Admin::tambahPelanggan');
     $routes->post('pelanggan/simpan', 'Admin::simpanPelanggan');
     $routes->get('pelanggan/edit/(:any)', 'Admin::editPelanggan/$1');
     $routes->post('pelanggan/update/(:any)', 'Admin::updatePelanggan/$1');
     $routes->get('pelanggan/hapus/(:any)', 'Admin::hapusPelanggan/$1');
+    $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
     
     // 2. Survey & Pelaksanaan (Dikembalikan)
     $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
