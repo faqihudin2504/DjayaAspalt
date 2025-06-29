@@ -182,12 +182,39 @@ class Admin extends BaseController
     }
 
     public function updatePelaksanaan($id)
-    {
-        $model = new PelaksanaanModel();
-        $model->update($id, $this->request->getPost());
-        session()->setFlashdata('success', 'Data pelaksanaan berhasil diperbarui.');
-        return redirect()->to('admin/pelaksanaan');
+{
+    // 1. Siapkan kedua model yang akan digunakan
+    $pelaksanaanModel = new PelaksanaanModel();
+    $pemesananModel = new PemesananModel();
+
+    // 2. Ambil semua data dari form yang disubmit
+    $data = $this->request->getPost();
+
+    // 3. Lakukan update pada tabel 'pelaksanaan' seperti biasa
+    if ($pelaksanaanModel->update($id, $data)) {
+        
+        // --- PROSES SINKRONISASI DIMULAI DI SINI ---
+        
+        // 4. Ambil tanggal baru yang diinput dari form
+        $tanggalBaru = $data['tanggal_pelaksanaan'];
+
+        // 5. Cari semua baris di tabel 'pemesanan' yang memiliki 'id_pelaksanaan' yang sama,
+        //    lalu update kolom 'tanggal_pemesanan' mereka dengan tanggal baru.
+        $pemesananModel->where('id_pelaksanaan', $id)
+                       ->set('tanggal_pemesanan', $tanggalBaru)
+                       ->update();
+
+        // 6. Set pesan sukses
+        session()->setFlashdata('success', 'Data pelaksanaan dan pemesanan terkait berhasil disinkronkan.');
+
+    } else {
+        // Jika update pertama gagal, set pesan error
+        session()->setFlashdata('error', 'Gagal memperbarui data pelaksanaan.');
     }
+
+    // 7. Kembali ke halaman daftar pelaksanaan
+    return redirect()->to('admin/pelaksanaan');
+}
 
     public function hapusPelaksanaan($id)
     {
@@ -265,16 +292,23 @@ class Admin extends BaseController
     }
 
     public function simpanAlat()
-    {
-        $rules = ['id_alat' => 'required|is_unique[alat.id_alat]', 'nama_alat' => 'required', 'stok_alat' => 'required|numeric', 'harga_sewa' => 'required|numeric'];
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-        $model = new AlatModel();
-        $model->save($this->request->getPost());
-        session()->setFlashdata('success', 'Data alat berhasil ditambahkan.');
-        return redirect()->to('/admin/alat');
+{
+    // ... (kode validasi Anda)
+
+    $model = new AlatModel();
+    $data = $this->request->getPost();
+
+    $gambar = $this->request->getFile('gambar_alat');
+    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+        $newName = $gambar->getRandomName();
+        $gambar->move(FCPATH . 'uploads/alat', $newName); // Pindahkan ke public/uploads/alat
+        $data['gambar_alat'] = $newName;
     }
+
+    $model->save($data);
+    session()->setFlashdata('success', 'Data alat berhasil ditambahkan.');
+    return redirect()->to('/admin/alat');
+}
 
     public function editAlat($id)
     {
@@ -285,16 +319,29 @@ class Admin extends BaseController
     }
 
     public function updateAlat($id)
-    {
-        $rules = ['id_alat'   => 'required|is_unique[alat.id_alat,id_alat,' . $id . ']', 'nama_alat' => 'required', 'stok_alat' => 'required|numeric', 'harga_sewa' => 'required|numeric'];
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+{
+    // ... (kode validasi Anda)
+
+    $model = new AlatModel();
+    $data = $this->request->getPost();
+
+    $gambar = $this->request->getFile('gambar_alat');
+    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+        // Hapus gambar lama jika ada
+        $alatLama = $model->find($id);
+        if ($alatLama && $alatLama['gambar_alat'] && file_exists(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat'])) {
+            unlink(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat']);
         }
-        $model = new AlatModel();
-        $model->update($id, $this->request->getPost());
-        session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
-        return redirect()->to('/admin/alat');
+
+        $newName = $gambar->getRandomName();
+        $gambar->move(FCPATH . 'uploads/alat', $newName);
+        $data['gambar_alat'] = $newName;
     }
+
+    $model->update($id, $data);
+    session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
+    return redirect()->to('/admin/alat');
+}
 
     public function hapusAlat($id)
     {
@@ -552,5 +599,15 @@ class Admin extends BaseController
         }
         session()->setFlashdata('success', 'Profil berhasil diperbarui.');
         return redirect()->to('admin/profile');
+    }
+
+    public function cekStokAlat()
+    {
+        $model = new AlatModel();
+        $data = [
+            'page_title' => 'Cek Stok Alat',
+            'alat_list'  => $model->findAll()
+        ];
+        return view('admin/cek_stok_alat', $data); // Menggunakan view yang sudah ada
     }
 }

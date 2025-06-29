@@ -30,6 +30,7 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     // Dashboard Admin
     $routes->get('/', 'Admin::index', ['as' => 'admin_dashboard']);
+    $routes->get('cek-stok', 'Admin::cekStokAlat');
 
      // 1. Pendaftaran & Manajemen Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');

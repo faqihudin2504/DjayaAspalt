@@ -1,49 +1,23 @@
 <?= $this->extend('layout/admin_cek_main') ?>
 <?= $this->section('content') ?>
 <div class="row">
-    <div class="col-md-3 col-6 mb-4">
-        <div class="admin-card h-100">
-            <img src="<?= base_url('assets/stok_alat_1.png') ?>" class="img-fluid rounded mb-3">
-            <h6 class="fw-bold">Penggilas Aspal Besar</h6>
-            <p class="mb-2">Stok: 1</p>
-            <div>
-                <button class="btn btn-success btn-sm">Tambahkan</button>
-                <button class="btn btn-dark btn-sm">Edit</button>
-            </div>
+    <?php if (empty($alat_list)): ?>
+        <div class="col-12 text-center p-5">
+            <h5 class="text-danger">Belum ada data alat.</h5>
         </div>
-    </div>
-    <div class="col-md-3 col-6 mb-4">
-        <div class="admin-card h-100">
-            <img src="<?= base_url('assets/stok_alat_2.png') ?>" class="img-fluid rounded mb-3">
-            <h6 class="fw-bold">Penggilas Aspal Kecil</h6>
-            <p class="mb-2">Stok: 1</p>
-            <div>
-                <button class="btn btn-success btn-sm">Tambahkan</button>
-                <button class="btn btn-dark btn-sm">Edit</button>
+    <?php else: ?>
+        <?php foreach($alat_list as $alat): ?>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="admin-card h-100">
+                    <img src="<?= base_url('uploads/alat/' . ($alat['gambar_alat'] ?: 'default.png')) ?>" class="img-fluid rounded mb-3" style="height: 150px; object-fit: cover;">
+                    <h6 class="fw-bold"><?= esc($alat['nama_alat']) ?></h6>
+                    <p class="mb-2">Stok: <span class="fw-bold fs-5 <?= $alat['stok_alat'] > 0 ? 'text-success' : 'text-danger' ?>"><?= esc($alat['stok_alat']) ?></span></p>
+                    <div>
+                        <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-dark btn-sm">Edit Stok</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6 mb-4">
-        <div class="admin-card h-100">
-            <img src="<?= base_url('assets/stok_alat_3.png') ?>" class="img-fluid rounded mb-3">
-            <h6 class="fw-bold">Alat Penyebar Aspal</h6>
-            <p class="mb-2">Stok: 0</p>
-            <div>
-                <button class="btn btn-success btn-sm">Tambahkan</button>
-                <button class="btn btn-dark btn-sm">Edit</button>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6 mb-4">
-        <div class="admin-card h-100">
-            <img src="<?= base_url('assets/stok_alat_4.png') ?>" class="img-fluid rounded mb-3">
-            <h6 class="fw-bold">Penghampar Aspal</h6>
-            <p class="mb-2">Stok: 2</p>
-            <div>
-                <button class="btn btn-success btn-sm">Tambahkan</button>
-                <button class="btn btn-dark btn-sm">Edit</button>
-            </div>
-        </div>
-    </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 <?= $this->endSection() ?>
