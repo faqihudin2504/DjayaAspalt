@@ -77,10 +77,7 @@ class Admin extends BaseController
         $data['id_namasewa'] = 'SEWA' . date('dmyHis');
         session()->setFlashdata('success', 'Data pelanggan baru untuk SEWA berhasil ditambahkan.');
     }
-
-    // Mengatur tanggal pendaftaran secara otomatis dari waktu server
-    // Kolom database 'tanggal_survey' sekarang kita fungsikan sebagai 'tanggal_daftar'
-    $data['tanggal_survey'] = date('Y-m-d'); // Menyimpan tanggal saja (YYYY-MM-DD)
+    $data['tanggal_survey'] = date('Y-m-d H:i:s'); 
 
     unset($data['tujuan']);
     $model->save($data);
@@ -382,40 +379,58 @@ class Admin extends BaseController
         // Siapkan semua model yang dibutuhkan
         $penyewaanModel = new PenyewaanModel();
         $alatModel = new AlatModel();
-        $pelangganModel = new PelangganModel(); // Ganti dari UserModel ke PelangganModel
+        $pelangganModel = new PelangganModel();
 
         // Ambil ID dari form
         $id_alat = $this->request->getPost('id_alat');
         $id_pelanggan = $this->request->getPost('id_pelanggan');
         
-        // Cari data menggunakan model yang benar
+        // --- BLOK VALIDASI BARU ---
+        // Cari data pendukung berdasarkan ID dari form
         $alat = $alatModel->find($id_alat);
-        $pelanggan = $pelangganModel->find($id_pelanggan); // <-- INI PERUBAHANNYA
+        $pelanggan = $pelangganModel->find($id_pelanggan);
 
-        // Cek jika pelanggan ditemukan untuk menghindari error
-        if (!$pelanggan) {
-            // Jika karena suatu hal pelanggan tidak ditemukan, kembali dengan pesan error
-            session()->setFlashdata('error', 'Data pelanggan tidak valid atau tidak ditemukan.');
+        // Cek apakah data alat dan pelanggan ditemukan.
+        if (!$alat) {
+            session()->setFlashdata('error', 'Gagal menyimpan: Data Alat yang dipilih tidak ditemukan atau tidak valid.');
             return redirect()->back()->withInput();
         }
+        if (!$pelanggan) {
+            session()->setFlashdata('error', 'Gagal menyimpan: Data Pelanggan yang dipilih tidak ditemukan atau tidak valid.');
+            return redirect()->back()->withInput();
+        }
+        // --- AKHIR BLOK VALIDASI ---
 
-        // Susun data untuk disimpan
+        // Buat ID Sewa yang baru
+        $idSewaBaru = 'SEWA' . date('ymdHis');
+
+        // Susun data untuk disimpan (Sekarang kita yakin $alat dan $pelanggan ada isinya)
         $data = [
-            'id_sewa' => 'SEWA' . date('ymdHis'),
-            'id_pelanggan' => $id_pelanggan,
-            'nama_penyewa' => $pelanggan['nama_lengkap'], // Sekarang ini tidak akan error
+            'id_sewa' => $idSewaBaru,
+            'id_namasewa' => $id_pelanggan,
+            'nama_penyewa' => $pelanggan['nama_lengkap'],
             'id_alat' => $id_alat,
-            'nama_alat' => $alat['nama_alat'],
+            'nama_alatdisewa' => $alat['nama_alat'],
             'harga_alatdisewa' => $alat['harga_sewa'],
             'tanggal_penyewaan' => $this->request->getPost('tanggal_penyewaan'),
             'alamat_penyewa' => $this->request->getPost('alamat_penyewa'),
             'status' => 'Disewa'
         ];
         
-        $penyewaanModel->save($data);
-        $alatModel->update($id_alat, ['cek_alat' => 'Disewa']);
+        // Cek apakah proses save berhasil
+        if ($penyewaanModel->save($data)) {
+            // Jika berhasil, update status alat
+            $alatModel->update($id_alat, ['cek_alat' => 'Disewa']);
+            
+            // Buat pesan sukses
+            session()->setFlashdata('success', 'Data penyewaan dengan ID ' . $idSewaBaru . ' berhasil ditambahkan.');
+        } else {
+            // Jika gagal, berikan pesan error
+            session()->setFlashdata('error', 'Gagal menyimpan data penyewaan ke database.');
+            return redirect()->back()->withInput();
+        }
         
-        session()->setFlashdata('success', 'Data penyewaan berhasil ditambahkan.');
+        // Arahkan kembali ke halaman daftar penyewaan
         return redirect()->to('admin/penyewaan');
     }
     
@@ -463,10 +478,10 @@ class Admin extends BaseController
         $model = new PembayaranModel();
         $data = [
             'page_title' => 'Data Pembayaran Pemesanan',
-            'pembayaran_list' => $model->where('id_sewa', null)->findAll(),
+            'pembayaran_list' => $model->getPembayaranDetails('pemesanan'),
             'tipe' => 'pemesanan'
         ];
-        return view('admin/pembayaran_data', $data);
+        return view('admin/pembayaran_data', $data); // Menggunakan view pembayaran_data
     }
     
     public function dataPembayaranPenyewaan()
@@ -474,10 +489,10 @@ class Admin extends BaseController
         $model = new PembayaranModel();
         $data = [
             'page_title' => 'Data Pembayaran Penyewaan',
-            'pembayaran_list' => $model->where('id_pesanan', null)->findAll(),
+            'pembayaran_list' => $model->getPembayaranDetails('penyewaan'),
             'tipe' => 'penyewaan'
         ];
-        return view('admin/pembayaran_data', $data);
+        return view('admin/pembayaran_data', $data); // Menggunakan view pembayaran_data
     }
     
     public function tambahPembayaranPemesanan()
@@ -485,10 +500,10 @@ class Admin extends BaseController
         $pemesananModel = new PemesananModel();
         $data = [
             'page_title' => 'Tambah Pembayaran Pemesanan',
-            'transaksi_list' => $pemesananModel->findAll(), // Tambahkan join jika butuh nama
+            'transaksi_list' => $pemesananModel->getPemesananWithDetails(),
             'tipe' => 'pemesanan'
         ];
-        return view('admin/pembayaran_tambah', $data);
+        return view('admin/pembayaran_tambah', $data); // Menggunakan view pembayaran_tambah
     }
 
     public function tambahPembayaranPenyewaan()
@@ -496,21 +511,39 @@ class Admin extends BaseController
         $penyewaanModel = new PenyewaanModel();
         $data = [
             'page_title' => 'Tambah Pembayaran Penyewaan',
-            'transaksi_list' => $penyewaanModel->whereIn('status', ['Disewa', 'Selesai'])->findAll(),
+            'transaksi_list' => $penyewaanModel->getPenyewaanWithDetails(),
             'tipe' => 'penyewaan'
         ];
-        return view('admin/pembayaran_tambah', $data);
+        return view('admin/pembayaran_tambah', $data); // Menggunakan view pembayaran_tambah
     }
 
     public function simpanPembayaran()
     {
         $model = new PembayaranModel();
         $data = $this->request->getPost();
+        
         $data['id_bayar'] = 'PAY' . date('ymdHis');
+
+        // Logika untuk upload bukti pembayaran
+        $buktiFile = $this->request->getFile('bukti_pembayaran');
+        if ($buktiFile && $buktiFile->isValid() && !$buktiFile->hasMoved()) {
+            $newName = $buktiFile->getRandomName();
+            $buktiFile->move(FCPATH . 'uploads/bukti', $newName);
+            $data['bukti_pembayaran'] = $newName;
+        }
+
         $model->save($data);
+
         session()->setFlashdata('success', 'Data pembayaran berhasil direkam.');
         $redirectUrl = ($this->request->getPost('tipe') === 'penyewaan') ? 'admin/pembayaran/penyewaan' : 'admin/pembayaran/pemesanan';
         return redirect()->to($redirectUrl);
+    }
+
+    public function lihatBukti($id_bayar)
+    {
+        $model = new PembayaranModel();
+        $data['pembayaran'] = $model->find($id_bayar);
+        return view('admin/detail_bukti_pembayaran', $data);
     }
 
     // ===================================================================

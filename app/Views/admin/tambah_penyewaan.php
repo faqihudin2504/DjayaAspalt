@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -28,10 +28,10 @@
             <div class="mb-3">
                 <label for="id_alat" class="form-label fw-bold">Pilih Alat</label>
                 <select class="form-control" name="id_alat" id="id_alat" required>
-                    <option value="">-- Pilih Alat yang Disewa --</option>
+                    <option value="" data-harga="">-- Pilih Alat yang Disewa --</option>
                     <?php if (!empty($alat_list)): ?>
                         <?php foreach($alat_list as $alat): ?>
-                            <option value="<?= esc($alat['id_alat']) ?>" <?= set_select('id_alat', $alat['id_alat']) ?>>
+                            <option value="<?= esc($alat['id_alat']) ?>" data-harga="<?= esc($alat['harga_sewa']) ?>">
                                 <?= esc($alat['nama_alat']) ?> (Stok: <?= esc($alat['stok_alat']) ?>)
                             </option>
                         <?php endforeach; ?>
@@ -65,37 +65,16 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Fungsi untuk mengisi harga sewa secara otomatis saat alat dipilih
-        $('#id_alat').change(function() {
-            var id_alat = $(this).val();
-            if (id_alat) {
-                // Panggil rute di controller untuk mengambil detail alat
-                $.ajax({
-                    url: '<?= base_url('admin/penyewaan/get-alat-detail') ?>/' + id_alat,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        // Isi nilai harga sewa ke dalam input
-                        if(data && data.harga_sewa) {
-                            $('#harga_alatdisewa').val(data.harga_sewa);
-                        } else {
-                            $('#harga_alatdisewa').val(''); // Kosongkan jika tidak ada harga
-                        }
-                    },
-                    error: function() {
-                         $('#harga_alatdisewa').val('');
-                         alert('Gagal mengambil detail harga alat.');
-                    }
-                });
-            } else {
-                // Kosongkan harga jika tidak ada alat yang dipilih
-                $('#harga_alatdisewa').val('');
-                $('#harga_alatdisewa').attr('placeholder', 'Pilih alat untuk melihat harga');
-            }
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const alatDropdown = document.getElementById('id_alat');
+    const hargaInput = document.getElementById('harga_alatdisewa');
+
+    alatDropdown.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const harga = selectedOption.getAttribute('data-harga');
+        hargaInput.value = harga || '';
     });
+});
 </script>
 <?= $this->endSection() ?>

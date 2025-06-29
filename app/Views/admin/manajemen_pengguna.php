@@ -57,7 +57,7 @@
                                     -
                                 <?php endif; ?>
                             </td>
-                            <td><?= date('d M Y', strtotime($item['tanggal_survey'])) ?></td>
+                            <td><?= date('d M Y, H:i', strtotime($item['tanggal_survey'])) ?></td>
                             <td class="action-buttons">
                                 <a href="<?= base_url('admin/pelanggan/view/' . $item['id_pelanggan']) ?>" class="btn btn-dark btn-sm" title="Lihat Detail">View</a>
                                 <a href="<?= base_url('admin/pelanggan/edit/' . $item['id_pelanggan']) ?>" class="btn btn-warning btn-sm" title="Edit Data">Edit</a>

@@ -12,7 +12,7 @@ class PenyewaanModel extends Model
     protected $returnType       = 'array';
     protected $allowedFields    = [
         'id_sewa',
-        'id_alat',
+        'id_alatdisewa',
         'id_namasewa', 
         'nama_penyewa',
         'harga_alatdisewa',
