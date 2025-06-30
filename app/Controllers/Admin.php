@@ -705,10 +705,8 @@ class Admin extends BaseController
 
     public function cek_paket()
     {
-        $model = new PaketModel(); // Memanggil model Paket
         $data = [
-            'page_title' => 'Daftar Paket Pengaspalan',
-            'paket_list' => $model->findAll() // Mengambil semua data dari tabel paket
+            'page_title' => 'Cek Ketersediaan Paket'
         ];
         return view('admin/cek_paket', $data);
     }
@@ -725,10 +723,13 @@ class Admin extends BaseController
 
     public function cek_pekerja()
     {
-        $model = new PekerjaModel(); // Memanggil model Pekerja
+        $model = new \App\Models\PekerjaModel();
         $data = [
-            'page_title'   => 'Cek Status Pekerja',
-            'pekerja_list' => $model->findAll() // Mengambil semua data dari tabel pekerja
+            'page_title' => 'Cek Status Pekerja',
+            'pekerja' => [
+                'bekerja' => $model->where('status_pekerja', 'bekerja')->countAllResults(),
+                'tersedia' => $model->where('status_pekerja', 'tersedia')->countAllResults(),
+            ]
         ];
         return view('admin/cek_pekerja_status', $data);
     }
