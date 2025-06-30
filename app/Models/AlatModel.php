@@ -10,5 +10,5 @@ class AlatModel extends Model
     protected $primaryKey       = 'id_alat';
     protected $useAutoIncrement = false; // <-- WAJIB
     protected $returnType       = 'array';
-    protected $allowedFields    = [ 'id_alat', 'cek_alat', 'nama_alat', 'stok_alat', 'informasi_alat', 'harga_sewa', 'gambar_alat' ];
+    protected $allowedFields = [ 'id_alat', 'cek_alat', 'nama_alat', 'kategori', 'stok_alat', 'informasi_alat', 'harga_sewa', 'gambar_alat' ];
 }

@@ -1,12 +1,9 @@
-<?php 
-// File: app/Views/layout/admin_pemesanan.php (Versi Revisi - Benar)
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemesanan - Djaya Aspalt Admin</title>
+    <title><?= esc($page_title ?? 'Manajemen Alat - Djaya Aspalt') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -23,6 +20,13 @@
             font-weight: 600;
             margin-bottom: 2rem;
             font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+        .sub-sidebar .sidebar-title img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
         }
         .sub-sidebar .nav-link {
             color: #555;
@@ -43,7 +47,6 @@
             justify-content: space-between;
             align-items: center;
             height: 70px;
-            flex-shrink: 0;
         }
         .main-content { padding: 2rem; background-color: #FFDAB9; flex-grow: 1; }
     </style>
@@ -51,22 +54,16 @@
 <body>
     <div class="main-wrapper">
         <div class="sub-sidebar">
-            <div class="sidebar-header" style="padding: 0 0.25rem 1rem 0.25rem; margin-bottom: 1rem;">
-                <a href="<?= base_url('admin') ?>" style="text-decoration: none; color: black; display: flex; align-items: center;">
-                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back" style="width: 32px; height: 32px; margin-right: 10px;">
-                    <h4 style="margin: 0; font-weight: 600;">Pemesanan</h4>
-                </a>
-            </div>
+            <a href="<?= base_url('admin') ?>" class="text-decoration-none text-dark">
+                <div class="sidebar-title">
+                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
+                    Manajemen Alat
+                </div>
+            </a>
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-stok') ?>">Cek Stok Material</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
+                    <a class="nav-link <?= (uri_string() == 'admin/alat/stok') ? 'active' : '' ?>" href="<?= base_url('admin/alat/stok') ?>">Stok Alat Berat</a>
                 </li>
             </ul>
         </div>
@@ -84,23 +81,6 @@
             </div>
         </div>
     </div>
-
-    <?php 
-// File: app/Views/layout/admin_pemesanan.php (Versi Revisi - Benar)
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <style>
-        /* ... (bagian style Anda tetap sama) ... */
-    </style>
-</head>
-<body>
-    <div class="main-wrapper">
-        </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 </body>
 </html>

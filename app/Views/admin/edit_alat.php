@@ -17,6 +17,15 @@
     <div class="card-body">
         <form action="<?= base_url('admin/alat/update/' . $alat['id_alat']) ?>" method="post">
             <?= csrf_field() ?>
+
+            <div class="mb-3">
+                <label for="kategori" class="form-label fw-bold">Pilih Kategori</label>
+                <select name="kategori" id="kategori" class="form-select" required>
+                    <option value="Alat Berat">Alat Berat</option>
+                    <option value="Material">Material</option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label for="id_alat" class="form-label">ID Alat</label>
                 <input type="text" class="form-control" id="id_alat" name="id_alat" value="<?= old('id_alat', $alat['id_alat']) ?>" required>
