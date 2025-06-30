@@ -10,8 +10,8 @@
     <div class="card"><div class="card-body text-center p-5"><h5>Tidak Ada Data Survey Terjadwal</h5></div></div>
 <?php else: ?>
     <?php foreach ($survey_per_bulan as $bulan => $items): ?>
-    <div class="card mb-4">
-        <div class="card-header bg-dark text-white">Data Survey bulan <?= $bulan ?></div>
+    <div class="card card-revisi mb-4">
+        <div class="card-header">Data Survey bulan <?= $bulan ?></div>
         <div class="card-body table-responsive p-0">
             <table class="table table-bordered table-striped mb-0">
                 <thead>

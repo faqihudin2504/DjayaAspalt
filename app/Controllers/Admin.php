@@ -48,10 +48,20 @@ class Admin extends BaseController
     public function manajemenPengguna()
     {
         $model = new PelangganModel();
+
+        // Query untuk menggabungkan data pelanggan dengan survey dan penyewaan
+        $pelangganData = $model->select('pelanggan.*, survey.id_survey, sewa.id_sewa')
+                            ->join('surveys as survey', 'survey.id_pelanggan = pelanggan.id_pelanggan', 'left')
+                            ->join('penyewaan as sewa', 'sewa.id_pelanggan = pelanggan.id_pelanggan', 'left')
+                            ->groupBy('pelanggan.id_pelanggan') // Menghindari duplikat
+                            ->orderBy('pelanggan.created_at', 'DESC')
+                            ->findAll();
+
         $data = [
             'page_title' => 'Manajemen Pelanggan',
-            'pelanggan_per_bulan' => $this->groupDataByMonth($model->orderBy('created_at', 'DESC')->findAll(), 'created_at')
+            'pelanggan_per_bulan' => $this->groupDataByMonth($pelangganData, 'created_at')
         ];
+        
         return view('admin/manajemen_pengguna', $data);
     }
 
@@ -357,9 +367,8 @@ class Admin extends BaseController
 
         $data = [
             'page_title' => 'Tambah Data Penyewaan Baru',
-            // Ambil pelanggan yang mendaftar untuk 'Sewa'
-            'pelanggan_list' => $pelangganModel->where('id_namasewa IS NOT NULL')->where('id_namasewa !=', '')->findAll(),
-            // Ambil HANYA alat yang stoknya > 0 DAN statusnya 'Tersedia'
+            // SEKARANG MENGAMBIL SEMUA PELANGGAN, KARENA SEMUA BOLEH MENYEWA
+            'pelanggan_list' => $pelangganModel->findAll(),
             'alat_list' => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
         ];
         

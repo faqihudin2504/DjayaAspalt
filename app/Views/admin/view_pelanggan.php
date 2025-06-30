@@ -15,6 +15,7 @@
     </div>
     <div class="card-body">
         <?php if (!empty($pelanggan)): ?>
+            <h5>Informasi Utama</h5>
             <table class="table table-borderless">
                 <tr>
                     <td style="width: 150px;"><strong>ID Pelanggan</strong></td>

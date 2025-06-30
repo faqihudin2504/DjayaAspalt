@@ -49,13 +49,20 @@
                             <td><?= esc($item['id_pelanggan']) ?></td>
                             <td><?= esc($item['nama_lengkap']) ?></td>
                             <td>
-                                <?php if (!empty($item['id_survey'])): ?>
-                                    <span class="badge bg-info">Survey</span>
-                                <?php elseif (!empty($item['id_namasewa'])): ?>
-                                    <span class="badge bg-warning">Sewa</span>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
+                                <?php 
+                                    $tujuanDitemukan = false;
+                                    if (!empty($item['id_survey'])) {
+                                        echo '<span class="badge bg-info">Survey</span> ';
+                                        $tujuanDitemukan = true;
+                                    }
+                                    if (!empty($item['id_sewa'])) {
+                                        echo '<span class="badge bg-warning text-dark">Sewa</span>';
+                                        $tujuanDitemukan = true;
+                                    }
+                                    if (!$tujuanDitemukan) {
+                                        echo '-';
+                                    }
+                                ?>
                             </td>
                             <td><?= date('d M Y, H:i', strtotime($item['created_at'])) ?></td>
                             <td class="action-buttons">
