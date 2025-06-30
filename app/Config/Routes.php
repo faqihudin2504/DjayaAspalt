@@ -113,9 +113,10 @@ $routes->get('alat/stok', 'Admin::cekStokAlatBerat');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
 
     // Rute untuk halaman Cek Paket, Stok, dan Pekerja
-    $routes->get('cek_paket', 'Admin::cek_paket');
-    $routes->get('cek_stok', 'Admin::cek_stok');
-    $routes->get('cek_pekerja', 'Admin::cek_pekerja');
+    $routes->get('cek-paket', 'Admin::cek_paket');
+    $routes->get('cek-stok', 'Admin::cekStokMaterial'); // Menggunakan fungsi yang sudah kita buat
+    $routes->get('cek-pekerja', 'Admin::cek_pekerja');
+    $routes->get('cek-pekerja-detail/(:segment)', 'Admin::cek_pekerja_detail/$1'); // Rute untuk detail pekerja
 });
 
 

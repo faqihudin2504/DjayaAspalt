@@ -675,19 +675,17 @@ class Admin extends BaseController
             'page_title' => 'Cek Stok Alat',
             'alat_list'  => $model->findAll()
         ];
-        return view('admin/cek_stok_alat', $data); // Menggunakan view yang sudah ada
+        return view('admin/cek_stok_alat', $data);
     }
 
-    // Ganti nama fungsi cek_stok menjadi cekStokMaterial
+    // di app/Controllers/Admin.php
     public function cekStokMaterial()
     {
         $model = new AlatModel();
         $data = [
             'page_title' => 'Cek Stok Material',
-            // Filter hanya untuk 'Material'
             'material_list'  => $model->where('kategori', 'Material')->findAll()
         ];
-        // Arahkan ke view baru
         return view('admin/cek_stok_material', $data);
     }
 

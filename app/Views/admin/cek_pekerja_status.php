@@ -7,9 +7,9 @@
             <h5 class="fw-bold">Pekerja <span class="text-success">Sedang Bekerja</span></h5>
             <p>Pekerja: 10 Orang</p>
             <div class="mt-3">
-                <a href="<?= base_url('admin/cek-pekerja-detail/bekerja') ?>" class="btn btn-info btn-sm">Cek</a>
+                <a href="<?= base_url('admin/cek-pekerja-detail/bekerja') ?>" class="btn btn-info btn-sm text-white">Cek</a>
                 <button class="btn btn-success btn-sm mx-1">Tambahkan</button>
-                <button class="btn btn-warning btn-sm">Edit</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
             </div>
         </div>
     </div>
@@ -19,9 +19,9 @@
             <h5 class="fw-bold">Pekerja <span class="text-danger">Tidak Bekerja</span></h5>
             <p>Pekerja: 14 Orang</p>
             <div class="mt-3">
-                <a href="<?= base_url('admin/cek-pekerja-detail/tersedia') ?>" class="btn btn-info btn-sm">Cek</a>
+                <a href="<?= base_url('admin/cek-pekerja-detail/tersedia') ?>" class="btn btn-info btn-sm text-white">Cek</a>
                 <button class="btn btn-success btn-sm mx-1">Tambahkan</button>
-                <button class="btn btn-warning btn-sm">Edit</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
             </div>
         </div>
     </div>
