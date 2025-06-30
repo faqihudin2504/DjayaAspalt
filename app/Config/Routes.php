@@ -49,12 +49,13 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     //$routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
    // $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
 
-    // Rute baru untuk 'survey' yang akan menampilkan data pelanggan dengan ID Survey
+    // --- RUTE UNTUK MANAJEMEN SURVEY ---
     $routes->get('survey', 'Admin::dataSurvey');
-    $routes->get('survey/tambah', 'Admin::tambahPelanggan');
-    $routes->get('survey/edit/(:any)', 'Admin::editPelanggan/$1');
-    $routes->get('survey/view/(:any)', 'Admin::viewPelanggan/$1');
-    $routes->get('survey/hapus/(:any)', 'Admin::hapusPelanggan/$1');
+    $routes->get('survey/tambah', 'Admin::tambahSurvey');
+    $routes->post('survey/simpan', 'Admin::simpanSurvey');
+    $routes->get('survey/edit/(:num)', 'Admin::editSurvey/$1');
+    $routes->post('survey/update/(:num)', 'Admin::updateSurvey/$1');
+    $routes->get('survey/hapus/(:num)', 'Admin::hapusSurvey/$1');
 
     // 3. Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');

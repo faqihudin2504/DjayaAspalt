@@ -56,22 +56,82 @@ class Admin extends BaseController
 
      public function dataSurvey()
     {
-        $model = new PelangganModel();
+        $surveyModel = new SurveyModel();
         
-        // Ambil data pelanggan yang HANYA memiliki id_survey
-        $surveyData = $model->where('id_survey IS NOT NULL')
-                            ->where('id_survey !=', '')
-                            ->orderBy('tanggal_survey', 'DESC')
-                            ->findAll();
+        $surveys = $surveyModel->getSurveysWithDetails();
 
         $data = [
             'page_title' => 'Manajemen Survey',
-            // Kelompokkan data survey berdasarkan bulan pendaftarannya
-            'survey_per_bulan' => $this->groupDataByMonth($surveyData, 'tanggal_survey')
+            'survey_per_bulan' => $this->groupDataByMonth($surveys, 'tanggal_survey')
         ];
         
-        // Kirim data ke view baru yang akan kita buat
         return view('admin/survey', $data);
+    }
+
+    public function tambahSurvey()
+    {
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Tambah Survey Baru',
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/tambah_survey', $data);
+    }
+
+    public function simpanSurvey()
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => 'Dijadwalkan'
+        ];
+
+        if ($surveyModel->insert($data)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil ditambahkan.');
+        } else {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan data survey.');
+        }
+    }
+
+    public function editSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Edit Data Survey',
+            'survey' => $surveyModel->find($id),
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/edit_survey', $data);
+    }
+
+    public function updateSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => $this->request->getPost('status')
+        ];
+
+        if ($surveyModel->update($id, $data)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil diperbarui.');
+        } else {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data survey.');
+        }
+    }
+
+    public function hapusSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        if ($surveyModel->delete($id)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil dihapus.');
+        } else {
+            return redirect()->to('/admin/survey')->with('error', 'Gagal menghapus data survey.');
+        }
     }
 
     public function tambahPelanggan()

@@ -8,16 +8,6 @@
     <div class="card-body">
         <form action="<?= base_url('admin/pelanggan/simpan') ?>" method="post">
             <?= csrf_field() ?>
-            
-            <div class="mb-3">
-                <label for="tujuan" class="form-label fw-bold">Tujuan Pendaftaran</label>
-                <select class="form-select" id="tujuan" name="tujuan" required>
-                    <option value="" selected disabled>-- Pilih Tujuan --</option>
-                    <option value="survey">Untuk Kebutuhan Survey</option>
-                    <option value="sewa">Untuk Kebutuhan Sewa</option>
-                </select>
-                <small class="form-text text-muted">ID Survey atau ID Sewa akan dibuat otomatis berdasarkan pilihan ini.</small>
-            </div>
 
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
