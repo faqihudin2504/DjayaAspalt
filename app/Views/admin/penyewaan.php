@@ -59,10 +59,10 @@
                             <td><?= date('d M Y', strtotime($item['tanggal_penyewaan'])) ?></td>
                             <td>Rp. <?= number_format($item['harga_alatdisewa'] ?? 0, 0, ',', '.') ?></td>
                             <td><span class="badge bg-primary"><?= esc($item['status']) ?></span></td>
-                            <td class="action-buttons">
-                                <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">View</a>
-                                <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Delete</a>
+                           <td class="action-buttons">
+                                <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">Lihat</a>
+                                <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Ubah</a>
+                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

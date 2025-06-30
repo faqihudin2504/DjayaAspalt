@@ -63,7 +63,7 @@
                             </td>
                             <td><?= esc($alat['stok_alat']) ?></td>
                             <td class="action-buttons">
-                                <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Ubah</a>
                                 <a href="<?= base_url('admin/alat/hapus/' . $alat['id_alat']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus alat ini?')">Hapus</a>
                             </td>
                         </tr>
