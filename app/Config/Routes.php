@@ -100,6 +100,11 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->get('profile', 'Admin::adminProfile');
     $routes->get('profile/edit', 'Admin::editAdminProfile');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
+
+    // Rute untuk halaman Cek Paket, Stok, dan Pekerja
+    $routes->get('cek_paket', 'Admin::cek_paket');
+    $routes->get('cek_stok', 'Admin::cek_stok');
+    $routes->get('cek_pekerja', 'Admin::cek_pekerja');
 });
 
 

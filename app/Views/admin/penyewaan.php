@@ -2,10 +2,15 @@
 
 <?= $this->section('content') ?>
 <style>
-    .action-buttons .btn { margin-right: 5px; }
-    .empty-state { text-align: center; padding: 50px; }
-    .empty-state img { max-width: 150px; margin-bottom: 20px; }
-    .card-revisi { border: 1px solid #dee2e6; }
+    /* DESAIN INI DISALIN DARI HALAMAN PELAKSANAAN SESUAI PERMINTAAN ANDA */
+    .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
+    .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
+    .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
+    .table tbody td { text-align: center; vertical-align: middle; }
+    .action-buttons .btn { margin: 0 2px; }
+    .action-buttons .btn-warning { color: black !important; }
+    .action-buttons .btn-danger { color: white !important; }
+    .action-buttons .btn-info { color: white !important; }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,8 +27,8 @@
 
 <?php if (empty($penyewaan_per_bulan)): ?>
     <div class="card card-revisi">
-        <div class="card-body empty-state">
-            <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
+        <div class="card-body empty-state" style="text-align: center; padding: 50px;">
+            <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data" style="max-width: 150px; margin-bottom: 20px;">
             <h5 class="text-danger">Tidak Ada Data Penyewaan</h5>
             <p>Silakan tambahkan data penyewaan baru.</p>
         </div>
@@ -31,10 +36,10 @@
 <?php else: ?>
     <?php foreach ($penyewaan_per_bulan as $bulan => $items): ?>
     <div class="card card-revisi mb-4">
-        <div class="card-header fw-bold">Data Penyewaan bulan <?= $bulan ?></div>
+        <div class="card-header">Data Penyewaan bulan <?= $bulan ?></div>
         <div class="card-body table-responsive p-0">
             <table class="table table-bordered table-striped table-hover mb-0">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>ID Sewa</th>
                         <th>Nama Penyewa</th>

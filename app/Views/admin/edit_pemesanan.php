@@ -37,10 +37,10 @@
                         <option value="" data-harga="">-- Pilih Paket --</option>
                         <?php 
                             $paket_list = [
-                                'Paket A' => '8000000',
-                                'Paket B' => '6000000',
-                                'Paket C' => '4000000',
-                                'Paket D' => '2000000',
+                                'Paket A' => '70000',
+                                'Paket B' => '85000',
+                                'Paket C' => '100000',
+                                'Paket D' => '145000',
                             ];
                         ?>
                         <?php foreach($paket_list as $nama => $harga): ?>

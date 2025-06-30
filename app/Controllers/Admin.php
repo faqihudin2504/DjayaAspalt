@@ -10,6 +10,8 @@ use App\Models\PemesananModel;
 use App\Models\PengembalianModel;
 use App\Models\PenyewaanModel;
 use App\Models\UserModel;
+use App\Models\PaketModel;
+use App\Models\PekerjaModel;
 use CodeIgniter\I18n\Time;
 
 class Admin extends BaseController
@@ -354,7 +356,19 @@ class Admin extends BaseController
     public function dataPenyewaan()
     {
         $model = new PenyewaanModel();
-        $data = ['page_title' => 'Data Penyewaan Alat', 'penyewaan_list' => $model->getPenyewaanWithDetails()];
+        $penyewaanData = $model->getPenyewaanWithDetails(); // Ambil data
+
+        // Kelompokkan data berdasarkan bulan
+        $groupedData = [];
+        foreach ($penyewaanData as $item) {
+            $month = date('F Y', strtotime($item['tanggal_penyewaan']));
+            $groupedData[$month][] = $item;
+        }
+
+        $data = [
+            'page_title'        => 'Data Penyewaan Alat',
+            'penyewaan_per_bulan' => $groupedData // <-- Kirim data yang sudah dikelompokkan
+        ];
         return view('admin/penyewaan', $data);
     }
 
@@ -650,5 +664,39 @@ class Admin extends BaseController
             'alat_list'  => $model->findAll()
         ];
         return view('admin/cek_stok_alat', $data); // Menggunakan view yang sudah ada
+    }
+
+    // ===================================================================
+    // FUNGSI UNTUK HALAMAN CEK (TERHUBUNG KE DATABASE)
+    // ===================================================================
+
+    public function cek_paket()
+    {
+        $model = new PaketModel(); // Memanggil model Paket
+        $data = [
+            'page_title' => 'Daftar Paket Pengaspalan',
+            'paket_list' => $model->findAll() // Mengambil semua data dari tabel paket
+        ];
+        return view('admin/cek_paket', $data);
+    }
+
+    public function cek_stok()
+    {
+        $model = new AlatModel(); // Memanggil model Alat
+        $data = [
+            'page_title' => 'Cek Stok Alat',
+            'alat_list'  => $model->findAll() // Mengambil semua data dari tabel alat
+        ];
+        return view('admin/cek_stok_alat', $data);
+    }
+
+    public function cek_pekerja()
+    {
+        $model = new PekerjaModel(); // Memanggil model Pekerja
+        $data = [
+            'page_title'   => 'Cek Status Pekerja',
+            'pekerja_list' => $model->findAll() // Mengambil semua data dari tabel pekerja
+        ];
+        return view('admin/cek_pekerja_status', $data);
     }
 }

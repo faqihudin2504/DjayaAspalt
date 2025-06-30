@@ -51,19 +51,22 @@
 <body>
     <div class="main-wrapper">
         <div class="sub-sidebar">
-            <h4 class="sidebar-title">Pemesanan</h4>
+            <div class="sidebar-header" style="padding: 0 0.25rem 1rem 0.25rem; margin-bottom: 1rem;">
+                <a href="<?= base_url('admin') ?>" style="text-decoration: none; color: black; display: flex; align-items: center;">
+                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back" style="width: 32px; height: 32px; margin-right: 10px;">
+                    <h4 style="margin: 0; font-weight: 600;">Pemesanan</h4>
+                </a>
+            </div>
+
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cek Paket</a>
+                    <a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cek Stok</a>
+                    <a class="nav-link" href="<?= base_url('admin/cek-stok') ?>">Cek Stok</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Cek Pekerja</a>
-                </li>
-                 <li class="nav-item mt-4">
-                    <a class="nav-link text-muted" href="<?= base_url('admin') ?>">&larr; Kembali ke Home</a>
+                    <a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
                 </li>
             </ul>
         </div>

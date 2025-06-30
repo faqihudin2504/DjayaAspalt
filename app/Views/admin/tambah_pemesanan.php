@@ -31,10 +31,10 @@
                     <label for="nama_paketdipesan" class="form-label">Nama Paket</label>
                     <select class="form-control" name="nama_paketdipesan" id="nama_paketdipesan" required>
                         <option value="" data-harga="">-- Pilih Paket --</option>
-                        <option value="Paket A" data-harga="8000000">Paket A</option>
-                        <option value="Paket B" data-harga="6000000">Paket B</option>
-                        <option value="Paket C" data-harga="4000000">Paket C</option>
-                        <option value="Paket D" data-harga="2000000">Paket D</option>
+                        <option value="Paket A" data-harga="70000">Paket A</option>
+                        <option value="Paket B" data-harga="85000">Paket B</option>
+                        <option value="Paket C" data-harga="10000">Paket C</option>
+                        <option value="Paket D" data-harga="145000">Paket D</option>
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
