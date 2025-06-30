@@ -11,6 +11,7 @@ class PelangganModel extends Model
     protected $useAutoIncrement = false;
     protected $returnType       = 'array';
     protected $allowedFields    = ['id_pelanggan', 'nama_lengkap', 'alamat', 'no_telpon', 'email', 'id_user'];
+    protected $useTimestamps = true;
 
     /**
      * Fungsi untuk membuat ID transaksional (Survey/Sewa) secara otomatis

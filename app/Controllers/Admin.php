@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
+
+use App\Models\SurveyModel;
 use App\Models\AlatModel;
-use App\Models\PelaksanaanModel;
 use App\Models\PelangganModel;
 use App\Models\PembayaranModel;
 use App\Models\PemesananModel;
@@ -49,7 +50,7 @@ class Admin extends BaseController
         $model = new PelangganModel();
         $data = [
             'page_title' => 'Manajemen Pelanggan',
-            'pelanggan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_survey', 'DESC')->findAll(), 'tanggal_survey')
+            'pelanggan_per_bulan' => $this->groupDataByMonth($model->orderBy('created_at', 'DESC')->findAll(), 'created_at')
         ];
         return view('admin/manajemen_pengguna', $data);
     }
@@ -200,98 +201,6 @@ class Admin extends BaseController
         $model = new PelangganModel();
         $data = ['page_title' => 'Detail Pelanggan', 'pelanggan'  => $model->find($id)];
         return view('admin/view_pelanggan', $data);
-    }
-
-    // ===================================================================
-    // 2. SURVEY LOKASI & 3. PEMESANAN (Struktur dari file lama Anda)
-    // ===================================================================
-    public function dataPelaksanaan()
-    {
-        $model = new PelaksanaanModel();
-        $data = [
-            'page_title' => 'Data Pelaksanaan',
-            'pelaksanaan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pelaksanaan', 'DESC')->findAll(), 'tanggal_pelaksanaan')
-        ];
-        return view('admin/pelaksanaan', $data);
-    }
-
-    public function tambahPelaksanaan()
-    {
-        $pelangganModel = new PelangganModel();
-        $data = ['page_title' => 'Tambah Data Pelaksanaan', 'pelanggan_list' => $pelangganModel->findAll()];
-        return view('admin/tambah_pelaksanaan', $data);
-    }
-
-    public function simpanPelaksanaan()
-    {
-        $model = new PelaksanaanModel();
-        $data = $this->request->getPost();
-
-        // 1. Ambil tanggal dari form input
-        $tanggalInput = $this->request->getPost('tanggal_pelaksanaan');
-        
-        // 2. Ambil hanya bagian tanggal (YYYY-MM-DD) untuk query
-        $tanggalUntukQuery = date('Y-m-d', strtotime($tanggalInput));
-
-        // 3. Hitung berapa banyak pelaksanaan yang sudah ada di tanggal tersebut
-        $jumlahHariIni = $model->where('DATE(tanggal_pelaksanaan)', $tanggalUntukQuery)->countAllResults();
-
-        // 4. Buat nomor urut berikutnya (jumlah + 1) dengan format 2 digit (01, 02, dst)
-        $nomorUrut = str_pad($jumlahHariIni + 1, 2, '0', STR_PAD_LEFT);
-        
-        // 5. Format tanggal menjadi ddmmyyyy sesuai Figma
-        $formatTanggalFigma = date('dmY', strtotime($tanggalInput));
-
-        // Simpan data ke database
-        $model->save($data);
-        session()->setFlashdata('success', 'Data pelaksanaan dengan ID baru berhasil ditambahkan.');
-
-        return redirect()->to('admin/pelaksanaan');
-    }
-
-    public function editPelaksanaan($id)
-    {
-        $model = new PelaksanaanModel();
-        $pelangganModel = new PelangganModel();
-        $data = ['page_title' => 'Edit Data Pelaksanaan', 'pelaksanaan' => $model->find($id), 'pelanggan_list' => $pelangganModel->findAll()];
-        return view('admin/edit_pelaksanaan', $data);
-    }
-
-    public function updatePelaksanaan($id)
-{
-    // 1. Siapkan kedua model yang akan digunakan
-    $pelaksanaanModel = new PelaksanaanModel();
-    $pemesananModel = new PemesananModel();
-
-    // 2. Ambil semua data dari form yang disubmit
-    $data = $this->request->getPost();
-
-    // 3. Lakukan update pada tabel 'pelaksanaan' seperti biasa
-    if ($pelaksanaanModel->update($id, $data)) {
-        
-        // --- PROSES SINKRONISASI DIMULAI DI SINI ---
-        
-        // 4. Ambil tanggal baru yang diinput dari form
-        $tanggalBaru = $data['tanggal_pelaksanaan'];
-
-        // 6. Set pesan sukses
-        session()->setFlashdata('success', 'Data pelaksanaan dan pemesanan terkait berhasil disinkronkan.');
-
-    } else {
-        // Jika update pertama gagal, set pesan error
-        session()->setFlashdata('error', 'Gagal memperbarui data pelaksanaan.');
-    }
-
-    // 7. Kembali ke halaman daftar pelaksanaan
-    return redirect()->to('admin/pelaksanaan');
-}
-
-    public function hapusPelaksanaan($id)
-    {
-        $model = new PelaksanaanModel();
-        $model->delete($id);
-        session()->setFlashdata('success', 'Data pelaksanaan berhasil dihapus.');
-        return redirect()->to('admin/pelaksanaan');
     }
     
     public function dataPemesanan()
