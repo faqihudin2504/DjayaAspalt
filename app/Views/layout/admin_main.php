@@ -62,10 +62,10 @@
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
                 <a href="<?= base_url('admin/pelanggan') ?>" class="<?= (strpos(uri_string(), 'admin/pelanggan') !== false) ? 'active' : '' ?>">Pelanggan</a>
-                <a href="<?= base_url('admin/pelaksanaan') ?>" class="<?= (strpos(uri_string(), 'admin/pelaksanaan') !== false) ? 'active' : '' ?>">Pelaksanaan</a>
+                <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
+                <a href="<?= base_url('admin/survey') ?>" class="<?= (strpos(uri_string(), 'admin/survey') !== false) ? 'active' : '' ?>">Survey</a>
                 <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
                 <a href="<?= base_url('admin/alat') ?>" class="<?= (strpos(uri_string(), 'admin/alat') !== false) ? 'active' : '' ?>">Alat</a>
-                <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
                 <a href="<?= base_url('admin/pembayaran') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
                 <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
             </div>

@@ -54,6 +54,26 @@ class Admin extends BaseController
         return view('admin/manajemen_pengguna', $data);
     }
 
+     public function dataSurvey()
+    {
+        $model = new PelangganModel();
+        
+        // Ambil data pelanggan yang HANYA memiliki id_survey
+        $surveyData = $model->where('id_survey IS NOT NULL')
+                            ->where('id_survey !=', '')
+                            ->orderBy('tanggal_survey', 'DESC')
+                            ->findAll();
+
+        $data = [
+            'page_title' => 'Manajemen Survey',
+            // Kelompokkan data survey berdasarkan bulan pendaftarannya
+            'survey_per_bulan' => $this->groupDataByMonth($surveyData, 'tanggal_survey')
+        ];
+        
+        // Kirim data ke view baru yang akan kita buat
+        return view('admin/survey', $data);
+    }
+
     public function tambahPelanggan()
     {
         $data['page_title'] = 'Tambah Pelanggan Baru';
@@ -162,9 +182,6 @@ class Admin extends BaseController
         // 5. Format tanggal menjadi ddmmyyyy sesuai Figma
         $formatTanggalFigma = date('dmY', strtotime($tanggalInput));
 
-        // 6. Gabungkan semua menjadi ID baru
-        $data['id_pelaksanaan'] = 'Pelaksanaan' . $formatTanggalFigma . $nomorUrut;
-
         // Simpan data ke database
         $model->save($data);
         session()->setFlashdata('success', 'Data pelaksanaan dengan ID baru berhasil ditambahkan.');
@@ -197,12 +214,6 @@ class Admin extends BaseController
         // 4. Ambil tanggal baru yang diinput dari form
         $tanggalBaru = $data['tanggal_pelaksanaan'];
 
-        // 5. Cari semua baris di tabel 'pemesanan' yang memiliki 'id_pelaksanaan' yang sama,
-        //    lalu update kolom 'tanggal_pemesanan' mereka dengan tanggal baru.
-        $pemesananModel->where('id_pelaksanaan', $id)
-                       ->set('tanggal_pemesanan', $tanggalBaru)
-                       ->update();
-
         // 6. Set pesan sukses
         session()->setFlashdata('success', 'Data pelaksanaan dan pemesanan terkait berhasil disinkronkan.');
 
@@ -233,10 +244,9 @@ class Admin extends BaseController
         return view('admin/pemesanan', $data);
     }
 
-    public function tambahPemesanan()
+   public function tambahPemesanan()
     {
-        $model = new PelaksanaanModel();
-        $data = ['page_title' => 'Tambah Pemesanan', 'pelaksanaan_list' => $model->findAll()];
+        $data = ['page_title' => 'Tambah Pemesanan'];
         return view('admin/tambah_pemesanan', $data);
     }
 
@@ -253,8 +263,7 @@ class Admin extends BaseController
     public function editPemesanan($id)
     {
         $pemesananModel = new PemesananModel();
-        $pelaksanaanModel = new PelaksanaanModel();
-        $data = ['page_title' => 'Edit Pemesanan', 'pemesanan' => $pemesananModel->find($id), 'pelaksanaan_list' => $pelaksanaanModel->findAll()];
+        $data = ['page_title' => 'Edit Pemesanan', 'pemesanan' => $pemesananModel->find($id)];
         return view('admin/edit_pemesanan', $data);
     }
 

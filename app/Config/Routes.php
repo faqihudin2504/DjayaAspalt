@@ -42,12 +42,19 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
     
     // 2. Survey & Pelaksanaan (Dikembalikan)
-    $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
-    $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
-    $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
-    $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
-    $routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
-    $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
+   // $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
+   // $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
+   // $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
+   // $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
+    //$routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
+   // $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
+
+    // Rute baru untuk 'survey' yang akan menampilkan data pelanggan dengan ID Survey
+    $routes->get('survey', 'Admin::dataSurvey');
+    $routes->get('survey/tambah', 'Admin::tambahPelanggan');
+    $routes->get('survey/edit/(:any)', 'Admin::editPelanggan/$1');
+    $routes->get('survey/view/(:any)', 'Admin::viewPelanggan/$1');
+    $routes->get('survey/hapus/(:any)', 'Admin::hapusPelanggan/$1');
 
     // 3. Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');
