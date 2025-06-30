@@ -572,7 +572,7 @@ class Admin extends BaseController
     {
         $model = new PengembalianModel();
         $data = ['page_title' => 'Data Pengembalian', 'pengembalian_list' => $model->getPengembalianWithDetails()];
-        return view('admin/pengembalian_data', $data);
+        return view('admin/pengembalian', $data);
     }
 
     public function tambahPengembalian()
@@ -732,5 +732,19 @@ class Admin extends BaseController
             ]
         ];
         return view('admin/cek_pekerja_status', $data);
+    }
+
+    public function api_getPemesananDetail($id)
+    {
+        $model = new PemesananModel();
+        $data = $model->find($id);
+        return $this->response->setJSON($data);
+    }
+
+    public function api_getPenyewaanDetail($id)
+    {
+        $model = new PenyewaanModel();
+        $data = $model->find($id);
+        return $this->response->setJSON($data);
     }
 }

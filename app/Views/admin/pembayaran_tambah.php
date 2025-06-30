@@ -9,30 +9,42 @@
             <?= csrf_field() ?>
             <input type="hidden" name="tipe" value="<?= $tipe ?>">
 
+            <?php if ($tipe === 'pemesanan'): ?>
             <div class="mb-3">
-                <label for="id_transaksi" class="form-label">Pilih Transaksi</label>
-                <select name="<?= $tipe === 'pemesanan' ? 'id_pesanan' : 'id_sewa' ?>" id="id_transaksi" class="form-select" required>
-                    <option value="">-- Pilih ID <?= ucfirst($tipe) ?> --</option>
+                <label for="id_pesanan" class="form-label">Pilih Transaksi Pemesanan</label>
+                <select name="id_pesanan" id="id_transaksi" class="form-select" required>
+                    <option value="">-- Pilih ID Pemesanan --</option>
                     <?php foreach ($transaksi_list as $transaksi): ?>
-                        <?php
-                            $id = $tipe === 'pemesanan' ? $transaksi['id_pesanan'] : $transaksi['id_sewa'];
-                            $nama = $tipe === 'pemesanan' ? $transaksi['nama_lengkap'] : $transaksi['nama_penyewa'];
-                        ?>
-                        <option value="<?= esc($id) ?>"><?= esc($id) ?> - <?= esc($nama) ?></option>
+                        <option value="<?= esc($transaksi['id_pesanan']) ?>" data-harga="<?= esc($transaksi['harga_paketdipesan']) ?>">
+                            <?= esc($transaksi['id_pesanan']) ?> - <?= esc($transaksi['nama_lengkap']) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php else: ?>
+            <div class="mb-3">
+                <label for="id_sewa" class="form-label">Pilih Transaksi Penyewaan</label>
+                <select name="id_sewa" id="id_transaksi" class="form-select" required>
+                    <option value="">-- Pilih ID Sewa --</option>
+                    <?php foreach ($transaksi_list as $transaksi): ?>
+                        <option value="<?= esc($transaksi['id_sewa']) ?>" data-harga="<?= esc($transaksi['harga_alatdisewa']) ?>">
+                            <?= esc($transaksi['id_sewa']) ?> - <?= esc($transaksi['nama_penyewa']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
             
             <hr>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="tanggal_pembayaran" class="form-label">Tanggal Pembayaran</label>
-                    <input type="date" class="form-control" id="tanggal_pembayaran" name="tanggal_pembayaran" value="<?= date('Y-m-d') ?>" required>
+                    <label for="total_harga" class="form-label">Total Harga (Rp)</label>
+                    <input type="number" class="form-control" id="total_harga" name="total_harga" min="0" required readonly placeholder="Pilih transaksi untuk melihat harga">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="total_harga" class="form-label">Total Harga (Rp)</label>
-                    <input type="number" class="form-control" id="total_harga" name="total_harga" min="0" required>
+                    <label for="tanggal_pembayaran" class="form-label">Tanggal Pembayaran</label>
+                    <input type="date" class="form-control" id="tanggal_pembayaran" name="tanggal_pembayaran" value="<?= date('Y-m-d') ?>" required>
                 </div>
             </div>
 
@@ -67,4 +79,23 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const transaksiDropdown = document.getElementById('id_transaksi');
+    const hargaInput = document.getElementById('total_harga');
+
+    transaksiDropdown.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const harga = selectedOption.getAttribute('data-harga');
+        
+        if (harga) {
+            hargaInput.value = harga;
+        } else {
+            hargaInput.value = '';
+        }
+    });
+});
+</script>
+
 <?= $this->endSection() ?>

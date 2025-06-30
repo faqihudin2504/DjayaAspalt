@@ -33,7 +33,11 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->get('cek-stok', 'Admin::cekStokAlat');
     $routes->get('cek-stok', 'Admin::cekStokMaterial');
     // di dalam $routes->group('admin', ...);
-$routes->get('alat/stok', 'Admin::cekStokAlatBerat');
+    $routes->get('alat/stok', 'Admin::cekStokAlatBerat');
+
+    // di dalam $routes->group('admin', ...);
+    $routes->get('api/pemesanan/(:any)', 'Admin::api_getPemesananDetail/$1');
+    $routes->get('api/penyewaan/(:any)', 'Admin::api_getPenyewaanDetail/$1');
 
      // 1. Pendaftaran & Manajemen Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
