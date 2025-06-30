@@ -10,7 +10,7 @@ class PemesananModel extends Model
     protected $primaryKey       = 'id_pesanan';
     protected $useAutoIncrement = false; // <-- WAJIB
     protected $returnType       = 'array';
-    protected $allowedFields    = [ 'id_pesanan', 'nama_paketdipesan', 'harga_paketdipesan', 'tanggal_pemesanan' ];
+    protected $allowedFields = [ 'id_pesanan', 'id_pelanggan', 'nama_paketdipesan', 'harga_paketdipesan', 'tanggal_pemesanan' ];
 
     /**
      * Mengambil semua data pemesanan dengan menggabungkan data pelanggan (users).

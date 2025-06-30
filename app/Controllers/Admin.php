@@ -52,7 +52,7 @@ class Admin extends BaseController
         // Query untuk menggabungkan data pelanggan dengan survey dan penyewaan
         $pelangganData = $model->select('pelanggan.*, survey.id_survey, sewa.id_sewa')
                             ->join('surveys as survey', 'survey.id_pelanggan = pelanggan.id_pelanggan', 'left')
-                            ->join('penyewaan as sewa', 'sewa.id_pelanggan = pelanggan.id_pelanggan', 'left')
+                            ->join('penyewaan as sewa', 'sewa.id_namasewa = pelanggan.id_pelanggan', 'left')
                             ->groupBy('pelanggan.id_pelanggan') // Menghindari duplikat
                             ->orderBy('pelanggan.created_at', 'DESC')
                             ->findAll();
@@ -216,16 +216,28 @@ class Admin extends BaseController
     public function dataPemesanan()
     {
         $model = new PemesananModel();
+
+        // Query baru dengan JOIN
+        $pemesananData = $model->select('pemesanan.*, pelanggan.nama_lengkap')
+                            ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
+                            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
+                            ->findAll();
+
         $data = [
             'page_title' => 'Data Pemesanan',
-            'pemesanan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pemesanan', 'DESC')->findAll(), 'tanggal_pemesanan')
+            'pemesanan_per_bulan' => $this->groupDataByMonth($pemesananData, 'tanggal_pemesanan')
         ];
         return view('admin/pemesanan', $data);
     }
 
-   public function tambahPemesanan()
+   // di file app/Controllers/Admin.php
+    public function tambahPemesanan()
     {
-        $data = ['page_title' => 'Tambah Pemesanan'];
+        $pelangganModel = new PelangganModel(); // Tambahkan ini
+        $data = [
+            'page_title' => 'Tambah Pemesanan',
+            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini
+        ];
         return view('admin/tambah_pemesanan', $data);
     }
 
@@ -242,7 +254,20 @@ class Admin extends BaseController
     public function editPemesanan($id)
     {
         $pemesananModel = new PemesananModel();
-        $data = ['page_title' => 'Edit Pemesanan', 'pemesanan' => $pemesananModel->find($id)];
+        $pelangganModel = new PelangganModel(); // Tambahkan ini
+
+        $pemesanan = $pemesananModel->find($id);
+
+        if (empty($pemesanan)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pemesanan tidak ditemukan: ' . $id);
+        }
+
+        $data = [
+            'page_title'     => 'Edit Data Pemesanan',
+            'pemesanan'      => $pemesanan,
+            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini untuk mengirim daftar pelanggan
+        ];
+        
         return view('admin/edit_pemesanan', $data);
     }
 

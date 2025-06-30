@@ -84,5 +84,23 @@
             </div>
         </div>
     </div>
+
+    <?php 
+// File: app/Views/layout/admin_pemesanan.php (Versi Revisi - Benar)
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <style>
+        /* ... (bagian style Anda tetap sama) ... */
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 </body>
 </html>

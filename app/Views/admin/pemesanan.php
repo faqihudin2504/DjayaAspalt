@@ -2,6 +2,7 @@
 
 <?= $this->section('content') ?>
 <style>
+    /* Menyeragamkan style dengan halaman lain */
     .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
     .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
     .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
@@ -40,7 +41,7 @@
                 <thead>
                     <tr>
                         <th>ID Pesanan</th>
-                        <th>ID Pelaksanaan</th>
+                        <th>Nama Pelanggan</th>
                         <th>Paket</th>
                         <th>Harga</th>
                         <th>Tanggal Pesan</th>
@@ -51,7 +52,7 @@
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td><?= esc($item['id_pesanan']) ?></td>
-                            <td><?= esc($item['id_pelaksanaan']) ?></td>
+                            <td><?= esc($item['nama_lengkap'] ?? 'N/A') ?></td>
                             <td><?= esc($item['nama_paketdipesan']) ?></td>
                             <td>Rp. <?= number_format($item['harga_paketdipesan'], 0, ',', '.') ?></td>
                             <td><?= date('d-m-Y', strtotime($item['tanggal_pemesanan'])) ?></td>

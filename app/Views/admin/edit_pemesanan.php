@@ -11,19 +11,17 @@
 
             <div class="mb-3">
                 <label for="id_pesanan" class="form-label">ID Pesanan</label>
-                <input type="text" class="form-control" id="id_pesanan" name="id_pesanan" value="<?= esc($pemesanan['id_pesanan']) ?>" readonly>
+                <input type="text" class="form-control" id="id_pesanan" value="<?= esc($pemesanan['id_pesanan']) ?>" readonly>
             </div>
 
             <div class="mb-3">
-                <label for="id_pelaksanaan" class="form-label">Pilih ID Pelaksanaan</label>
-                <select class="form-control" name="id_pelaksanaan" id="id_pelaksanaan" required>
-                    <option value="" data-tanggal="">-- Pilih Proyek Pelaksanaan --</option>
-                    <?php if (!empty($pelaksanaan_list)): ?>
-                        <?php foreach($pelaksanaan_list as $pl): ?>
-                            <option value="<?= esc($pl['id_pelaksanaan']) ?>" 
-                                    data-tanggal="<?= esc(date('Y-m-d', strtotime($pl['tanggal_pelaksanaan']))) ?>"
-                                    <?= ($pl['id_pelaksanaan'] == $pemesanan['id_pelaksanaan']) ? 'selected' : '' ?>>
-                                ID: <?= esc($pl['id_pelaksanaan']) ?> (Alamat: <?= esc(word_limiter($pl['alamat_pelaksanaan'], 5)) ?>)
+                <label for="id_pelanggan" class="form-label">Pilih Pelanggan</label>
+                <select class="form-control" name="id_pelanggan" id="id_pelanggan" required>
+                    <option value="">-- Pilih Pelanggan --</option>
+                    <?php if (!empty($pelanggan_list)): ?>
+                        <?php foreach($pelanggan_list as $pl): ?>
+                            <option value="<?= esc($pl['id_pelanggan']) ?>" <?= ($pl['id_pelanggan'] == $pemesanan['id_pelanggan']) ? 'selected' : '' ?>>
+                                <?= esc($pl['nama_lengkap']) ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -37,10 +35,8 @@
                         <option value="" data-harga="">-- Pilih Paket --</option>
                         <?php 
                             $paket_list = [
-                                'Paket A' => '70000',
-                                'Paket B' => '85000',
-                                'Paket C' => '100000',
-                                'Paket D' => '145000',
+                                'Paket A' => '70000', 'Paket B' => '85000',
+                                'Paket C' => '100000', 'Paket D' => '145000',
                             ];
                         ?>
                         <?php foreach($paket_list as $nama => $harga): ?>
@@ -60,7 +56,7 @@
 
             <div class="mb-3">
                 <label for="tanggal_pemesanan" class="form-label">Tanggal Pemesanan</label>
-                <input type="date" class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" value="<?= esc(date('Y-m-d', strtotime($pemesanan['tanggal_pemesanan']))) ?>" required readonly>
+                <input type="date" class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" value="<?= esc(date('Y-m-d', strtotime($pemesanan['tanggal_pemesanan']))) ?>" required>
             </div>
 
             <div class="mt-4">
@@ -72,26 +68,16 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const paketDropdown = document.getElementById('nama_paketdipesan');
-    const hargaInput = document.getElementById('harga_paketdipesan');
-    const pelaksanaanDropdown = document.getElementById('id_pelaksanaan');
-    const tanggalInput = document.getElementById('tanggal_pemesanan');
-
-    // Event listener untuk Nama Paket -> Harga Paket
-    paketDropdown.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const harga = selectedOption.getAttribute('data-harga');
-        hargaInput.value = harga || '';
+    // Script untuk update harga otomatis saat paket diganti
+    document.addEventListener('DOMContentLoaded', function() {
+        const paketDropdown = document.getElementById('nama_paketdipesan');
+        const hargaInput = document.getElementById('harga_paketdipesan');
+        paketDropdown.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const harga = selectedOption.getAttribute('data-harga');
+            hargaInput.value = harga || '';
+        });
     });
-
-    // Event listener untuk ID Pelaksanaan -> Tanggal Pemesanan
-    pelaksanaanDropdown.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const tanggal = selectedOption.getAttribute('data-tanggal');
-        tanggalInput.value = tanggal || '';
-    });
-});
 </script>
 
 <?= $this->endSection() ?>
