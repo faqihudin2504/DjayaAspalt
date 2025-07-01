@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 <style>
@@ -55,12 +55,6 @@
             <span class="berhasil">Berhasil</span>
         </div>
     </div>
-    
-    <div class="action-buttons">
-        <a href="#" class="btn btn-success">Tambahkan</a>
-        <a href="#" class="btn btn-dark">Edit</a>
-    </div>
-
 </div>
 
 <?= $this->endSection() ?>

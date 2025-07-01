@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-
 use App\Models\SurveyModel;
 use App\Models\AlatModel;
 use App\Models\PelangganModel;
@@ -13,6 +12,7 @@ use App\Models\PenyewaanModel;
 use App\Models\UserModel;
 use App\Models\PaketModel;
 use App\Models\PekerjaModel;
+use Dompdf\Dompdf;
 use CodeIgniter\I18n\Time;
 
 class Admin extends BaseController
@@ -48,14 +48,12 @@ class Admin extends BaseController
     public function manajemenPengguna()
     {
         $model = new PelangganModel();
-
-        // Query untuk menggabungkan data pelanggan dengan survey dan penyewaan
         $pelangganData = $model->select('pelanggan.*, survey.id_survey, sewa.id_sewa')
-                            ->join('surveys as survey', 'survey.id_pelanggan = pelanggan.id_pelanggan', 'left')
-                            ->join('penyewaan as sewa', 'sewa.id_namasewa = pelanggan.id_pelanggan', 'left')
-                            ->groupBy('pelanggan.id_pelanggan') // Menghindari duplikat
-                            ->orderBy('pelanggan.created_at', 'DESC')
-                            ->findAll();
+            ->join('surveys as survey', 'survey.id_pelanggan = pelanggan.id_pelanggan', 'left')
+            ->join('penyewaan as sewa', 'sewa.id_namasewa = pelanggan.id_pelanggan', 'left')
+            ->groupBy('pelanggan.id_pelanggan')
+            ->orderBy('pelanggan.created_at', 'DESC')
+            ->findAll();
 
         $data = [
             'page_title' => 'Manajemen Pelanggan',
@@ -65,43 +63,32 @@ class Admin extends BaseController
         return view('admin/manajemen_pengguna', $data);
     }
 
-     public function dataSurvey()
+    public function dataSurvey()
     {
         $surveyModel = new SurveyModel();
-        
         $surveys = $surveyModel->getSurveysWithDetails();
-
         $data = [
             'page_title' => 'Manajemen Survey',
             'survey_per_bulan' => $this->groupDataByMonth($surveys, 'tanggal_survey')
         ];
-        
         return view('admin/survey', $data);
     }
 
     public function tambahSurvey()
     {
         $pelangganModel = new PelangganModel();
-        $surveyModel = new SurveyModel(); // 1. Panggil SurveyModel
-
-        // 2. Ambil semua ID pelanggan yang sudah ada di tabel survey
+        $surveyModel = new SurveyModel();
         $surveyedPelangganIds = $surveyModel->select('id_pelanggan')->distinct()->findAll();
-
-        // 3. Jika ada ID yang sudah disurvey, ubah menjadi array sederhana
         if (!empty($surveyedPelangganIds)) {
             $excludeIds = array_column($surveyedPelangganIds, 'id_pelanggan');
-            // Ambil data pelanggan yang ID-nya TIDAK ADA dalam daftar yang sudah disurvey
             $availablePelanggan = $pelangganModel->whereNotIn('id_pelanggan', $excludeIds)->findAll();
         } else {
-            // Jika belum ada survey sama sekali, ambil semua pelanggan
             $availablePelanggan = $pelangganModel->findAll();
         }
-
         $data = [
             'page_title'     => 'Tambah Survey Baru',
-            'pelanggan_list' => $availablePelanggan // 4. Kirim data yang sudah difilter ke view
+            'pelanggan_list' => $availablePelanggan
         ];
-
         return view('admin/tambah_survey', $data);
     }
 
@@ -114,7 +101,6 @@ class Admin extends BaseController
             'tanggal_survey' => $this->request->getPost('tanggal_survey'),
             'status'         => 'Dijadwalkan'
         ];
-
         if ($surveyModel->insert($data)) {
             return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil ditambahkan.');
         } else {
@@ -143,7 +129,6 @@ class Admin extends BaseController
             'tanggal_survey' => $this->request->getPost('tanggal_survey'),
             'status'         => $this->request->getPost('status')
         ];
-
         if ($surveyModel->update($id, $data)) {
             return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil diperbarui.');
         } else {
@@ -168,30 +153,25 @@ class Admin extends BaseController
     }
 
     public function simpanPelanggan()
-{
-    $model = new PelangganModel();
-    $data = $this->request->getPost();
-
-    $prefix = substr(strtoupper($data['nama_lengkap']), 0, 1);
-    $data['id_pelanggan'] = $prefix . date('dmyHis');
-
-    $tujuan = $this->request->getPost('tujuan');
-    $data['id_survey'] = null;
-    $data['id_namasewa'] = null;
-
-    if ($tujuan === 'survey') {
-        $data['id_survey'] = 'SURVEY' . date('dmyHis');
-        session()->setFlashdata('success', 'Data pelanggan baru untuk SURVEY berhasil ditambahkan.');
-    } elseif ($tujuan === 'sewa') {
-        $data['id_namasewa'] = 'SEWA' . date('dmyHis');
-        session()->setFlashdata('success', 'Data pelanggan baru untuk SEWA berhasil ditambahkan.');
-    }
-    $data['tanggal_survey'] = date('Y-m-d H:i:s'); 
-
-    unset($data['tujuan']);
-    $model->save($data);
-
-    return redirect()->to('admin/pelanggan');
+    {
+        $model = new PelangganModel();
+        $data = $this->request->getPost();
+        $prefix = substr(strtoupper($data['nama_lengkap']), 0, 1);
+        $data['id_pelanggan'] = $prefix . date('dmyHis');
+        $tujuan = $this->request->getPost('tujuan');
+        $data['id_survey'] = null;
+        $data['id_namasewa'] = null;
+        if ($tujuan === 'survey') {
+            $data['id_survey'] = 'SURVEY' . date('dmyHis');
+            session()->setFlashdata('success', 'Data pelanggan baru untuk SURVEY berhasil ditambahkan.');
+        } elseif ($tujuan === 'sewa') {
+            $data['id_namasewa'] = 'SEWA' . date('dmyHis');
+            session()->setFlashdata('success', 'Data pelanggan baru untuk SEWA berhasil ditambahkan.');
+        }
+        $data['tanggal_survey'] = date('Y-m-d H:i:s');
+        unset($data['tujuan']);
+        $model->save($data);
+        return redirect()->to('admin/pelanggan');
     }
 
     public function editPelanggan($id)
@@ -203,15 +183,12 @@ class Admin extends BaseController
 
     public function updatePelanggan($id)
     {
-    $model = new PelangganModel();
-    $data = $this->request->getPost();
-    
-    // Hapus tanggal dari data yang diupdate agar tidak bisa diubah
-    unset($data['tanggal_survey']);
-
-    $model->update($id, $data);
-    session()->setFlashdata('success', 'Data pelanggan berhasil diperbarui.');
-    return redirect()->to('admin/pelanggan');
+        $model = new PelangganModel();
+        $data = $this->request->getPost();
+        unset($data['tanggal_survey']);
+        $model->update($id, $data);
+        session()->setFlashdata('success', 'Data pelanggan berhasil diperbarui.');
+        return redirect()->to('admin/pelanggan');
     }
 
     public function hapusPelanggan($id)
@@ -229,16 +206,16 @@ class Admin extends BaseController
         return view('admin/view_pelanggan', $data);
     }
     
+    // ===================================================================
+    // PEMESANAN
+    // ===================================================================
     public function dataPemesanan()
     {
         $model = new PemesananModel();
-
-        // Query baru dengan JOIN
         $pemesananData = $model->select('pemesanan.*, pelanggan.nama_lengkap')
-                            ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
-                            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
-                            ->findAll();
-
+            ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
+            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
+            ->findAll();
         $data = [
             'page_title' => 'Data Pemesanan',
             'pemesanan_per_bulan' => $this->groupDataByMonth($pemesananData, 'tanggal_pemesanan')
@@ -246,13 +223,12 @@ class Admin extends BaseController
         return view('admin/pemesanan', $data);
     }
 
-   // di file app/Controllers/Admin.php
     public function tambahPemesanan()
     {
-        $pelangganModel = new PelangganModel(); // Tambahkan ini
+        $pelangganModel = new PelangganModel();
         $data = [
             'page_title' => 'Tambah Pemesanan',
-            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini
+            'pelanggan_list' => $pelangganModel->findAll()
         ];
         return view('admin/tambah_pemesanan', $data);
     }
@@ -270,20 +246,16 @@ class Admin extends BaseController
     public function editPemesanan($id)
     {
         $pemesananModel = new PemesananModel();
-        $pelangganModel = new PelangganModel(); // Tambahkan ini
-
+        $pelangganModel = new PelangganModel();
         $pemesanan = $pemesananModel->find($id);
-
         if (empty($pemesanan)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pemesanan tidak ditemukan: ' . $id);
         }
-
         $data = [
             'page_title'     => 'Edit Data Pemesanan',
             'pemesanan'      => $pemesanan,
-            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini untuk mengirim daftar pelanggan
+            'pelanggan_list' => $pelangganModel->findAll()
         ];
-        
         return view('admin/edit_pemesanan', $data);
     }
 
@@ -304,30 +276,26 @@ class Admin extends BaseController
     }
 
     // ===================================================================
-    // 4. MANAJEMEN ALAT (CEK ALAT)
+    // MANAJEMEN ALAT
     // ===================================================================
-    // UBAH FUNGSI INI (dari dataAlat menjadi dataAlatBerat)
     public function dataAlatBerat()
     {
         $model = new AlatModel();
         $data = [
             'page_title' => 'Manajemen Alat Berat',
-            // Filter hanya untuk 'Alat Berat'
             'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()
         ];
-        return view('admin/alat', $data); // Kita tetap pakai view 'alat.php'
+        return view('admin/alat', $data);
     }
 
-    // TAMBAHKAN FUNGSI BARU INI
     public function dataMaterial()
     {
         $model = new AlatModel();
         $data = [
             'page_title' => 'Manajemen Material',
-            // Filter hanya untuk 'Material'
             'alat_list'  => $model->where('kategori', 'Material')->findAll()
         ];
-        return view('admin/alat', $data); // Kita juga pakai view 'alat.php' yang sama
+        return view('admin/alat', $data);
     }
 
     public function tambahAlat()
@@ -335,7 +303,7 @@ class Admin extends BaseController
         $alatModel = new AlatModel();
         $data = [
             'page_title' => 'Tambah Data / Update Stok',
-            'alat_list'  => $alatModel->findAll() // Mengirim daftar alat ke view
+            'alat_list'  => $alatModel->findAll()
         ];
         return view('admin/tambah_alat', $data);
     }
@@ -343,19 +311,15 @@ class Admin extends BaseController
     public function simpanAlat()
     {
         $alatModel = new AlatModel();
-        
-        // Validasi dasar, bisa Anda kembangkan lebih lanjut
         $rules = [
             'id_alat'   => 'required|is_unique[alat.id_alat]',
             'nama_alat' => 'required',
             'kategori'  => 'required',
             'stok_alat' => 'required|numeric'
         ];
-
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-
         $data = [
             'id_alat'        => $this->request->getPost('id_alat'),
             'cek_alat'       => $this->request->getPost('cek_alat'),
@@ -365,21 +329,14 @@ class Admin extends BaseController
             'informasi_alat' => $this->request->getPost('informasi_alat'),
             'harga_sewa'     => $this->request->getPost('harga_sewa'),
         ];
-
-        // Logika upload gambar
         $gambar = $this->request->getFile('gambar_alat');
         if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
             $newName = $gambar->getRandomName();
             $gambar->move(FCPATH . 'uploads/alat', $newName);
             $data['gambar_alat'] = $newName;
         }
-
-        // Simpan ke database
         $alatModel->save($data);
         session()->setFlashdata('success', 'Data baru berhasil ditambahkan.');
-
-        // **REVISI UTAMA DI SINI**
-        // Redirect berdasarkan kategori yang dipilih
         if ($this->request->getPost('kategori') === 'Material') {
             return redirect()->to('admin/material');
         } else {
@@ -391,7 +348,9 @@ class Admin extends BaseController
     {
         $model = new AlatModel();
         $data = ['page_title' => 'Edit Data Alat', 'validation' => \Config\Services::validation(), 'alat' => $model->find($id)];
-        if (empty($data['alat'])) { throw new \CodeIgniter\Exceptions\PageNotFoundException('Data alat tidak ditemukan.'); }
+        if (empty($data['alat'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data alat tidak ditemukan.');
+        }
         return view('admin/edit_alat', $data);
     }
 
@@ -399,30 +358,18 @@ class Admin extends BaseController
     {
         $model = new AlatModel();
         $data = $this->request->getPost();
-
-        // Logika untuk upload gambar baru jika ada
         $gambar = $this->request->getFile('gambar_alat');
         if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
-            // Hapus gambar lama jika ada untuk menghemat ruang
             $alatLama = $model->find($id);
             if ($alatLama && !empty($alatLama['gambar_alat']) && file_exists(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat'])) {
                 unlink(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat']);
             }
-
-            // Pindahkan gambar baru dan update nama filenya di data
             $newName = $gambar->getRandomName();
             $gambar->move(FCPATH . 'uploads/alat', $newName);
             $data['gambar_alat'] = $newName;
         }
-
-        // Update data di database
         $model->update($id, $data);
-
-        // Set pesan sukses
         session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
-
-        // **REVISI UTAMA ADA DI SINI**
-        // Redirect ke halaman yang sesuai berdasarkan kategori
         $kategori = $this->request->getPost('kategori');
         if ($kategori === 'Material') {
             return redirect()->to('/admin/material');
@@ -440,23 +387,20 @@ class Admin extends BaseController
     }
     
     // ===================================================================
-    // 5. PENYEWAAN (Revisi dengan Otomatisasi)
+    // PENYEWAAN
     // ===================================================================
     public function dataPenyewaan()
     {
         $model = new PenyewaanModel();
-        $penyewaanData = $model->getPenyewaanWithDetails(); // Ambil data
-
-        // Kelompokkan data berdasarkan bulan
+        $penyewaanData = $model->getPenyewaanWithDetails();
         $groupedData = [];
         foreach ($penyewaanData as $item) {
             $month = date('F Y', strtotime($item['tanggal_penyewaan']));
             $groupedData[$month][] = $item;
         }
-
         $data = [
             'page_title'        => 'Data Penyewaan Alat',
-            'penyewaan_per_bulan' => $groupedData // <-- Kirim data yang sudah dikelompokkan
+            'penyewaan_per_bulan' => $groupedData
         ];
         return view('admin/penyewaan', $data);
     }
@@ -465,32 +409,22 @@ class Admin extends BaseController
     {
         $pelangganModel = new PelangganModel();
         $alatModel = new AlatModel();
-        $penyewaanModel = new PenyewaanModel(); // 1. Panggil PenyewaanModel
-
-        // 2. Ambil ID pelanggan (id_namasewa) yang statusnya masih 'Disewa'
+        $penyewaanModel = new PenyewaanModel();
         $activeRentals = $penyewaanModel->where('status', 'Disewa')
-                                        ->select('id_namasewa')
-                                        ->distinct()
-                                        ->findAll();
-
-        // 3. Jika ada pelanggan yang sedang menyewa, filter mereka
+            ->select('id_namasewa')
+            ->distinct()
+            ->findAll();
         if (!empty($activeRentals)) {
             $excludeIds = array_column($activeRentals, 'id_namasewa');
-            // Ambil data pelanggan yang ID-nya TIDAK ADA dalam daftar sewa aktif
             $availablePelanggan = $pelangganModel->whereNotIn('id_pelanggan', $excludeIds)->findAll();
         } else {
-            // Jika tidak ada sewa yang aktif, ambil semua pelanggan
             $availablePelanggan = $pelangganModel->findAll();
-            
         }
-        
         $data = [
             'page_title'     => 'Tambah Data Penyewaan Baru',
-            // 4. Kirim daftar pelanggan yang sudah difilter ke view
             'pelanggan_list' => $availablePelanggan,
             'alat_list'      => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
         ];
-        
         return view('admin/tambah_penyewaan', $data);
     }
     
@@ -499,11 +433,9 @@ class Admin extends BaseController
         $penyewaanModel = new PenyewaanModel();
         $alatModel = new AlatModel();
         $pelangganModel = new PelangganModel();
-
         $id_alat = $this->request->getPost('id_alat');
         $id_pelanggan = $this->request->getPost('id_pelanggan');
         
-        // --- VALIDASI SEBELUM SIMPAN ---
         if (empty($id_alat) || empty($id_pelanggan)) {
             return redirect()->back()->withInput()->with('error', 'Gagal: Pelanggan dan Alat wajib dipilih.');
         }
@@ -517,28 +449,24 @@ class Admin extends BaseController
         if (!$pelanggan) {
             return redirect()->back()->withInput()->with('error', 'Gagal: Data Pelanggan tidak ditemukan di database.');
         }
-        // --- AKHIR VALIDASI ---
 
         $idSewaBaru = 'SEWA' . date('ymdHis');
-
         $data = [
             'id_sewa' => $idSewaBaru,
             'id_namasewa' => $id_pelanggan,
             'nama_penyewa' => $pelanggan->nama_lengkap,
             'id_alat' => $id_alat,
             'nama_alatdisewa' => $alat->nama_alat,
-            'harga_alatdisewa' => $this->request->getPost('harga_alatdisewa'), // Ambil dari form
+            'harga_alatdisewa' => $this->request->getPost('harga_alatdisewa'),
             'tanggal_penyewaan' => $this->request->getPost('tanggal_penyewaan'),
             'alamat_penyewa' => $this->request->getPost('alamat_penyewa'),
             'status' => 'Disewa'
         ];
         
         if ($penyewaanModel->save($data)) {
-            // Jika berhasil, kurangi stok alat & ubah status jika stok jadi 0
             $stokBaru = $alat->stok_alat - 1;
-            $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa'; // Jika stok habis, langsung set jadi Disewa/Tidak Tersedia
+            $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa';
             $alatModel->update($id_alat, ['stok_alat' => $stokBaru, 'cek_alat' => $statusAlatBaru]);
-            
             session()->setFlashdata('success', 'Data penyewaan ' . $idSewaBaru . ' berhasil ditambahkan.');
         } else {
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data ke database.');
@@ -584,7 +512,7 @@ class Admin extends BaseController
     }
 
     // ===================================================================
-    // 6 & 7. PEMBAYARAN (Revisi dengan pemisahan & tanpa hapus)
+    // PEMBAYARAN
     // ===================================================================
     public function dataPembayaranPemesanan()
     {
@@ -594,7 +522,7 @@ class Admin extends BaseController
             'pembayaran_list' => $model->getPembayaranDetails('pemesanan'),
             'tipe' => 'pemesanan'
         ];
-        return view('admin/pembayaran_data', $data); // Menggunakan view pembayaran_data
+        return view('admin/pembayaran_data', $data);
     }
     
     public function dataPembayaranPenyewaan()
@@ -605,7 +533,7 @@ class Admin extends BaseController
             'pembayaran_list' => $model->getPembayaranDetails('penyewaan'),
             'tipe' => 'penyewaan'
         ];
-        return view('admin/pembayaran_data', $data); // Menggunakan view pembayaran_data
+        return view('admin/pembayaran_data', $data);
     }
     
     public function tambahPembayaranPemesanan()
@@ -616,7 +544,7 @@ class Admin extends BaseController
             'transaksi_list' => $pemesananModel->getPemesananWithDetails(),
             'tipe' => 'pemesanan'
         ];
-        return view('admin/pembayaran_tambah', $data); // Menggunakan view pembayaran_tambah
+        return view('admin/pembayaran_tambah', $data);
     }
 
     public function tambahPembayaranPenyewaan()
@@ -627,26 +555,21 @@ class Admin extends BaseController
             'transaksi_list' => $penyewaanModel->getPenyewaanWithDetails(),
             'tipe' => 'penyewaan'
         ];
-        return view('admin/pembayaran_tambah', $data); // Menggunakan view pembayaran_tambah
+        return view('admin/pembayaran_tambah', $data);
     }
 
     public function simpanPembayaran()
     {
         $model = new PembayaranModel();
         $data = $this->request->getPost();
-        
         $data['id_bayar'] = 'PAY' . date('ymdHis');
-
-        // Logika untuk upload bukti pembayaran
         $buktiFile = $this->request->getFile('bukti_pembayaran');
         if ($buktiFile && $buktiFile->isValid() && !$buktiFile->hasMoved()) {
             $newName = $buktiFile->getRandomName();
             $buktiFile->move(FCPATH . 'uploads/bukti', $newName);
             $data['bukti_pembayaran'] = $newName;
         }
-
         $model->save($data);
-
         session()->setFlashdata('success', 'Data pembayaran berhasil direkam.');
         $redirectUrl = ($this->request->getPost('tipe') === 'penyewaan') ? 'admin/pembayaran/penyewaan' : 'admin/pembayaran/pemesanan';
         return redirect()->to($redirectUrl);
@@ -660,7 +583,7 @@ class Admin extends BaseController
     }
 
     // ===================================================================
-    // 8. PENGEMBALIAN (Tanpa Hapus)
+    // PENGEMBALIAN
     // ===================================================================
     public function dataPengembalian()
     {
@@ -682,29 +605,87 @@ class Admin extends BaseController
         $data = $this->request->getPost();
         $data['id_kembali'] = 'KMB' . date('ymdHis');
         $pengembalianModel->save($data);
-
         $penyewaanModel = new PenyewaanModel();
         $alatModel = new AlatModel();
         $penyewaan = $penyewaanModel->find($data['id_sewa']);
-        
         $penyewaanModel->update($data['id_sewa'], ['status' => 'Selesai']);
         $alatModel->update($penyewaan['id_alat'], ['cek_alat' => 'Tersedia']);
-        
         session()->setFlashdata('success', 'Data pengembalian berhasil ditambahkan dan status alat telah diperbarui.');
         return redirect()->to('admin/pengembalian');
     }
-
+    
     // ===================================================================
-    // 9. LAPORAN
+    // 9. LAPORAN (KODE YANG SUDAH DIPERBAIKI)
     // ===================================================================
     public function laporan()
     {
-        return view('admin/laporan_form', ['page_title' => 'Cetak Laporan Keuangan']);
+        $db = \Config\Database::connect();
+        $bulan = $this->request->getVar('bulan') ?? date('m');
+        $tahun = $this->request->getVar('tahun') ?? date('Y');
+
+        // Query untuk pemesanan
+        $builder1 = $db->table('pemesanan');
+        $builder1->select("pemesanan.id_pesanan as id_transaksi, pelanggan.nama_lengkap as nama_pelanggan, pemesanan.tanggal_pemesanan as tanggal, pemesanan.harga_paketdipesan as total_harga, 'Pemesanan' as tipe_transaksi");
+        $builder1->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan');
+        $builder1->where('MONTH(pemesanan.tanggal_pemesanan)', $bulan);
+        $builder1->where('YEAR(pemesanan.tanggal_pemesanan)', $tahun);
+        $query1 = $builder1->getCompiledSelect(false);
+
+        // Query untuk penyewaan
+        $builder2 = $db->table('penyewaan');
+        $builder2->select("penyewaan.id_sewa as id_transaksi, penyewaan.nama_penyewa as nama_pelanggan, penyewaan.tanggal_penyewaan as tanggal, penyewaan.harga_alatdisewa as total_harga, 'Penyewaan' as tipe_transaksi");
+        $builder2->where('MONTH(penyewaan.tanggal_penyewaan)', $bulan);
+        $builder2->where('YEAR(penyewaan.tanggal_penyewaan)', $tahun);
+        $query2 = $builder2->getCompiledSelect();
+        
+        $laporanQuery = $db->query($query1 . ' UNION ALL ' . $query2 . ' ORDER BY tanggal DESC');
+
+        $data = [
+            'page_title' => 'Laporan Transaksi',
+            'laporan'    => $laporanQuery->getResultArray(),
+            'bulan'      => $bulan,
+            'tahun'      => $tahun,
+        ];
+
+        return view('admin/laporan', $data);
     }
 
-    public function cetakLaporan()
+    public function cetakLaporanPdf()
     {
-        // Disini nanti logika untuk query data dan generate PDF/Excel
+        $db = \Config\Database::connect();
+        $bulan = $this->request->getGet('bulan') ?? date('m');
+        $tahun = $this->request->getGet('tahun') ?? date('Y');
+
+        // Query untuk pemesanan
+        $builder1 = $db->table('pemesanan');
+        $builder1->select("pemesanan.id_pesanan as id_transaksi, pelanggan.nama_lengkap as nama_pelanggan, pemesanan.tanggal_pemesanan as tanggal, pemesanan.harga_paketdipesan as total_harga, 'Pemesanan' as tipe_transaksi");
+        $builder1->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan');
+        $builder1->where('MONTH(pemesanan.tanggal_pemesanan)', $bulan);
+        $builder1->where('YEAR(pemesanan.tanggal_pemesanan)', $tahun);
+        $query1 = $builder1->getCompiledSelect(false);
+
+        // Query untuk penyewaan
+        $builder2 = $db->table('penyewaan');
+        $builder2->select("penyewaan.id_sewa as id_transaksi, penyewaan.nama_penyewa as nama_pelanggan, penyewaan.tanggal_penyewaan as tanggal, penyewaan.harga_alatdisewa as total_harga, 'Penyewaan' as tipe_transaksi");
+        $builder2->where('MONTH(penyewaan.tanggal_penyewaan)', $bulan);
+        $builder2->where('YEAR(penyewaan.tanggal_penyewaan)', $tahun);
+        $query2 = $builder2->getCompiledSelect();
+        
+        $laporanQuery = $db->query($query1 . ' UNION ALL ' . $query2 . ' ORDER BY tanggal DESC');
+
+        $data = [
+            'laporan' => $laporanQuery->getResultArray(),
+            'bulan'   => $bulan,
+            'tahun'   => $tahun,
+        ];
+
+        $dompdf = new Dompdf();
+        $html = view('admin/laporan_pdf', $data);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $nama_file = "Laporan-" . $bulan . "-" . $tahun . ".pdf";
+        $dompdf->stream($nama_file, ['Attachment' => 1]);
     }
     
     // ===================================================================
@@ -761,67 +742,42 @@ class Admin extends BaseController
         session()->setFlashdata('success', 'Profil berhasil diperbarui.');
         return redirect()->to('admin/profile');
     }
-
+    
+    // ===================================================================
+    // LAIN-LAIN (CEK STOK, PAKET, PEKERJA, DLL)
+    // ===================================================================
     public function cekStokAlat()
     {
         $model = new AlatModel();
-        $data = [
-            'page_title' => 'Cek Stok Alat',
-            'alat_list'  => $model->findAll()
-        ];
+        $data = ['page_title' => 'Cek Stok Alat', 'alat_list'  => $model->findAll()];
         return view('admin/cek_stok_alat', $data);
     }
 
-    // Fungsi untuk menampilkan stok MATERIAL
     public function cekStokMaterial()
     {
         $model = new AlatModel();
-        $data = [
-            'page_title' => 'Cek Stok Material',
-            // UBAH NAMA VARIABEL DI BARIS INI
-            'material_list'  => $model->where('kategori', 'Material')->findAll()
-        ];
-        // Pastikan nama file view sudah benar
+        $data = ['page_title' => 'Cek Stok Material', 'material_list'  => $model->where('kategori', 'Material')->findAll()];
         return view('admin/cek_stok_material', $data);
     }
 
     public function cekStokAlatBerat()
     {
         $model = new AlatModel();
-        $data = [
-            'page_title' => 'Cek Stok Alat Berat',
-            'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()
-        ];
+        $data = ['page_title' => 'Cek Stok Alat Berat', 'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()];
         return view('admin/cek_stok_alat_berat', $data);
     }
 
-    // ===================================================================
-    // FUNGSI UNTUK HALAMAN CEK (TERHUBUNG KE DATABASE)
-    // ===================================================================
-
     public function cek_paket()
     {
-        // 1. Panggil PaketModel
         $paketModel = new PaketModel();
-
-        // 2. Siapkan data untuk dikirim ke view
-        $data = [
-            'page_title' => 'Cek Ketersediaan Paket',
-            // 3. Ambil semua data dari tabel paket dan masukkan ke variabel 'pakets'
-            'pakets'     => $paketModel->findAll()
-        ];
-
-        // 4. Kirim data ke view
+        $data = ['page_title' => 'Cek Ketersediaan Paket', 'pakets'     => $paketModel->findAll()];
         return view('admin/cek_paket', $data);
     }
 
     public function cek_stok()
     {
-        $model = new AlatModel(); // Memanggil model Alat
-        $data = [
-            'page_title' => 'Cek Stok Alat',
-            'alat_list'  => $model->findAll() // Mengambil semua data dari tabel alat
-        ];
+        $model = new AlatModel();
+        $data = ['page_title' => 'Cek Stok Alat', 'alat_list'  => $model->findAll()];
         return view('admin/cek_stok_alat', $data);
     }
 
@@ -859,27 +815,19 @@ class Admin extends BaseController
 
     public function tambahPaket()
     {
-        $data = [
-            'page_title' => 'Tambah Paket Baru'
-        ];
+        $data = ['page_title' => 'Tambah Paket Baru'];
         return view('admin/tambah_paket', $data);
     }
 
-    // Method untuk menyimpan data paket baru ke database
     public function simpanPaket()
     {
         $paketModel = new PaketModel();
-
         $data = [
             'nama_paket'      => $this->request->getPost('nama_paket'),
             'deskripsi_paket' => $this->request->getPost('deskripsi_paket'),
             'harga_paket'     => $this->request->getPost('harga_paket'),
         ];
-
-        // Simpan data ke database
         $paketModel->save($data);
-
-        // Arahkan kembali ke halaman cek paket dengan pesan sukses
         return redirect()->to('admin/cek-paket')->with('success', 'Paket baru berhasil ditambahkan!');
     }
 
@@ -895,19 +843,13 @@ class Admin extends BaseController
     public function editPaket($id = null)
     {
         $paketModel = new PaketModel();
-        $data = [
-            'page_title' => 'Edit Paket',
-            'paket'      => $paketModel->find($id)
-        ];
-
+        $data = ['page_title' => 'Edit Paket', 'paket' => $paketModel->find($id)];
         if (empty($data['paket'])) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Paket tidak ditemukan.');
         }
-
         return view('admin/edit_paket', $data);
     }
 
-    // Method untuk menyimpan perubahan dari form edit
     public function updatePaket($id = null)
     {
         $paketModel = new PaketModel();
@@ -916,7 +858,6 @@ class Admin extends BaseController
             'deskripsi_paket' => $this->request->getPost('deskripsi_paket'),
             'harga_paket'     => $this->request->getPost('harga_paket'),
         ];
-
         $paketModel->update($id, $data);
         return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil diperbarui.');
     }

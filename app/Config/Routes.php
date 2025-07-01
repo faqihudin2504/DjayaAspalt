@@ -108,6 +108,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('profile', 'Admin::adminProfile');
     $routes->get('profile/edit', 'Admin::editAdminProfile');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
+
+    $routes->match(['get', 'post'], 'laporan', 'Admin::laporan');
+    $routes->get('laporan/cetak', 'Admin::cetakLaporanPdf');
 });
 
 
