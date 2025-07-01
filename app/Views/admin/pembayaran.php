@@ -57,9 +57,6 @@
                             <td><?= esc(date('d M Y', strtotime($item['tanggal_pembayaran']))) ?></td>
                             <td><span class="badge bg-secondary"><?= esc($item['metode_pembayaran']) ?></span></td>
                             <td><?= esc($item['no_rekening']) ?></td>
-                            <td>
-                                <a href="<?= base_url('admin/pembayaran/hapus/' . $item['id_bayar']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
-                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

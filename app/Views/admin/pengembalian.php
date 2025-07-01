@@ -34,7 +34,6 @@
                     <th>Nama Alat Disewa</th>
                     <th>Denda Kembali</th>
                     <th>Tanggal Kembali</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,10 +52,6 @@
                             <td class="text-start"><?= esc($item['nama_alat']) ?></td>
                             <td>Rp. <?= number_format($item['denda_kembali'] ?? 0, 0, ',', '.') ?></td>
                             <td><?= esc(date('d-m-Y', strtotime($item['tanggal_pengembalian']))) ?></td>
-                            <td class="action-buttons">
-                                <a href="#" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="#" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
-                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
