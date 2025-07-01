@@ -42,8 +42,10 @@ class Admin extends BaseController
         return view('admin/dashboard');
     }
 
+    // ... (Fungsi-fungsi lain dari manajemen pengguna sampai pengembalian tetap sama) ...
+    
     // ===================================================================
-    // 1. MANAJEMEN PENGGUNA (PELANGGAN)
+    // MANAJEMEN PENGGUNA (PELANGGAN)
     // ===================================================================
     public function manajemenPengguna()
     {
@@ -613,9 +615,9 @@ class Admin extends BaseController
         session()->setFlashdata('success', 'Data pengembalian berhasil ditambahkan dan status alat telah diperbarui.');
         return redirect()->to('admin/pengembalian');
     }
-    
+
     // ===================================================================
-    // 9. LAPORAN (KODE YANG SUDAH DIPERBAIKI)
+    // LAPORAN (KODE YANG SUDAH DIPERBAIKI)
     // ===================================================================
     public function laporan()
     {
@@ -684,7 +686,14 @@ class Admin extends BaseController
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $nama_file = "Laporan-" . $bulan . "-" . $tahun . ".pdf";
+
+        // Konversi nomor bulan menjadi nama bulan
+        $namaBulan = Time::createFromDate($tahun, $bulan, 1)->toLocalizedString('MMMM');
+
+        // Buat nama file yang baru
+        $nama_file = "Laporan Djaya Aspalt " . $namaBulan . " " . $tahun . ".pdf";
+        
+        // Download PDF di browser
         $dompdf->stream($nama_file, ['Attachment' => 1]);
     }
     
