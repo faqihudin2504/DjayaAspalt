@@ -82,10 +82,26 @@ class Admin extends BaseController
     public function tambahSurvey()
     {
         $pelangganModel = new PelangganModel();
+        $surveyModel = new SurveyModel(); // 1. Panggil SurveyModel
+
+        // 2. Ambil semua ID pelanggan yang sudah ada di tabel survey
+        $surveyedPelangganIds = $surveyModel->select('id_pelanggan')->distinct()->findAll();
+
+        // 3. Jika ada ID yang sudah disurvey, ubah menjadi array sederhana
+        if (!empty($surveyedPelangganIds)) {
+            $excludeIds = array_column($surveyedPelangganIds, 'id_pelanggan');
+            // Ambil data pelanggan yang ID-nya TIDAK ADA dalam daftar yang sudah disurvey
+            $availablePelanggan = $pelangganModel->whereNotIn('id_pelanggan', $excludeIds)->findAll();
+        } else {
+            // Jika belum ada survey sama sekali, ambil semua pelanggan
+            $availablePelanggan = $pelangganModel->findAll();
+        }
+
         $data = [
-            'page_title' => 'Tambah Survey Baru',
-            'pelanggan_list' => $pelangganModel->findAll()
+            'page_title'     => 'Tambah Survey Baru',
+            'pelanggan_list' => $availablePelanggan // 4. Kirim data yang sudah difilter ke view
         ];
+
         return view('admin/tambah_survey', $data);
     }
 
@@ -449,12 +465,30 @@ class Admin extends BaseController
     {
         $pelangganModel = new PelangganModel();
         $alatModel = new AlatModel();
+        $penyewaanModel = new PenyewaanModel(); // 1. Panggil PenyewaanModel
 
+        // 2. Ambil ID pelanggan (id_namasewa) yang statusnya masih 'Disewa'
+        $activeRentals = $penyewaanModel->where('status', 'Disewa')
+                                        ->select('id_namasewa')
+                                        ->distinct()
+                                        ->findAll();
+
+        // 3. Jika ada pelanggan yang sedang menyewa, filter mereka
+        if (!empty($activeRentals)) {
+            $excludeIds = array_column($activeRentals, 'id_namasewa');
+            // Ambil data pelanggan yang ID-nya TIDAK ADA dalam daftar sewa aktif
+            $availablePelanggan = $pelangganModel->whereNotIn('id_pelanggan', $excludeIds)->findAll();
+        } else {
+            // Jika tidak ada sewa yang aktif, ambil semua pelanggan
+            $availablePelanggan = $pelangganModel->findAll();
+            
+        }
+        
         $data = [
-            'page_title' => 'Tambah Data Penyewaan Baru',
-            // SEKARANG MENGAMBIL SEMUA PELANGGAN, KARENA SEMUA BOLEH MENYEWA
-            'pelanggan_list' => $pelangganModel->findAll(),
-            'alat_list' => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
+            'page_title'     => 'Tambah Data Penyewaan Baru',
+            // 4. Kirim daftar pelanggan yang sudah difilter ke view
+            'pelanggan_list' => $availablePelanggan,
+            'alat_list'      => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
         ];
         
         return view('admin/tambah_penyewaan', $data);
