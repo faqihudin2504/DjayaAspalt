@@ -13,7 +13,7 @@
                     <option value="">-- Pilih Pelanggan --</option>
                     <?php if (!empty($pelanggan_list)): ?>
                         <?php foreach($pelanggan_list as $pl): ?>
-                            <option value="<?= esc($pl['id_pelanggan']) ?>"><?= esc($pl['nama_lengkap']) ?></option>
+                            <option value="<?= esc($pl->id_pelanggan) ?>"><?= esc($pl->nama_lengkap) ?></option>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </select>

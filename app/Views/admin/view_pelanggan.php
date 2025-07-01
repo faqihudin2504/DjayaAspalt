@@ -11,7 +11,7 @@
 
 <div class="card shadow-sm">
     <div class="card-header fw-bold bg-light">
-        Informasi untuk: <?= esc($pelanggan['nama_lengkap']) ?>
+        Informasi untuk: <?= esc($pelanggan->nama_lengkap) // Diubah ?>
     </div>
     <div class="card-body">
         <?php if (!empty($pelanggan)): ?>
@@ -19,32 +19,32 @@
             <table class="table table-borderless">
                 <tr>
                     <td style="width: 150px;"><strong>ID Pelanggan</strong></td>
-                    <td>: <?= esc($pelanggan['id_pelanggan']) ?></td>
+                    <td>: <?= esc($pelanggan->id_pelanggan) // Diubah ?></td>
                 </tr>
                 <tr>
                     <td><strong>Nama Lengkap</strong></td>
-                    <td>: <?= esc($pelanggan['nama_lengkap']) ?></td>
+                    <td>: <?= esc($pelanggan->nama_lengkap) // Diubah ?></td>
                 </tr>
                 <tr>
                     <td><strong>Nomor Telepon</strong></td>
-                    <td>: <?= esc($pelanggan['no_telpon']) ?></td>
+                    <td>: <?= esc($pelanggan->no_telpon) // Diubah ?></td>
                 </tr>
                 <tr>
                     <td><strong>Email</strong></td>
-                    <td>: <?= esc($pelanggan['email']) ?></td>
+                    <td>: <?= esc($pelanggan->email) // Diubah ?></td>
                 </tr>
                  <tr>
                     <td class="align-top"><strong>Alamat Rumah</strong></td>
-                    <td class="align-top">: <?= esc($pelanggan['alamat'] ?? 'Belum diisi') ?></td>
+                    <td class="align-top">: <?= esc($pelanggan->alamat ?? 'Belum diisi') // Diubah ?></td>
                 </tr>
                  <tr>
                     <td><strong>Tanggal Daftar</strong></td>
-                    <td>: <?= esc(date('d F Y, H:i', strtotime($pelanggan['created_at']))) ?></td>
+                    <td>: <?= esc(date('d F Y, H:i', strtotime($pelanggan->created_at))) // Diubah ?></td>
                 </tr>
             </table>
             <hr>
             <div class="text-end mt-3">
-                <a href="<?= base_url('admin/pelanggan/edit/' . $pelanggan['id_pelanggan']) ?>" class="btn btn-warning">
+                <a href="<?= base_url('admin/pelanggan/edit/' . $pelanggan->id_pelanggan) // Diubah ?>" class="btn btn-warning">
                     <i class="fas fa-edit"></i> Edit Data Ini
                 </a>
             </div>
