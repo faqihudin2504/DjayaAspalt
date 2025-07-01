@@ -9,7 +9,7 @@ class PembayaranModel extends Model
     protected $table            = 'pembayaran';
     protected $primaryKey       = 'id_bayar';
     protected $useAutoIncrement = false;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $allowedFields    = [
         'id_bayar',
         'id_pesanan',

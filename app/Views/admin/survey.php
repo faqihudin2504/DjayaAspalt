@@ -52,14 +52,14 @@
                 <tbody>
                     <?php foreach ($items as $item): ?>
                         <tr>
-                            <td><?= esc($item['nama_lengkap']) ?></td>
-                            <td><?= esc($item['no_telpon']) ?></td>
-                            <td class="text-start"><?= esc($item['alamat_survey']) ?></td>
-                            <td><?= date('d M Y, H:i', strtotime($item['tanggal_survey'])) ?></td>
-                            <td><span class="badge bg-info"><?= esc($item['status']) ?></span></td>
+                            <td><?= esc($item->nama_lengkap) ?></td>
+                            <td><?= esc($item->no_telpon) ?></td>
+                            <td class="text-start"><?= esc($item->alamat_survey) ?></td>
+                            <td><?= date('d M Y, H:i', strtotime($item->tanggal_survey)) ?></td>
+                            <td><span class="badge bg-info"><?= esc($item->status) ?></span></td>
                             <td>
-                                <a href="<?= base_url('admin/survey/edit/' . $item['id_survey']) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/survey/hapus/' . $item['id_survey']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus jadwal survey ini?')">Hapus</a>
+                                <a href="<?= base_url('admin/survey/edit/' . $item->id_survey) ?>" class="btn btn-warning btn-sm">Ubah</a>
+                                <a href="<?= base_url('admin/survey/hapus/' . $item->id_survey) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus jadwal survey ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

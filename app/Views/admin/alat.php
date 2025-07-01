@@ -47,13 +47,13 @@
                     <?php foreach ($alat_list as $alat): ?>
                         <tr>
                             <td>
-                                <img src="<?= base_url('uploads/alat/' . ($alat['gambar_alat'] ?: 'default.png')) ?>" alt="<?= esc($alat['nama_alat']) ?>" class="alat-img-thumbnail">
+                                <img src="<?= base_url('uploads/alat/' . ($alat->gambar_alat ?: 'default.png')) ?>" alt="<?= esc($alat->nama_alat) ?>" class="alat-img-thumbnail">
                             </td>
-                            <td><?= esc($alat['id_alat']) ?></td>
-                            <td class="text-start"><?= esc($alat['nama_alat']) ?></td>
+                            <td><?= esc($alat->id_alat) ?></td>
+                            <td class="text-start"><?= esc($alat->nama_alat) ?></td>
                             <td>
                                 <?php
-                                    $status = esc($alat['cek_alat']);
+                                    $status = esc($alat->cek_alat);
                                     $badge_class = 'bg-secondary';
                                     if ($status == 'Tersedia') $badge_class = 'bg-success';
                                     if ($status == 'Disewa') $badge_class = 'bg-warning text-dark';
@@ -61,10 +61,10 @@
                                 ?>
                                 <span class="badge <?= $badge_class ?>"><?= $status ?></span>
                             </td>
-                            <td><?= esc($alat['stok_alat']) ?></td>
+                            <td><?= esc($alat->stok_alat) ?></td>
                             <td class="action-buttons">
-                                <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/alat/hapus/' . $alat['id_alat']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus alat ini?')">Hapus</a>
+                                <a href="<?= base_url('admin/alat/edit/' . $alat->id_alat) ?>" class="btn btn-warning btn-sm">Ubah</a>
+                                <a href="<?= base_url('admin/alat/hapus/' . $alat->id_alat) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus alat ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

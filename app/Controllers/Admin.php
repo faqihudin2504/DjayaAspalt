@@ -20,6 +20,11 @@ class Admin extends BaseController
     /**
      * Helper function untuk mengelompokkan data berdasarkan bulan dan tahun.
      */
+    // app/Controllers/Admin.php
+
+/**
+ * Helper function untuk mengelompokkan data berdasarkan bulan dan tahun.
+ */
     private function groupDataByMonth($data, $dateColumn)
     {
         if (empty($data)) {
@@ -27,7 +32,8 @@ class Admin extends BaseController
         }
         $grouped = [];
         foreach ($data as $item) {
-            $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM yyyy');
+            $monthYear = Time::parse($item->{$dateColumn})->toLocalizedString('MMMM yyyy');
+            
             if (!isset($grouped[$monthYear])) {
                 $grouped[$monthYear] = [];
             }
@@ -369,18 +375,19 @@ class Admin extends BaseController
     public function dataPenyewaan()
     {
         $model = new PenyewaanModel();
-        $penyewaanData = $model->getPenyewaanWithDetails(); // Ambil data
+        // getPenyewaanWithDetails() sekarang mengembalikan array of OBJECTS
+        $penyewaanData = $model->getPenyewaanWithDetails();
 
-        // Kelompokkan data berdasarkan bulan
         $groupedData = [];
         foreach ($penyewaanData as $item) {
-            $month = date('F Y', strtotime($item['tanggal_penyewaan']));
+            // PERBAIKAN: Gunakan -> untuk mengakses properti dari object
+            $month = date('F Y', strtotime($item->tanggal_penyewaan));
             $groupedData[$month][] = $item;
         }
 
         $data = [
             'page_title'        => 'Data Penyewaan Alat',
-            'penyewaan_per_bulan' => $groupedData // <-- Kirim data yang sudah dikelompokkan
+            'penyewaan_per_bulan' => $groupedData
         ];
         return view('admin/penyewaan', $data);
     }

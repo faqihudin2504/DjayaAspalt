@@ -51,14 +51,14 @@
                 <tbody>
                     <?php foreach ($items as $item): ?>
                         <tr>
-                            <td><?= esc($item['id_pesanan']) ?></td>
-                            <td><?= esc($item['nama_lengkap'] ?? 'N/A') ?></td>
-                            <td><?= esc($item['nama_paketdipesan']) ?></td>
-                            <td>Rp. <?= number_format($item['harga_paketdipesan'], 0, ',', '.') ?></td>
-                            <td><?= date('d-m-Y', strtotime($item['tanggal_pemesanan'])) ?></td>
+                            <td><?= esc($item->id_pesanan) ?></td>
+                            <td><?= esc($item->nama_lengkap ?? 'N/A') ?></td>
+                            <td><?= esc($item->nama_paketdipesan) ?></td>
+                            <td>Rp. <?= number_format($item->harga_paketdipesan, 0, ',', '.') ?></td>
+                            <td><?= date('d-m-Y', strtotime($item->tanggal_pemesanan)) ?></td>
                             <td class="action-buttons">
-                                <a href="<?= base_url('admin/pemesanan/edit/' . $item['id_pesanan']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('admin/pemesanan/hapus/' . $item['id_pesanan']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Delete</a>
+                                <a href="<?= base_url('admin/pemesanan/edit/' . $item->id_pesanan) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('admin/pemesanan/hapus/' . $item->id_pesanan) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -40,14 +40,14 @@
                 <?php else: ?>
                     <?php foreach ($pembayaran_list as $item): ?>
                         <tr>
-                            <td><?= esc($item['id_bayar']) ?></td>
-                            <td><?= esc($item['nama_pelanggan']) ?></td>
-                            <td>Rp. <?= number_format($item['total_harga'] ?? 0, 0, ',', '.') ?></td>
-                            <td><?= esc(date('d M Y', strtotime($item['tanggal_pembayaran']))) ?></td>
-                            <td><span class="badge bg-info"><?= esc($item['metode_pembayaran']) ?></span></td>
+                            <td><?= esc($item->id_bayar) ?></td>
+                            <td><?= esc($item->nama_lengkap) ?></td>
+                            <td>Rp. <?= number_format($item->total_harga ?? 0, 0, ',', '.') ?></td>
+                            <td><?= esc(date('d M Y', strtotime($item->tanggal_pembayaran))) ?></td>
+                            <td><span class="badge bg-info"><?= esc($item->metode_pembayaran) ?></span></td>
                             <td>
                                 <?php
-                                    $status = esc($item['status_pembayaran']);
+                                    $status = esc($item->status_pembayaran);
                                     $badge_class = 'bg-warning text-dark';
                                     if ($status == 'Lunas') $badge_class = 'bg-success';
                                     if ($status == 'Dibatalkan') $badge_class = 'bg-danger';
@@ -55,8 +55,8 @@
                                 <span class="badge <?= $badge_class ?>"><?= $status ?></span>
                             </td>
                             <td>
-                                <?php if($item['bukti_pembayaran']): ?>
-                                    <a href="<?= base_url('uploads/bukti/' . $item['bukti_pembayaran']) ?>" target="_blank" class="btn btn-primary btn-sm">Lihat Bukti</a>
+                                <?php if($item->bukti_pembayaran): ?>
+                                    <a href="<?= base_url('uploads/bukti/' . $item->bukti_pembayaran) ?>" target="_blank" class="btn btn-primary btn-sm">Lihat Bukti</a>
                                 <?php endif; ?>
                                 </td>
                         </tr>

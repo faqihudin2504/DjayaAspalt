@@ -9,7 +9,7 @@ class SurveyModel extends Model
     protected $table            = 'surveys';
     protected $primaryKey       = 'id_survey';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [

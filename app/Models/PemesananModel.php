@@ -9,7 +9,7 @@ class PemesananModel extends Model
     protected $table            = 'pemesanan';
     protected $primaryKey       = 'id_pesanan';
     protected $useAutoIncrement = false; // <-- WAJIB
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $allowedFields = [ 'id_pesanan', 'id_pelanggan', 'nama_paketdipesan', 'harga_paketdipesan', 'tanggal_pemesanan' ];
 
     /**
