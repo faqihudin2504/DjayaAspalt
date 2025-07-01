@@ -9,7 +9,7 @@ class PelangganModel extends Model
     protected $table            = 'pelanggan';
     protected $primaryKey       = 'id_pelanggan';
     protected $useAutoIncrement = false;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $allowedFields    = ['id_pelanggan', 'nama_lengkap', 'alamat', 'no_telpon', 'email', 'id_user'];
     protected $useTimestamps = true;
 

@@ -47,16 +47,8 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->post('pelanggan/update/(:any)', 'Admin::updatePelanggan/$1');
     $routes->get('pelanggan/hapus/(:any)', 'Admin::hapusPelanggan/$1');
     $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
-    
-    // 2. Survey & Pelaksanaan (Dikembalikan)
-   // $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
-   // $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
-   // $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
-   // $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
-    //$routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
-   // $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
 
-    // --- RUTE UNTUK MANAJEMEN SURVEY ---
+    // 2. RUTE UNTUK MANAJEMEN SURVEY ---
     $routes->get('survey', 'Admin::dataSurvey');
     $routes->get('survey/tambah', 'Admin::tambahSurvey');
     $routes->post('survey/simpan', 'Admin::simpanSurvey');

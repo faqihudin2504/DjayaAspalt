@@ -10,7 +10,6 @@
                     <th>ID Sewa</th> <th>Nama Alat Di Sewa</th>
                     <th>Denda Kembali</th>
                     <th>Tanggal Kembali</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>

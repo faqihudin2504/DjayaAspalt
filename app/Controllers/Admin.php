@@ -400,6 +400,8 @@ class Admin extends BaseController
         return view('admin/tambah_penyewaan', $data);
     }
     
+    // app/Controllers/Admin.php
+
     public function simpanPenyewaan()
     {
         $penyewaanModel = new PenyewaanModel();
@@ -414,6 +416,7 @@ class Admin extends BaseController
             return redirect()->back()->withInput()->with('error', 'Gagal: Pelanggan dan Alat wajib dipilih.');
         }
         
+        // Hasil dari find() sekarang adalah OBJECT
         $alat = $alatModel->find($id_alat);
         $pelanggan = $pelangganModel->find($id_pelanggan);
 
@@ -428,21 +431,21 @@ class Admin extends BaseController
         $idSewaBaru = 'SEWA' . date('ymdHis');
 
         $data = [
-            'id_sewa' => $idSewaBaru,
-            'id_namasewa' => $id_pelanggan,
-            'nama_penyewa' => $pelanggan['nama_lengkap'],
-            'id_alat' => $id_alat,
-            'nama_alatdisewa' => $alat['nama_alat'],
-            'harga_alatdisewa' => $this->request->getPost('harga_alatdisewa'), // Ambil dari form
+            'id_sewa'           => $idSewaBaru,
+            'id_namasewa'       => $id_pelanggan,
+            'nama_penyewa'      => $pelanggan->nama_lengkap, // <-- PERBAIKAN
+            'id_alat'           => $id_alat,
+            'nama_alat'         => $alat->nama_alat, // <-- PERBAIKAN
+            'harga_alatdisewa'  => $this->request->getPost('harga_alatdisewa'),
             'tanggal_penyewaan' => $this->request->getPost('tanggal_penyewaan'),
-            'alamat_penyewa' => $this->request->getPost('alamat_penyewa'),
-            'status' => 'Disewa'
+            'alamat_penyewa'    => $this->request->getPost('alamat_penyewa'),
+            'status'            => 'Disewa'
         ];
         
         if ($penyewaanModel->save($data)) {
             // Jika berhasil, kurangi stok alat & ubah status jika stok jadi 0
-            $stokBaru = $alat['stok_alat'] - 1;
-            $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa'; // Jika stok habis, langsung set jadi Disewa/Tidak Tersedia
+            $stokBaru = $alat->stok_alat - 1; // <-- PERBAIKAN
+            $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa';
             $alatModel->update($id_alat, ['stok_alat' => $stokBaru, 'cek_alat' => $statusAlatBaru]);
             
             session()->setFlashdata('success', 'Data penyewaan ' . $idSewaBaru . ' berhasil ditambahkan.');
@@ -723,7 +726,7 @@ class Admin extends BaseController
 
     public function cek_pekerja()
     {
-        $model = new \App\Models\PekerjaModel();
+        $model = new PekerjaModel();
         $data = [
             'page_title' => 'Cek Status Pekerja',
             'pekerja' => [
@@ -732,6 +735,23 @@ class Admin extends BaseController
             ]
         ];
         return view('admin/cek_pekerja_status', $data);
+    }
+
+    public function cek_pekerja_detail($status)
+    {
+        // Memastikan status yang masuk valid untuk menghindari error
+        if ($status !== 'bekerja' && $status !== 'tersedia') {
+            // Jika status tidak valid, arahkan ke halaman error atau halaman sebelumnya
+            return redirect()->back()->with('error', 'Status pekerja tidak valid.');
+        }
+
+        $data = [
+            'page_title' => 'Detail Pekerja ' . ucfirst($status),
+            'status'     => $status
+        ];
+
+        // Memuat view dengan data yang diperlukan
+        return view('admin/cek_pekerja_detail', $data);
     }
 
     public function api_getPemesananDetail($id)
