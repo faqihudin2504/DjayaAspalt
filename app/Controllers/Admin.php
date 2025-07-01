@@ -332,7 +332,7 @@ class Admin extends BaseController
 
     public function tambahAlat()
     {
-        $alatModel = new \App\Models\AlatModel();
+        $alatModel = new AlatModel();
         $data = [
             'page_title' => 'Tambah Data / Update Stok',
             'alat_list'  => $alatModel->findAll() // Mengirim daftar alat ke view
@@ -342,7 +342,7 @@ class Admin extends BaseController
 
     public function simpanAlat()
     {
-        $alatModel = new \App\Models\AlatModel();
+        $alatModel = new AlatModel();
         
         // Validasi dasar, bisa Anda kembangkan lebih lanjut
         $rules = [
@@ -524,9 +524,9 @@ class Admin extends BaseController
         $data = [
             'id_sewa' => $idSewaBaru,
             'id_namasewa' => $id_pelanggan,
-            'nama_penyewa' => $pelanggan['nama_lengkap'],
+            'nama_penyewa' => $pelanggan->nama_lengkap,
             'id_alat' => $id_alat,
-            'nama_alatdisewa' => $alat['nama_alat'],
+            'nama_alatdisewa' => $alat->nama_alat,
             'harga_alatdisewa' => $this->request->getPost('harga_alatdisewa'), // Ambil dari form
             'tanggal_penyewaan' => $this->request->getPost('tanggal_penyewaan'),
             'alamat_penyewa' => $this->request->getPost('alamat_penyewa'),
@@ -535,7 +535,7 @@ class Admin extends BaseController
         
         if ($penyewaanModel->save($data)) {
             // Jika berhasil, kurangi stok alat & ubah status jika stok jadi 0
-            $stokBaru = $alat['stok_alat'] - 1;
+            $stokBaru = $alat->stok_alat - 1;
             $statusAlatBaru = ($stokBaru > 0) ? 'Tersedia' : 'Disewa'; // Jika stok habis, langsung set jadi Disewa/Tidak Tersedia
             $alatModel->update($id_alat, ['stok_alat' => $stokBaru, 'cek_alat' => $statusAlatBaru]);
             
@@ -775,7 +775,7 @@ class Admin extends BaseController
     // Fungsi untuk menampilkan stok MATERIAL
     public function cekStokMaterial()
     {
-        $model = new \App\Models\AlatModel();
+        $model = new AlatModel();
         $data = [
             'page_title' => 'Cek Stok Material',
             // UBAH NAMA VARIABEL DI BARIS INI
@@ -802,7 +802,7 @@ class Admin extends BaseController
     public function cek_paket()
     {
         // 1. Panggil PaketModel
-        $paketModel = new \App\Models\PaketModel();
+        $paketModel = new PaketModel();
 
         // 2. Siapkan data untuk dikirim ke view
         $data = [
@@ -827,7 +827,7 @@ class Admin extends BaseController
 
     public function cek_pekerja()
     {
-        $model = new \App\Models\PekerjaModel();
+        $model = new PekerjaModel();
         $data = [
             'page_title' => 'Cek Status Pekerja',
             'pekerja' => [
@@ -868,7 +868,7 @@ class Admin extends BaseController
     // Method untuk menyimpan data paket baru ke database
     public function simpanPaket()
     {
-        $paketModel = new \App\Models\PaketModel();
+        $paketModel = new PaketModel();
 
         $data = [
             'nama_paket'      => $this->request->getPost('nama_paket'),
@@ -885,7 +885,7 @@ class Admin extends BaseController
 
     public function hapusPaket($id = null)
     {
-        $paketModel = new \App\Models\PaketModel();
+        $paketModel = new PaketModel();
         if ($id) {
             $paketModel->delete($id);
         }
@@ -894,7 +894,7 @@ class Admin extends BaseController
 
     public function editPaket($id = null)
     {
-        $paketModel = new \App\Models\PaketModel();
+        $paketModel = new PaketModel();
         $data = [
             'page_title' => 'Edit Paket',
             'paket'      => $paketModel->find($id)
@@ -910,7 +910,7 @@ class Admin extends BaseController
     // Method untuk menyimpan perubahan dari form edit
     public function updatePaket($id = null)
     {
-        $paketModel = new \App\Models\PaketModel();
+        $paketModel = new PaketModel();
         $data = [
             'nama_paket'      => $this->request->getPost('nama_paket'),
             'deskripsi_paket' => $this->request->getPost('deskripsi_paket'),
