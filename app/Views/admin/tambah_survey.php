@@ -11,7 +11,7 @@
         <select name="id_pelanggan" id="id_pelanggan" class="form-select" required>
             <option value="">-- Pilih Pelanggan --</option>
             <?php foreach ($pelanggan_list as $pelanggan): ?>
-                <option value="<?= $pelanggan->id_pelanggan ?>"><?= esc($pelanggan->nama_lengkap) ?></option>
+                <option value="<?= $pelanggan['id_pelanggan'] ?>"><?= esc($pelanggan['nama_lengkap']) ?></option>
             <?php endforeach; ?>
         </select>
         <small>Jika pelanggan belum ada, <a href="<?= base_url('admin/pelanggan/tambah') ?>" target="_blank">tambahkan di sini dulu</a>.</small>

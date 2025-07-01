@@ -45,7 +45,7 @@
             <input type="hidden" name="cek_alat" value="Tersedia">
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="<?= base_url('admin/alat') ?>" class="btn btn-secondary">Batal</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">Batal</a>
             </div>
         </form>
     </div>

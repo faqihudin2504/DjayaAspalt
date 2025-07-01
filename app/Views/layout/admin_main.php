@@ -65,8 +65,11 @@
                 <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
                 <a href="<?= base_url('admin/survey') ?>" class="<?= (strpos(uri_string(), 'admin/survey') !== false) ? 'active' : '' ?>">Survey</a>
                 <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
-                <a href="<?= base_url('admin/alat') ?>" class="<?= (strpos(uri_string(), 'admin/alat') !== false) ? 'active' : '' ?>">Alat</a>
-                <a href="<?= base_url('admin/pembayaran') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
+                
+                <a href="<?= base_url('admin/alat-berat') ?>" class="<?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>">Alat Berat</a>
+                <a href="<?= base_url('admin/material') ?>" class="<?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>">Material</a>
+                
+                <a href="<?= base_url('admin/pembayaran/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
                 <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
             </div>
         </div>

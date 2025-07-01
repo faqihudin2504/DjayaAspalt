@@ -21,8 +21,8 @@
             <div class="mb-3">
                 <label for="kategori" class="form-label fw-bold">Pilih Kategori</label>
                 <select name="kategori" id="kategori" class="form-select" required>
-                    <option value="Alat Berat">Alat Berat</option>
-                    <option value="Material">Material</option>
+                    <option value="Alat Berat" <?= (old('kategori', $alat['kategori']) == 'Alat Berat') ? 'selected' : '' ?>>Alat Berat</option>
+                    <option value="Material" <?= (old('kategori', $alat['kategori']) == 'Material') ? 'selected' : '' ?>>Material</option>
                 </select>
             </div>
 
@@ -52,7 +52,7 @@
             </div>
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Update</button>
-                <a href="<?= base_url('admin/alat') ?>" class="btn btn-secondary">Batal</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">Batal</a>
             </div>
         </form>
     </div>

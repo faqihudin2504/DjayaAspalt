@@ -8,13 +8,13 @@ class PemesananModel extends Model
 {
     protected $table            = 'pemesanan';
     protected $primaryKey       = 'id_pesanan';
-    protected $useAutoIncrement = false; // <-- WAJIB
-    protected $returnType       = 'object';
-    protected $allowedFields = [ 'id_pesanan', 'id_pelanggan', 'nama_paketdipesan', 'harga_paketdipesan', 'tanggal_pemesanan' ];
+    protected $useAutoIncrement = false;
+    protected $returnType       = 'array';
+    protected $allowedFields    = ['id_pesanan', 'id_pelanggan', 'nama_paketdipesan', 'harga_paketdipesan', 'tanggal_pemesanan'];
 
     /**
-     * Mengambil semua data pemesanan dengan menggabungkan data pelanggan (users).
-     * pemesanan -> pelaksanaan -> users
+     * FUNGSI BARU DITAMBAHKAN DI SINI
+     * Mengambil data pemesanan dengan detail nama pelanggan.
      */
     public function getPemesananWithDetails()
     {

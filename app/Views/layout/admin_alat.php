@@ -63,7 +63,10 @@
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link <?= (uri_string() == 'admin/alat/stok') ? 'active' : '' ?>" href="<?= base_url('admin/alat/stok') ?>">Stok Alat Berat</a>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/alat-berat') ?>">Daftar Alat Berat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/material') ?>">Daftar Material</a>
                 </li>
             </ul>
         </div>

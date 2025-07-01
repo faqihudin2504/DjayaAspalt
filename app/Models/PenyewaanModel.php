@@ -9,10 +9,10 @@ class PenyewaanModel extends Model
     protected $table            = 'penyewaan';
     protected $primaryKey       = 'id_sewa';
     protected $useAutoIncrement = false;
-    protected $returnType       = 'object';
+    protected $returnType       = 'array';
     protected $allowedFields = [
         'id_sewa',
-        'id_alat',
+        'id_alat', // <--- Nama ini sudah benar dan cocok dengan database
         'id_namasewa', 
         'nama_penyewa',
         'harga_alatdisewa',

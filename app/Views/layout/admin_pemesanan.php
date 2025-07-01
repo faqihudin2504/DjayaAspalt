@@ -63,7 +63,7 @@
                     <a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-stok') ?>">Cek Stok Material</a>
+                    <a class="nav-link" href="<?= base_url('admin/cek-stok') ?>">Cek Stok</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
@@ -85,22 +85,6 @@
         </div>
     </div>
 
-    <?php 
-// File: app/Views/layout/admin_pemesanan.php (Versi Revisi - Benar)
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <style>
-        /* ... (bagian style Anda tetap sama) ... */
-    </style>
-</head>
-<body>
-    <div class="main-wrapper">
-        </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 </body>
 </html>

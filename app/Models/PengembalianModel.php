@@ -9,7 +9,7 @@ class PengembalianModel extends Model
     protected $table            = 'pengembalian';
     protected $primaryKey       = 'id_kembali';
     protected $useAutoIncrement = false;
-    protected $returnType       = 'object';
+    protected $returnType       = 'array';
 
     /**
      * Kolom ini disesuaikan 100% dengan struktur tabel database Anda.

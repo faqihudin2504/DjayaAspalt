@@ -53,16 +53,16 @@
                 <tbody>
                     <?php foreach ($items as $item): ?>
                         <tr>
-                            <td><?= esc($item->id_sewa) ?></td>
-                            <td><?= esc($item->nama_penyewa) ?></td>
-                            <td><?= esc($item->id_alat) ?></td>
-                            <td><?= date('d M Y', strtotime($item->tanggal_penyewaan)) ?></td>
-                            <td>Rp. <?= number_format($item->harga_alatdisewa ?? 0, 0, ',', '.') ?></td>
-                            <td><span class="badge bg-primary"><?= esc($item->status) ?></span></td>
-                        <td class="action-buttons">
-                                <a href="<?= base_url('admin/penyewaan/view/' . $item->id_sewa) ?>" class="btn btn-info btn-sm">Lihat</a>
-                                <a href="<?= base_url('admin/penyewaan/edit/' . $item->id_sewa) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item->id_sewa) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
+                            <td><?= esc($item['id_sewa']) ?></td>
+                            <td><?= esc($item['nama_penyewa']) ?></td>
+                            <td><?= esc($item['id_alat']) ?></td>
+                            <td><?= date('d M Y', strtotime($item['tanggal_penyewaan'])) ?></td>
+                            <td>Rp. <?= number_format($item['harga_alatdisewa'] ?? 0, 0, ',', '.') ?></td>
+                            <td><span class="badge bg-primary"><?= esc($item['status']) ?></span></td>
+                           <td class="action-buttons">
+                                <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">Lihat</a>
+                                <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Ubah</a>
+                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
