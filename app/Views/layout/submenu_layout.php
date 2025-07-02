@@ -9,23 +9,12 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
         .main-wrapper { display: flex; min-height: 100vh; }
-        .sub-sidebar {
-            width: 250px; background-color: #ffffff; padding: 1.5rem;
-            border-right: 1px solid #dee2e6; flex-shrink: 0;
-        }
-        .sidebar-back-button {
-            display: flex; align-items: center; text-decoration: none;
-            color: black; margin-bottom: 1.5rem;
-        }
+        .sub-sidebar { width: 250px; background-color: #ffffff; padding: 1.5rem; border-right: 1px solid #dee2e6; flex-shrink: 0; }
+        .sidebar-back-button { display: flex; align-items: center; text-decoration: none; color: black; margin-bottom: 1.5rem; }
         .sidebar-back-button img { width: 32px; height: 32px; margin-right: 10px; }
         .sidebar-back-button h5 { margin: 0; font-weight: 600; font-size: 1.25rem; }
-        .sub-sidebar .nav-link {
-            color: #555; font-weight: 500; padding: 0.75rem;
-            border-left: 3px solid transparent;
-        }
-        .sub-sidebar .nav-link:hover, .sub-sidebar .nav-link.active {
-            color: #0d6efd; border-left-color: #0d6efd;
-        }
+        .sub-sidebar .nav-link { color: #555; font-weight: 500; padding: 0.75rem; border-left: 3px solid transparent; }
+        .sub-sidebar .nav-link:hover, .sub-sidebar .nav-link.active { color: #0d6efd; border-left-color: #0d6efd; }
         .content-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
         .admin-topbar { background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; height: 70px; }
         .search-container { position: relative; width: 50%; }
@@ -48,40 +37,22 @@
                 <h5><?= esc($page_title ?? 'Kembali') ?></h5>
             </a>
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-stok/alat-berat') ?>">Cek Stok Alat</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-stok/material') ?>">Cek Stok Material</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-stok/alat-berat') ?>">Cek Stok Alat</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-stok/material') ?>">Cek Stok Material</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a></li>
             </ul>
         </div>
         <div class="content-wrapper">
             <div class="admin-topbar">
-                <div class="search-container">
-                    <input class="form-control" type="search" placeholder="Cari...">
-                </div>
+                <div class="search-container"><input class="form-control" type="search" placeholder="Cari..."></div>
                 <div class="topbar-profile dropdown">
                     <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle profile-pic">
                         <span class="ms-2"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1">
-                        <li>
-                            <div class="dropdown-profile-header">
-                                <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle" width="50" height="50">
-                                <div class="user-info">
-                                    <strong class="d-block text-truncate"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></strong>
-                                    <small class="text-truncate"><?= esc(session()->get('email')) ?></small>
-                                </div>
-                            </div>
-                        </li>
+                        <li><div class="dropdown-profile-header"><img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle" width="50" height="50"><div class="user-info"><strong class="d-block text-truncate"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></strong><small class="text-truncate"><?= esc(session()->get('email')) ?></small></div></div></li>
                         <li><hr class="dropdown-divider my-1"></li>
                         <li><a class="dropdown-item" href="<?= base_url('admin/profile') ?>">Informasi Akun</a></li>
                         <li><a class="dropdown-item text-danger" href="<?= base_url('logout') ?>">Logout</a></li>
@@ -93,6 +64,16 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a></div></div></div></div>
+    <div class="modal fade" id="errorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body">Data ini tidak bisa dihapus karena terhubung dengan data transaksi lain.<br><br><small class="text-muted">Untuk bisa menghapusnya, Anda perlu menghapus data transaksi yang terhubung terlebih dahulu.</small></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var cdm = document.getElementById('confirmDeleteModal');
+        if(cdm) { cdm.addEventListener('show.bs.modal', function(e) { document.getElementById('confirmDeleteButton').setAttribute('href', e.relatedTarget.getAttribute('data-url')); }); }
+        <?php if (session()->getFlashdata('show_error_modal')): ?> new bootstrap.Modal(document.getElementById('errorModal')).show(); <?php endif; ?>
+    });
+    </script>
 </body>
 </html>
