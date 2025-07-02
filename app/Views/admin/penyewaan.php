@@ -62,7 +62,9 @@
                            <td class="action-buttons">
                                 <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-info btn-sm">Lihat</a>
                                 <a href="<?= base_url('admin/penyewaan/edit/' . $item['id_sewa']) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</a>
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="<?= base_url('admin/penyewaan/hapus/' . $item['id_sewa']) ?>">
+                                    Hapus
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

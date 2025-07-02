@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Anda yang sudah ada di sini, tidak perlu diubah */
         body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
         .admin-wrapper { display: flex; }
         .admin-sidebar { width: 250px; min-height: 100vh; background-color: #ffffff; padding-top: 1.5rem; position: fixed; height: 100%; overflow-y: auto; display: flex; flex-direction: column; border-right: 1px solid #e0e0e0; }
@@ -41,6 +40,13 @@
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
                 <a href="<?= base_url('admin/pelanggan') ?>" class="<?= (strpos(uri_string(), 'admin/pelanggan') !== false) ? 'active' : '' ?>">Pelanggan</a>
+                <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
+                <a href="<?= base_url('admin/survey') ?>" class="<?= (strpos(uri_string(), 'admin/survey') !== false) ? 'active' : '' ?>">Survey</a>
+                <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
+                <a href="<?= base_url('admin/alat-berat') ?>" class="<?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>">Alat Berat</a>
+                <a href="<?= base_url('admin/material') ?>" class="<?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>">Material</a>
+                <a href="<?= base_url('admin/pembayaran/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
+                <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
                 <a href="<?= base_url('admin/laporan') ?>" class="<?= (strpos(uri_string(), 'admin/laporan') !== false) ? 'active' : '' ?>">Laporan</a>
             </div>
         </div>
@@ -79,17 +85,9 @@
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a>
-                </div>
+                <div class="modal-header"><h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a></div>
             </div>
         </div>
     </div>
@@ -97,18 +95,9 @@
     <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="errorModalLabel">Whoops, hit a snag!</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Data ini tidak bisa dihapus karena sedang terhubung dengan data transaksi lain (misalnya data Penyewaan, Pemesanan, atau Survey).
-                    <br><br>
-                    <small class="text-muted">Untuk bisa menghapusnya, Anda perlu menghapus data transaksi yang terhubung terlebih dahulu.</small>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button>
-                </div>
+                <div class="modal-header bg-danger text-white"><h5 class="modal-title" id="errorModalLabel">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">Data ini tidak bisa dihapus karena terhubung dengan data transaksi lain.<br><br><small class="text-muted">Untuk bisa menghapusnya, Anda perlu menghapus data transaksi yang terhubung terlebih dahulu.</small></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div>
             </div>
         </div>
     </div>
@@ -116,18 +105,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Logika untuk Modal Konfirmasi Hapus
         var confirmDeleteModal = document.getElementById('confirmDeleteModal');
         if (confirmDeleteModal) {
             confirmDeleteModal.addEventListener('show.bs.modal', function(event) {
-                var button = event.relatedTarget; // Tombol yang memicu modal
-                var url = button.getAttribute('data-url'); // Ambil URL dari atribut data-url
+                var button = event.relatedTarget;
+                var url = button.getAttribute('data-url');
                 var confirmButton = document.getElementById('confirmDeleteButton');
-                confirmButton.setAttribute('href', url); // Atur href tombol "Ya, Hapus"
+                confirmButton.setAttribute('href', url);
             });
         }
 
-        // Logika untuk memunculkan Modal Error "Hit a snag"
         <?php if (session()->getFlashdata('show_error_modal')): ?>
             var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
             errorModal.show();
