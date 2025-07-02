@@ -25,37 +25,24 @@ use Dompdf\Dompdf;
 class Admin extends BaseController
 {
     //======================================================================
-    // HALAMAN UTAMA
+    // HALAMAN UTAMA & VIEW DASAR
     //======================================================================
 
-    /**
-     * Menampilkan halaman dashboard utama admin.
-     */
     public function index()
     {
         return view('admin/dashboard');
     }
 
-    //======================================================================
-    // MANAJEMEN DATA MASTER (Entitas utama aplikasi)
-    //======================================================================
-
-    /**
-     * Menampilkan halaman manajemen data pelanggan.
-     */
     public function manajemenPengguna()
     {
         $model = new PelangganModel();
         $data = [
             'page_title' => 'Manajemen Pelanggan',
-            'pelanggan_per_bulan' => $this->groupDataByMonth($model->findAll(), 'created_at')
+            'pelanggan_per_bulan' => $this->groupDataByMonth($model->orderBy('created_at', 'DESC')->findAll(), 'created_at')
         ];
         return view('admin/manajemen_pengguna', $data);
     }
 
-    /**
-     * Menampilkan halaman manajemen Alat Berat.
-     */
     public function dataAlatBerat()
     {
         $model = new AlatModel();
@@ -66,9 +53,6 @@ class Admin extends BaseController
         return view('admin/alat', $data);
     }
 
-    /**
-     * Menampilkan halaman manajemen Material.
-     */
     public function dataMaterial()
     {
         $model = new AlatModel();
@@ -78,83 +62,11 @@ class Admin extends BaseController
         ];
         return view('admin/alat', $data);
     }
-
-    /**
-     * Menampilkan halaman manajemen daftar paket.
-     */
-    public function cek_paket()
-    {
-        $paketModel = new PaketModel();
-        $data = [
-            'page_title' => 'Manajemen Paket',
-            'pakets'     => $paketModel->findAll()
-        ];
-        return view('admin/cek_paket', $data);
-    }
-
-    /**
-     * Menampilkan halaman ringkasan status pekerja.
-     */
-    public function cek_pekerja()
-    {
-        $model = new PekerjaModel();
-        $data = [
-            'page_title' => 'Cek Status Pekerja',
-            'pekerja' => [
-                'bekerja'  => $model->where('status_pekerja', 'bekerja')->countAllResults(),
-                'tersedia' => $model->where('status_pekerja', 'tersedia')->countAllResults(),
-            ]
-        ];
-        return view('admin/cek_pekerja_status', $data);
-    }
-
-    /**
-     * Menampilkan halaman detail pekerja berdasarkan status.
-     * @param string $status 'bekerja' atau 'tersedia'
-     */
-    public function cek_pekerja_detail($status = null)
-    {
-        if ($status !== 'bekerja' && $status !== 'tersedia') {
-            return redirect()->to('admin/cek-pekerja')->with('error', 'Status pekerja tidak valid.');
-        }
-
-        $pekerjaModel = new PekerjaModel();
-        $data = [
-            'page_title'   => 'Detail Pekerja ' . ucfirst($status),
-            'status'       => $status,
-            'pekerja_list' => $pekerjaModel->where('status_pekerja', $status)->findAll()
-        ];
-        return view('admin/cek_pekerja_detail', $data);
-    }
-
-    //======================================================================
-    // MANAJEMEN TRANSAKSI (Proses bisnis utama)
-    //======================================================================
-
-    /**
-     * Menampilkan halaman manajemen data survey.
-     */
-    public function dataSurvey()
-    {
-        $surveyModel = new SurveyModel();
-        $surveys = $surveyModel->getSurveysWithDetails();
-        $data = [
-            'page_title' => 'Manajemen Survey',
-            'survey_per_bulan' => $this->groupDataByMonth($surveys, 'tanggal_survey')
-        ];
-        return view('admin/survey', $data);
-    }
-
-    /**
-     * Menampilkan halaman manajemen data pemesanan.
-     */
+    
     public function dataPemesanan()
     {
         $model = new PemesananModel();
-        $pemesananData = $model->select('pemesanan.*, pelanggan.nama_lengkap')
-            ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
-            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
-            ->findAll();
+        $pemesananData = $model->getPemesananWithDetails();
         $data = [
             'page_title' => 'Data Pemesanan',
             'pemesanan_per_bulan' => $this->groupDataByMonth($pemesananData, 'tanggal_pemesanan')
@@ -162,9 +74,6 @@ class Admin extends BaseController
         return view('admin/pemesanan', $data);
     }
 
-    /**
-     * Menampilkan halaman manajemen data penyewaan.
-     */
     public function dataPenyewaan()
     {
         $model = new PenyewaanModel();
@@ -176,9 +85,24 @@ class Admin extends BaseController
         return view('admin/penyewaan', $data);
     }
 
-    /**
-     * Menampilkan halaman data pembayaran untuk pemesanan.
-     */
+    public function dataSurvey()
+    {
+        $surveyModel = new SurveyModel();
+        $surveys = $surveyModel->getSurveysWithDetails();
+        $data = [
+            'page_title' => 'Manajemen Survey',
+            'survey_per_bulan' => $this->groupDataByMonth($surveys, 'tanggal_survey')
+        ];
+        return view('admin/survey', $data);
+    }
+
+    public function dataPengembalian()
+    {
+        $model = new PengembalianModel();
+        $data = ['page_title' => 'Data Pengembalian', 'pengembalian_list' => $model->getPengembalianWithDetails()];
+        return view('admin/pengembalian', $data);
+    }
+
     public function dataPembayaranPemesanan()
     {
         $model = new PembayaranModel();
@@ -189,10 +113,7 @@ class Admin extends BaseController
         ];
         return view('admin/pembayaran_data', $data);
     }
-
-    /**
-     * Menampilkan halaman data pembayaran untuk penyewaan.
-     */
+    
     public function dataPembayaranPenyewaan()
     {
         $model = new PembayaranModel();
@@ -203,104 +124,284 @@ class Admin extends BaseController
         ];
         return view('admin/pembayaran_data', $data);
     }
-
-    /**
-     * Menampilkan halaman data pengembalian alat.
-     */
-    public function dataPengembalian()
-    {
-        $model = new PengembalianModel();
-        $data = [
-            'page_title' => 'Data Pengembalian',
-            'pengembalian_list' => $model->getPengembalianWithDetails()
-        ];
-        return view('admin/pengembalian', $data);
-    }
-
+    
     //======================================================================
-    // MANAJEMEN LAPORAN
+    // HALAMAN SUBMENU (CEK PAKET, STOK, PEKERJA)
+    //======================================================================
+    
+    public function cek_paket()
+    {
+        $paketModel = new PaketModel();
+        $data = ['page_title' => 'Manajemen Paket', 'pakets' => $paketModel->findAll()];
+        return view('admin/cek_paket', $data);
+    }
+
+    public function cek_pekerja()
+    {
+        $model = new PekerjaModel();
+        $data = [
+            'page_title' => 'Cek Status Pekerja',
+            'pekerja' => [
+                'bekerja' => $model->where('status_pekerja', 'bekerja')->countAllResults(),
+                'tersedia' => $model->where('status_pekerja', 'tersedia')->countAllResults(),
+            ]
+        ];
+        return view('admin/cek_pekerja_status', $data);
+    }
+
+    public function cek_pekerja_detail($status = null)
+    {
+        if ($status !== 'bekerja' && $status !== 'tersedia') {
+            return redirect()->to('admin/cek-pekerja')->with('error', 'Status pekerja tidak valid.');
+        }
+        $data = [
+            'page_title' => 'Detail Pekerja ' . ucfirst($status),
+            'status'     => $status,
+        ];
+        return view('admin/cek_pekerja_detail', $data);
+    }
+
+    public function cekStokAlatBerat()
+    {
+        $model = new AlatModel();
+        $data = [
+            'page_title' => 'Cek Stok Alat Berat',
+            'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()
+        ];
+        return view('admin/cek_stok_alat_berat', $data);
+    }
+
+    public function cekStokMaterial()
+    {
+        $model = new AlatModel();
+        $data = [
+            'page_title'    => 'Cek Stok Material',
+            'material_list' => $model->where('kategori', 'Material')->findAll()
+        ];
+        return view('admin/cek_stok_material', $data);
+    }
+    
+    //======================================================================
+    // FUNGSI-FUNGSI CRUD (TAMBAH, SIMPAN, EDIT, UPDATE, HAPUS)
     //======================================================================
 
-    /**
-     * Menampilkan halaman laporan dengan filter.
-     */
-    public function laporan()
+    // --- CRUD Pelanggan ---
+    public function tambahPelanggan()
     {
-        $db = \Config\Database::connect();
-        $bulan = $this->request->getVar('bulan') ?? date('m');
-        $tahun = $this->request->getVar('tahun') ?? date('Y');
-
-        $builder1 = $db->table('pemesanan');
-        $builder1->select("pemesanan.id_pesanan as id_transaksi, pelanggan.nama_lengkap as nama_pelanggan, pemesanan.tanggal_pemesanan as tanggal, pemesanan.harga_paketdipesan as total_harga, 'Pemesanan' as tipe_transaksi");
-        $builder1->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan');
-        $builder1->where('MONTH(pemesanan.tanggal_pemesanan)', $bulan);
-        $builder1->where('YEAR(pemesanan.tanggal_pemesanan)', $tahun);
-        $query1 = $builder1->getCompiledSelect(false);
-
-        $builder2 = $db->table('penyewaan');
-        $builder2->select("penyewaan.id_sewa as id_transaksi, penyewaan.nama_penyewa as nama_pelanggan, penyewaan.tanggal_penyewaan as tanggal, penyewaan.harga_alatdisewa as total_harga, 'Penyewaan' as tipe_transaksi");
-        $builder2->where('MONTH(penyewaan.tanggal_penyewaan)', $bulan);
-        $builder2->where('YEAR(penyewaan.tanggal_penyewaan)', $tahun);
-        $query2 = $builder2->getCompiledSelect();
-        
-        $laporanQuery = $db->query($query1 . ' UNION ALL ' . $query2 . ' ORDER BY tanggal DESC');
-
-        $data = [
-            'page_title' => 'Laporan Transaksi',
-            'laporan'    => $laporanQuery->getResultArray(),
-            'bulan'      => $bulan,
-            'tahun'      => $tahun,
-        ];
-        return view('admin/laporan', $data);
+        return view('admin/tambah_pelanggan', ['page_title' => 'Tambah Pelanggan Baru']);
     }
 
-    /**
-     * Memproses dan menghasilkan laporan dalam format PDF untuk diunduh.
-     */
-    public function cetakLaporanPdf()
+    public function simpanPelanggan()
     {
-        $db = \Config\Database::connect();
-        $bulan = $this->request->getGet('bulan') ?? date('m');
-        $tahun = $this->request->getGet('tahun') ?? date('Y');
-
-        $builder1 = $db->table('pemesanan');
-        $builder1->select("pemesanan.id_pesanan as id_transaksi, pelanggan.nama_lengkap as nama_pelanggan, pemesanan.tanggal_pemesanan as tanggal, pemesanan.harga_paketdipesan as total_harga, 'Pemesanan' as tipe_transaksi");
-        $builder1->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan');
-        $builder1->where('MONTH(pemesanan.tanggal_pemesanan)', $bulan);
-        $builder1->where('YEAR(pemesanan.tanggal_pemesanan)', $tahun);
-        $query1 = $builder1->getCompiledSelect(false);
-
-        $builder2 = $db->table('penyewaan');
-        $builder2->select("penyewaan.id_sewa as id_transaksi, penyewaan.nama_penyewa as nama_pelanggan, penyewaan.tanggal_penyewaan as tanggal, penyewaan.harga_alatdisewa as total_harga, 'Penyewaan' as tipe_transaksi");
-        $builder2->where('MONTH(penyewaan.tanggal_penyewaan)', $bulan);
-        $builder2->where('YEAR(penyewaan.tanggal_penyewaan)', $tahun);
-        $query2 = $builder2->getCompiledSelect();
-        
-        $laporanQuery = $db->query($query1 . ' UNION ALL ' . $query2 . ' ORDER BY tanggal DESC');
-
-        $data = [
-            'laporan' => $laporanQuery->getResultArray(),
-            'bulan'   => $bulan,
-            'tahun'   => $tahun,
-        ];
-
-        $dompdf = new Dompdf();
-        $html = view('admin/laporan_pdf', $data);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $namaBulan = Time::createFromDate($tahun, $bulan, 1)->toLocalizedString('MMMM');
-        $nama_file = "Laporan Djaya Aspalt " . $namaBulan . " " . $tahun . ".pdf";
-        $dompdf->stream($nama_file, ['Attachment' => 1]);
+        $model = new PelangganModel();
+        $data = $this->request->getPost();
+        $data['id_pelanggan'] = substr(strtoupper($data['nama_lengkap']), 0, 1) . date('dmyHis');
+        $model->save($data);
+        return redirect()->to('admin/pelanggan')->with('success', 'Data pelanggan baru berhasil ditambahkan.');
     }
 
+    public function editPelanggan($id)
+    {
+        $model = new PelangganModel();
+        $data = ['page_title' => 'Edit Pelanggan', 'pelanggan' => $model->find($id)];
+        return view('admin/edit_pelanggan', $data);
+    }
+
+    public function updatePelanggan($id)
+    {
+        $model = new PelangganModel();
+        $model->update($id, $this->request->getPost());
+        return redirect()->to('admin/pelanggan')->with('success', 'Data pelanggan berhasil diperbarui.');
+    }
+
+    public function hapusPelanggan($id)
+    {
+        $model = new PelangganModel();
+        $model->delete($id);
+        return redirect()->to('admin/pelanggan')->with('success', 'Data pelanggan berhasil dihapus.');
+    }
+    
+    public function viewPelanggan($id)
+    {
+        $model = new PelangganModel();
+        $data = ['page_title' => 'Detail Pelanggan', 'pelanggan'  => $model->find($id)];
+        return view('admin/view_pelanggan', $data);
+    }
+
+    // --- CRUD Survey ---
+    public function tambahSurvey()
+    {
+        $pelangganModel = new PelangganModel();
+        $surveyModel = new SurveyModel();
+        $surveyedPelangganIds = $surveyModel->select('id_pelanggan')->distinct()->findAll();
+        $excludeIds = array_column($surveyedPelangganIds, 'id_pelanggan');
+        
+        $availablePelanggan = empty($excludeIds)
+            ? $pelangganModel->findAll()
+            : $pelangganModel->whereNotIn('id_pelanggan', $excludeIds)->findAll();
+
+        $data = [
+            'page_title'     => 'Tambah Survey Baru',
+            'pelanggan_list' => $availablePelanggan
+        ];
+        return view('admin/tambah_survey', $data);
+    }
+
+    public function simpanSurvey()
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => 'Dijadwalkan'
+        ];
+        $surveyModel->insert($data);
+        return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil ditambahkan.');
+    }
+
+    public function editSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Edit Data Survey',
+            'survey' => $surveyModel->find($id),
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/edit_survey', $data);
+    }
+
+    public function updateSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => $this->request->getPost('status')
+        ];
+        $surveyModel->update($id, $data);
+        return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil diperbarui.');
+    }
+
+    public function hapusSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        try {
+            if ($surveyModel->delete($id)) {
+                return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil dihapus.');
+            } else {
+                return redirect()->to('/admin/survey')->with('error', 'Gagal menghapus data. ID tidak ditemukan.');
+            }
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            log_message('error', '[HAPUS SURVEY] ' . $e->getMessage());
+            return redirect()->to('/admin/survey')->with('error', 'Data survey gagal dihapus karena terhubung dengan data lain.');
+        }
+    }
+
+    // --- CRUD Alat & Material ---
+    public function tambahAlat()
+    {
+        return view('admin/tambah_alat', ['page_title' => 'Tambah Data Alat / Material Baru']);
+    }
+
+    public function simpanAlat()
+    {
+        $alatModel = new AlatModel();
+        $data = [
+            'id_alat'        => $this->request->getPost('id_alat'),
+            'cek_alat'       => $this->request->getPost('cek_alat'),
+            'nama_alat'      => $this->request->getPost('nama_alat'),
+            'kategori'       => $this->request->getPost('kategori'),
+            'stok_alat'      => $this->request->getPost('stok_alat'),
+            'informasi_alat' => $this->request->getPost('informasi_alat'),
+            'harga_sewa'     => $this->request->getPost('harga_sewa'),
+        ];
+        $gambar = $this->request->getFile('gambar_alat');
+        if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            $newName = $gambar->getRandomName();
+            $gambar->move(FCPATH . 'uploads/alat', $newName);
+            $data['gambar_alat'] = $newName;
+        }
+        $alatModel->save($data);
+        $redirectUrl = ($data['kategori'] === 'Material') ? 'admin/material' : 'admin/alat-berat';
+        return redirect()->to($redirectUrl)->with('success', 'Data baru berhasil ditambahkan.');
+    }
+    
+    public function editAlat($id)
+    {
+        $model = new AlatModel();
+        $data = ['page_title' => 'Edit Data Alat', 'alat' => $model->find($id)];
+        return view('admin/edit_alat', $data);
+    }
+    
+    public function updateAlat($id)
+    {
+        $model = new AlatModel();
+        $data = $this->request->getPost();
+        $gambar = $this->request->getFile('gambar_alat');
+        if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            $alatLama = $model->find($id);
+            if ($alatLama && !empty($alatLama['gambar_alat']) && file_exists(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat'])) {
+                unlink(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat']);
+            }
+            $newName = $gambar->getRandomName();
+            $gambar->move(FCPATH . 'uploads/alat', $newName);
+            $data['gambar_alat'] = $newName;
+        }
+        $model->update($id, $data);
+        $redirectUrl = ($data['kategori'] === 'Material') ? 'admin/material' : 'admin/alat-berat';
+        return redirect()->to($redirectUrl)->with('success', 'Data berhasil diperbarui.');
+    }
+
+    public function hapusAlat($id)
+    {
+        $model = new AlatModel();
+        $alat = $model->find($id);
+        if ($alat && !empty($alat['gambar_alat']) && file_exists(FCPATH . 'uploads/alat/' . $alat['gambar_alat'])) {
+            unlink(FCPATH . 'uploads/alat/' . $alat['gambar_alat']);
+        }
+        $model->delete($id);
+        return redirect()->back()->with('success', 'Data berhasil dihapus.');
+    }
+    
+    // --- CRUD Paket ---
+    public function tambahPaket() {
+        return view('admin/tambah_paket', ['page_title' => 'Tambah Paket Baru']);
+    }
+
+    public function simpanPaket() {
+        $model = new PaketModel();
+        $model->save($this->request->getPost());
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket baru berhasil ditambahkan!');
+    }
+
+    public function editPaket($id) {
+        $model = new PaketModel();
+        $data = ['page_title' => 'Edit Paket', 'paket' => $model->find($id)];
+        return view('admin/edit_paket', $data);
+    }
+
+    public function updatePaket($id) {
+        $model = new PaketModel();
+        $model->update($id, $this->request->getPost());
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil diperbarui.');
+    }
+
+    public function hapusPaket($id) {
+        $model = new PaketModel();
+        $model->delete($id);
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil dihapus.');
+    }
+    
+    // --- Lanjutan CRUD akan ditambahkan di sini... ---
+    // (Pemesanan, Penyewaan, Pembayaran, Pengembalian)
+    
     //======================================================================
     // MANAJEMEN PROFIL ADMIN
     //======================================================================
     
-    /**
-     * Menampilkan halaman profil admin yang sedang login.
-     */
     public function adminProfile()
     {
         $userModel = new UserModel();
@@ -314,9 +415,6 @@ class Admin extends BaseController
         return view('admin/admin_profile', $data);
     }
 
-    /**
-     * Menampilkan form untuk mengedit profil admin.
-     */
     public function editAdminProfile()
     {
         $userModel = new UserModel();
@@ -330,9 +428,6 @@ class Admin extends BaseController
         return view('admin/edit_admin_profile', $data);
     }
 
-    /**
-     * Memproses update data profil admin.
-     */
     public function updateAdminProfile()
     {
         $userModel = new UserModel();
@@ -360,93 +455,25 @@ class Admin extends BaseController
     }
 
     //======================================================================
-    // FUNGSI-FUNGSI CRUD (Create, Read, Update, Delete)
-    // Disatukan di sini agar rapi.
-    //======================================================================
-
-    // --- CRUD Pelanggan ---
-    public function tambahPelanggan() { /* ... Logika Tambah Pelanggan ... */ }
-    public function simpanPelanggan() { /* ... Logika Simpan Pelanggan ... */ }
-    public function editPelanggan($id) { /* ... Logika Edit Pelanggan ... */ }
-    public function updatePelanggan($id) { /* ... Logika Update Pelanggan ... */ }
-    public function hapusPelanggan($id) { /* ... Logika Hapus Pelanggan ... */ }
-    public function viewPelanggan($id) { /* ... Logika View Pelanggan ... */ }
-
-    // --- CRUD Alat ---
-    public function tambahAlat() { /* ... Logika Tambah Alat ... */ }
-    public function simpanAlat() { /* ... Logika Simpan Alat ... */ }
-    public function editAlat($id) { /* ... Logika Edit Alat ... */ }
-    public function updateAlat($id) { /* ... Logika Update Alat ... */ }
-    public function hapusAlat($id) { /* ... Logika Hapus Alat ... */ }
-
-    // --- CRUD Paket ---
-    public function tambahPaket() { /* ... Logika Tambah Paket ... */ }
-    public function simpanPaket() { /* ... Logika Simpan Paket ... */ }
-    public function editPaket($id) { /* ... Logika Edit Paket ... */ }
-    public function updatePaket($id) { /* ... Logika Update Paket ... */ }
-    public function hapusPaket($id) { /* ... Logika Hapus Paket ... */ }
-    
-    // --- CRUD Survey ---
-    public function tambahSurvey() { /* ... Logika Tambah Survey ... */ }
-    public function simpanSurvey() { /* ... Logika Simpan Survey ... */ }
-    public function editSurvey($id) { /* ... Logika Edit Survey ... */ }
-    public function updateSurvey($id) { /* ... Logika Update Survey ... */ }
-    public function hapusSurvey($id) { /* ... Logika Hapus Survey ... */ }
-
-    // --- CRUD Pemesanan ---
-    public function tambahPemesanan() { /* ... Logika Tambah Pemesanan ... */ }
-    public function simpanPemesanan() { /* ... Logika Simpan Pemesanan ... */ }
-    public function editPemesanan($id) { /* ... Logika Edit Pemesanan ... */ }
-    public function updatePemesanan($id) { /* ... Logika Update Pemesanan ... */ }
-    public function hapusPemesanan($id) { /* ... Logika Hapus Pemesanan ... */ }
-
-    // --- CRUD Penyewaan ---
-    public function tambahPenyewaan() { /* ... Logika Tambah Penyewaan ... */ }
-    public function simpanPenyewaan() { /* ... Logika Simpan Penyewaan ... */ }
-    public function editPenyewaan($id) { /* ... Logika Edit Penyewaan ... */ }
-    public function updatePenyewaan($id) { /* ... Logika Update Penyewaan ... */ }
-    public function hapusPenyewaan($id) { /* ... Logika Hapus Penyewaan ... */ }
-
-    // --- CRUD Pembayaran ---
-    public function tambahPembayaranPemesanan() { /* ... Logika Tambah Bayar Pesan ... */ }
-    public function tambahPembayaranPenyewaan() { /* ... Logika Tambah Bayar Sewa ... */ }
-    public function simpanPembayaran() { /* ... Logika Simpan Pembayaran ... */ }
-    public function lihatBukti($id_bayar) { /* ... Logika Lihat Bukti ... */ }
-
-    // --- CRUD Pengembalian ---
-    public function tambahPengembalian() { /* ... Logika Tambah Kembali ... */ }
-    public function simpanPengembalian() { /* ... Logika Simpan Kembali ... */ }
-    
-    //======================================================================
     // FUNGSI HELPER & API
     //======================================================================
     
-    /**
-     * Helper function untuk mengelompokkan data berdasarkan bulan dan tahun.
-     * @param array $data Data yang akan dikelompokkan
-     * @param string $dateColumn Nama kolom tanggal sebagai acuan
-     * @return array Data yang sudah dikelompokkan
-     */
     private function groupDataByMonth($data, $dateColumn)
     {
         if (empty($data)) return [];
         $grouped = [];
         foreach ($data as $item) {
+            if (empty($item[$dateColumn])) continue;
             $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM YYYY');
             if (!isset($grouped[$monthYear])) {
                 $grouped[$monthYear] = [];
             }
             $grouped[$monthYear][] = $item;
         }
-        krsort($grouped); // Mengurutkan berdasarkan kunci (bulan-tahun) secara descending
+        krsort($grouped);
         return $grouped;
     }
 
-    /**
-     * API endpoint untuk mengambil detail data alat via AJAX.
-     * @param int $id_alat ID alat yang akan dicari
-     * @return \CodeIgniter\HTTP\Response
-     */
     public function getAlatDetail($id_alat)
     {
         $alatModel = new AlatModel();
