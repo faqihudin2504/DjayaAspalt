@@ -59,7 +59,9 @@
                             <td><span class="badge bg-info"><?= esc($item['status']) ?></span></td>
                             <td>
                                 <a href="<?= base_url('admin/survey/edit/' . $item['id_survey']) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/survey/hapus/' . $item['id_survey']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus jadwal survey ini?')">Hapus</a>
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-url="<?= base_url('admin/pelanggan/hapus/' . $item['id_pelanggan']) ?>">
+                                    Hapus
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

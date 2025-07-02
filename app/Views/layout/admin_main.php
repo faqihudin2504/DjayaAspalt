@@ -7,22 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Anda yang sudah ada di sini, tidak perlu diubah */
         body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
         .admin-wrapper { display: flex; }
-        .admin-sidebar {
-            width: 250px; /* Anda bisa mengatur lebar sidebar di sini */
-            min-height: 100vh; background-color: #ffffff;
-            padding-top: 1.5rem; position: fixed; height: 100%;
-            overflow-y: auto; display: flex; flex-direction: column;
-            border-right: 1px solid #e0e0e0;
-        }
+        .admin-sidebar { width: 250px; min-height: 100vh; background-color: #ffffff; padding-top: 1.5rem; position: fixed; height: 100%; overflow-y: auto; display: flex; flex-direction: column; border-right: 1px solid #e0e0e0; }
         .sidebar-header { padding: 0 1.5rem; margin-bottom: 2rem; display: flex; align-items: center;}
         .sidebar-header img { width: 40px; margin-right: 10px; }
-        .sidebar-header h5 {
-            margin: 0;
-            font-weight: 600;
-            white-space: nowrap; /* PERBAIKAN 1: Agar teks tidak turun baris */
-        }
+        .sidebar-header h5 { margin: 0; font-weight: 600; white-space: nowrap; }
         .sidebar-menu { flex-grow: 1; }
         .sidebar-menu a { display: block; padding: 12px 1.5rem; color: #555; text-decoration: none; font-weight: 500; border-left: 3px solid transparent; transition: all 0.2s ease; }
         .sidebar-menu a.active, .sidebar-menu a:hover { background-color: #eef2ff; color: #4361ee; border-left-color: #4361ee; }
@@ -32,28 +23,11 @@
         .search-container input { width: 100%; padding: 8px 15px 8px 40px; border-radius: 20px; border: 1px solid #ccc; background-color: #f5f5f5; }
         .topbar-profile .dropdown-toggle::after { display: none; }
         .topbar-profile .profile-pic { width: 38px; height: 38px; object-fit: cover; border: 2px solid #ddd; }
-        .topbar-profile .dropdown-menu { 
-            width: 300px;
-            border-radius: .75rem; 
-            border: 1px solid #e9ecef;
-            padding: 0.5rem;
-        }
-        .dropdown-profile-header {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-        }
-        .dropdown-profile-header .user-info {
-            line-height: 1.3;
-            margin-left: 1rem;
-        }
-        .dropdown-profile-header .user-info small {
-            color: #6c757d;
-        }
-        .dropdown-menu .dropdown-item {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-        }
+        .topbar-profile .dropdown-menu { width: 300px; border-radius: .75rem; border: 1px solid #e9ecef; padding: 0.5rem; }
+        .dropdown-profile-header { display: flex; align-items: center; padding: 0.75rem 1rem; }
+        .dropdown-profile-header .user-info { line-height: 1.3; margin-left: 1rem; }
+        .dropdown-profile-header .user-info small { color: #6c757d; }
+        .dropdown-menu .dropdown-item { padding: 0.75rem 1rem; border-radius: 0.5rem; }
         .admin-main-content { padding: 2rem; background-color: #FFDAB9; min-height: calc(100vh - 70px); }
     </style>
 </head>
@@ -67,20 +41,13 @@
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
                 <a href="<?= base_url('admin/pelanggan') ?>" class="<?= (strpos(uri_string(), 'admin/pelanggan') !== false) ? 'active' : '' ?>">Pelanggan</a>
-                <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
-                <a href="<?= base_url('admin/survey') ?>" class="<?= (strpos(uri_string(), 'admin/survey') !== false) ? 'active' : '' ?>">Survey</a>
-                <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
-                <a href="<?= base_url('admin/alat-berat') ?>" class="<?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>">Alat Berat</a>
-                <a href="<?= base_url('admin/material') ?>" class="<?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>">Material</a>
-                <a href="<?= base_url('admin/pembayaran/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
-                <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
                 <a href="<?= base_url('admin/laporan') ?>" class="<?= (strpos(uri_string(), 'admin/laporan') !== false) ? 'active' : '' ?>">Laporan</a>
             </div>
         </div>
+
         <div class="admin-main-content-wrapper">
             <div class="admin-topbar">
                 <div class="search-container"><input class="form-control" type="search" placeholder="Cari..."></div>
-                
                 <div class="topbar-profile dropdown">
                     <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle profile-pic">
@@ -101,14 +68,71 @@
                         <li><a class="dropdown-item text-danger" href="<?= base_url('logout') ?>">Logout</a></li>
                     </ul>
                 </div>
-
             </div>
+            
             <div class="admin-main-content">
                 <?= $this->renderSection('content') ?>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Whoops, hit a snag!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Data ini tidak bisa dihapus karena sedang terhubung dengan data transaksi lain (misalnya data Penyewaan, Pemesanan, atau Survey).
+                    <br><br>
+                    <small class="text-muted">Untuk bisa menghapusnya, Anda perlu menghapus data transaksi yang terhubung terlebih dahulu.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Logika untuk Modal Konfirmasi Hapus
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        if (confirmDeleteModal) {
+            confirmDeleteModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget; // Tombol yang memicu modal
+                var url = button.getAttribute('data-url'); // Ambil URL dari atribut data-url
+                var confirmButton = document.getElementById('confirmDeleteButton');
+                confirmButton.setAttribute('href', url); // Atur href tombol "Ya, Hapus"
+            });
+        }
+
+        // Logika untuk memunculkan Modal Error "Hit a snag"
+        <?php if (session()->getFlashdata('show_error_modal')): ?>
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        <?php endif; ?>
+    });
+    </script>
 </body>
 </html>
