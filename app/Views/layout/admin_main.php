@@ -35,7 +35,7 @@
         <div class="admin-sidebar">
             <div class="sidebar-header">
                 <img src="<?= base_url('assets/logo_djaya_aspalt.png') ?>" alt="Logo">
-                <h5>DJAYA <span class="text-danger">ASPHALT</span></h5>
+                <h5>DJAYA <span class="text-danger">ASPALT</span></h5>
             </div>
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
