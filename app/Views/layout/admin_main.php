@@ -87,7 +87,7 @@
             <div class="modal-content">
                 <div class="modal-header"><h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                 <div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div>
-                <div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-secondary">Ya, Hapus</a></div>
+                <div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a></div>
             </div>
         </div>
     </div>
