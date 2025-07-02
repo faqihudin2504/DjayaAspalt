@@ -58,8 +58,8 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('survey/hapus/(:num)', 'Admin::hapusSurvey/$1');
 
     // --- Manajemen Alat & Material ---
-    $routes->get('alat-berat', 'Admin::dataAlatBerat'); // Menampilkan daftar Alat Berat
-    $routes->get('material', 'Admin::dataMaterial');   // Menampilkan daftar Material
+    $routes->get('alat-berat', 'Admin::dataAlatBerat'); 
+    $routes->get('material', 'Admin::dataMaterial');  
     $routes->get('alat/tambah', 'Admin::tambahAlat');
     $routes->post('alat/simpan', 'Admin::simpanAlat');
     $routes->get('alat/edit/(:any)', 'Admin::editAlat/$1');

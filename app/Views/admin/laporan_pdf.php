@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Laporan Transaksi</title>
     <style>
-        /* CSS untuk styling PDF */
         @page {
             margin: 25px 40px;
         }
@@ -90,14 +89,14 @@
             <td class="info-perusahaan">
                 <h1>CV. DJAYA ASPALT</h1>
                 <p>Kontraktor Aspal Jalan Terpercaya & Berpengalaman</p>
-                <p>Jl. Abdul Wahab, Depok, Jawa Barat | Telp: 0812-3456-7890 | Email: kontak@djayaaspalt.com</p>
+                <p>Jl. Abdul Wahab No 18 RT 04 RW 08 Kelurahan Kedaung Kec. Sawangan, Depok. | Telp: +62 813 2420 1464 | Email: sukatmaesco@gmail.com</p>
             </td>
         </tr>
     </table>
 
     <h3 class="judul-laporan">LAPORAN TRANSAKSI</h3>
     <p class="periode">
-        Periode: <?= \CodeIgniter\I18n\Time::createFromDate($tahun, $bulan, 1)->toLocalizedString('MMMM yyyy'); ?>
+        Periode: <?= \CodeIgniter\I18n\Time::createFromDate($tahun, $bulan, 1)->toLocalizedString('MMMM YYYY'); ?>
     </p>
 
     <table class="table">
@@ -133,7 +132,7 @@
 
     <div class="footer">
         <div class="tanda-tangan">
-            <p>Depok, <?= \CodeIgniter\I18n\Time::now()->toLocalizedString('d MMMM yyyy'); ?></p>
+            <p>Depok, <?= \CodeIgniter\I18n\Time::now()->toLocalizedString('d MMMM YYYY'); ?></p>
             <p><strong>(___________________)</strong><br>Pimpinan</p>
         </div>
     </div>

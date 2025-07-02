@@ -10,14 +10,19 @@
         body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
         .admin-wrapper { display: flex; }
         .admin-sidebar {
-            width: 250px; min-height: 100vh; background-color: #ffffff;
+            width: 250px; /* Anda bisa mengatur lebar sidebar di sini */
+            min-height: 100vh; background-color: #ffffff;
             padding-top: 1.5rem; position: fixed; height: 100%;
             overflow-y: auto; display: flex; flex-direction: column;
             border-right: 1px solid #e0e0e0;
         }
         .sidebar-header { padding: 0 1.5rem; margin-bottom: 2rem; display: flex; align-items: center;}
         .sidebar-header img { width: 40px; margin-right: 10px; }
-        .sidebar-header h5 { margin: 0; font-weight: 600; }
+        .sidebar-header h5 {
+            margin: 0;
+            font-weight: 600;
+            white-space: nowrap; /* PERBAIKAN 1: Agar teks tidak turun baris */
+        }
         .sidebar-menu { flex-grow: 1; }
         .sidebar-menu a { display: block; padding: 12px 1.5rem; color: #555; text-decoration: none; font-weight: 500; border-left: 3px solid transparent; transition: all 0.2s ease; }
         .sidebar-menu a.active, .sidebar-menu a:hover { background-color: #eef2ff; color: #4361ee; border-left-color: #4361ee; }
@@ -57,16 +62,16 @@
         <div class="admin-sidebar">
             <div class="sidebar-header">
                 <img src="<?= base_url('assets/logo_djaya_aspalt.png') ?>" alt="Logo">
-                <h5>DJAYA ASPALT</h5>
+                <h5>DJAYA <span class="text-danger">ASPHALT</span></h5>
             </div>
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
                 <a href="<?= base_url('admin/pelanggan') ?>" class="<?= (strpos(uri_string(), 'admin/pelanggan') !== false) ? 'active' : '' ?>">Pelanggan</a>
                 <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
                 <a href="<?= base_url('admin/survey') ?>" class="<?= (strpos(uri_string(), 'admin/survey') !== false) ? 'active' : '' ?>">Survey</a>
-                <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>          
+                <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
                 <a href="<?= base_url('admin/alat-berat') ?>" class="<?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>">Alat Berat</a>
-                <a href="<?= base_url('admin/material') ?>" class="<?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>">Material</a>               
+                <a href="<?= base_url('admin/material') ?>" class="<?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>">Material</a>
                 <a href="<?= base_url('admin/pembayaran/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
                 <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
                 <a href="<?= base_url('admin/laporan') ?>" class="<?= (strpos(uri_string(), 'admin/laporan') !== false) ? 'active' : '' ?>">Laporan</a>
@@ -104,8 +109,6 @@
         </div>
     </div>
 
-    <script>
-    // PASTE SEMUA KODE JAVASCRIPT DARI LANGKAH 1 DI SINI
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
