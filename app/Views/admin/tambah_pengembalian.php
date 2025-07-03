@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 <?= $this->section('content') ?>
 
 <h4 class="mb-4 fw-bold"><?= esc($page_title ?? 'Tambah Data Pengembalian') ?></h4>

@@ -205,19 +205,7 @@
         </div>
       </div>
     </div>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          const loginOrProfileIcon = document.getElementById('loginOrProfileIcon');
-          
-          if (loginOrProfileIcon) {
-              const loginModal = new bootstrap.Modal(document.getElementById('loginFormModal'));
-              loginOrProfileIcon.addEventListener('click', function() {
-                  loginModal.show();
-              });
-          }
-      });
-    </script>
+    <?= $this->include('layout/partials/modal_script') ?>
   <?php endif; ?>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

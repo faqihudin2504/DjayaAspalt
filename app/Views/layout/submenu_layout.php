@@ -65,15 +65,24 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus</a></div></div></div></div>
-    <div class="modal fade" id="errorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body">Data ini tidak bisa dihapus karena terhubung dengan data transaksi lain.<br><br><small class="text-muted">Untuk bisa menghapusnya, Anda perlu menghapus data transaksi yang terhubung terlebih dahulu.</small></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div></div></div></div>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus data ini</a></div></div></div></div>
+    <div class="modal fade" id="errorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body">
+            <p>
+                <strong>Data Pelanggan ini tidak bisa dihapus.</strong>
+            </p>
+            <p class="mb-0">
+                Penyebabnya adalah pelanggan ini masih memiliki data transaksi yang tercatat di dalam sistem, seperti:
+            </p>
+            <ul class="text-start mt-2">
+                <li>Data Survey</li>
+                <li>Data Pemesanan</li>
+                <li>Data Penyewaan</li>
+            </ul>
+            <p class="mt-3">
+                <small class="text-muted">Fitur "Hapus Pelanggan" akan secara otomatis mencoba menghapus semua data terkait ini. Jika masih gagal, mungkin ada data turunan lain (seperti pembayaran) yang perlu ditangani.</small>
+            </p>
+        </div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div></div></div></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var cdm = document.getElementById('confirmDeleteModal');
-        if(cdm) { cdm.addEventListener('show.bs.modal', function(e) { document.getElementById('confirmDeleteButton').setAttribute('href', e.relatedTarget.getAttribute('data-url')); }); }
-        <?php if (session()->getFlashdata('show_error_modal')): ?> new bootstrap.Modal(document.getElementById('errorModal')).show(); <?php endif; ?>
-    });
-    </script>
+    <?= $this->include('layout/partials/modal_script') ?>
 </body>
 </html>
