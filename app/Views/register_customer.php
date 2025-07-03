@@ -1,36 +1,28 @@
 <?= $this->extend('layout/login_template') ?>
-
 <?= $this->section('content') ?>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-lg-7">
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Buat Akun <?= ucfirst($role) ?> Baru!</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Buat Akun Pelanggan Baru</h1>
                         </div>
-
                         <?php if(session()->getFlashdata('error')): ?>
-                            <div class="alert alert-danger" role="alert">
-                                <?= session()->getFlashdata('error') ?>
-                            </div>
+                            <div class="alert alert-danger" role="alert"><?= session()->getFlashdata('error') ?></div>
                         <?php endif; ?>
-                        
-                        <form class="user" action="<?= base_url('register/save') ?>" method="post">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="role" value="<?= esc($role) ?>">
 
+                        <form class="user" action="<?= base_url('register/save_customer') ?>" method="post">
+                            <?= csrf_field() ?>
+                            <h5 class="h6 text-gray-900 mb-2">Data Login</h5>
                             <div class="form-group mb-2">
                                 <input type="text" class="form-control form-control-user" name="username" placeholder="Username" required>
                             </div>
                             <div class="form-group mb-2">
                                 <input type="email" class="form-control form-control-user" name="email" placeholder="Alamat Email" required>
                             </div>
-                            <div class="form-group mb-2">
-                                <input type="text" class="form-control form-control-user" name="no_telpon" placeholder="Nomor Telepon" required>
-                            </div>
-                            <div class="form-group row mb-2">
+                            <div class="form-group row mb-3">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="password" class="form-control form-control-user" name="password" placeholder="Password" required>
                                 </div>
@@ -38,14 +30,23 @@
                                     <input type="password" class="form-control form-control-user" name="password_confirm" placeholder="Ulangi Password" required>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-user btn-block mt-3">
-                                Daftarkan Akun
-                            </button>
+
+                            <hr>
+                            <h5 class="h6 text-gray-900 mb-2">Data Diri</h5>
+                             <div class="form-group mb-2">
+                                <input type="text" class="form-control form-control-user" name="nama_lengkap" placeholder="Nama Lengkap Anda" required>
+                            </div>
+                            <div class="form-group mb-2">
+                                <input type="tel" class="form-control form-control-user" name="no_telpon" placeholder="Nomor Telepon (Contoh: 0812...)" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <textarea class="form-control form-control-user" name="alamat_rumah" placeholder="Alamat Lengkap Rumah" rows="3"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-user btn-block">Daftarkan Akun</button>
                         </form>
                         <hr>
-                        <div class="text-center">
-                            <a class="small" href="<?= base_url('login') ?>">Sudah Punya Akun? Login!</a>
-                        </div>
+                        <div class="text-center"><a class="small" href="<?= base_url('login') ?>">Sudah Punya Akun? Login</a></div>
                     </div>
                 </div>
             </div>

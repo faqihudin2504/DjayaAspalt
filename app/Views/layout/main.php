@@ -198,7 +198,7 @@
                   <button type="submit" class="btn btn-primary w-100">LOGIN</button>
               </form>
               <div class="mt-3 d-flex justify-content-between">
-                  <a href="#" id="redirectToRegister" class="text-decoration-none">&lt; REGISTER</a>
+                  <a href="/register" id="redirectToRegister" class="text-decoration-none">&lt; REGISTER</a>
                   <a href="#" class="text-decoration-none">Don't remember password?</a>
               </div>
           </div>

@@ -7,16 +7,24 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // ===================================================================
-// RUTE HALAMAN PUBLIK & OTENTIKASI
+// RUTE HALAMAN UTAMA / PUBLIK
 // ===================================================================
+
+// INI PERBAIKANNYA: Menentukan halaman utama saat web pertama kali dibuka
 $routes->get('/', 'Pages::splashScreen');
+
+// Rute Otentikasi
 $routes->get('login', 'Login::index');
 $routes->post('login', 'Login::login');
 $routes->get('logout', 'Login::logout');
-$routes->get('register', 'Register::index');
-$routes->post('register/save', 'Register::save');
 
-// Halaman publik yang bisa diakses siapa saja
+$routes->get('register', 'Register::index');
+$routes->get('register/admin', 'Register::admin');
+$routes->get('register/customer', 'Register::customer');
+$routes->post('register/save_admin', 'Register::saveAdmin');
+$routes->post('register/save_customer', 'Register::saveCustomer');
+
+// Halaman publik lain
 $routes->get('dashboard', 'Pages::dashboard');
 $routes->get('gallery', 'Pages::gallery');
 $routes->get('hubungi-kami', 'Pages::hubungiKami');
@@ -110,6 +118,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('profile/edit', 'Admin::editAdminProfile');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
 
+    // --- Laporan ---
     $routes->match(['get', 'post'], 'laporan', 'Admin::laporan');
     $routes->get('laporan/cetak', 'Admin::cetakLaporanPdf');
 });
