@@ -32,7 +32,7 @@
     <div class="admin-wrapper">
         <div class="admin-sidebar">
             <div class="sidebar-header">
-                <a href="javascript:history.back()">
+                <a href="<?= base_url($back_url ?? 'admin') ?>">
                     <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
                     <h5><?= esc($page_title ?? 'Kembali') ?></h5>
                 </a>

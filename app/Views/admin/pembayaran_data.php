@@ -56,11 +56,17 @@
                                 ?>
                                 <span class="badge <?= $badge_class ?>"><?= $status ?></span>
                             </td>
-                            <td>
+                            <td class="d-flex justify-content-center">
                                 <?php if($item['bukti_pembayaran']): ?>
-                                    <a href="<?= base_url('admin/pembayaran/bukti/lihat/' . $item['id_bayar']) ?>" class="btn btn-primary btn-sm">Lihat Bukti</a>
+                                    <a href="<?= base_url('admin/pembayaran/bukti/lihat/' . $item['id_bayar']) ?>" class="btn btn-info btn-sm me-1">Lihat Bukti</a>
                                 <?php else: ?>
-                                    <span class="text-muted">Tidak ada bukti</span>
+                                    <span class="text-muted fst-italic me-2">T/A</span>
+                                <?php endif; ?>
+
+                                <?php if($item['status_pembayaran'] == 'Menunggu'): ?>
+                                    <a href="<?= base_url('admin/pembayaran/konfirmasi/' . $item['id_bayar']) ?>" class="btn btn-success btn-sm" onclick="return confirm('Anda yakin ingin mengonfirmasi pembayaran ini?')">
+                                        Konfirmasi
+                                    </a>
                                 <?php endif; ?>
                             </td>
                         </tr>

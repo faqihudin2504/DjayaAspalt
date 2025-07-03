@@ -35,7 +35,7 @@
         <div class="admin-sidebar">
             <div class="sidebar-header">
                 <img src="<?= base_url('assets/logo_djaya_aspalt.png') ?>" alt="Logo">
-                <h5>DJAYA <span class="text-danger">ASPALT</span></h5>
+                <h5>DJAYA <span class="text-danger">ASPHALT</span></h5>
             </div>
             <div class="sidebar-menu">
                 <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
@@ -60,15 +60,7 @@
                         <span class="ms-2"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1">
-                        <li>
-                            <div class="dropdown-profile-header">
-                                <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle" width="50" height="50">
-                                <div class="user-info">
-                                    <strong class="d-block text-truncate"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></strong>
-                                    <small class="text-truncate"><?= esc(session()->get('email')) ?></small>
-                                </div>
-                            </div>
-                        </li>
+                        <li><div class="dropdown-profile-header"><img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle" width="50" height="50"><div class="user-info"><strong class="d-block text-truncate"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></strong><small class="text-truncate"><?= esc(session()->get('email')) ?></small></div></div></li>
                         <li><hr class="dropdown-divider my-1"></li>
                         <li><a class="dropdown-item" href="<?= base_url('admin/profile') ?>">Informasi Akun</a></li>
                         <li><a class="dropdown-item text-danger" href="<?= base_url('logout') ?>">Logout</a></li>
@@ -82,40 +74,9 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div>
-                <div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-danger">Ya, Hapus data ini</a></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white"><h5 class="modal-title" id="errorModalLabel">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body">
-                    <p>
-                        <strong>Data Pelanggan ini tidak bisa dihapus.</strong>
-                    </p>
-                    <p class="mb-0">
-                        Penyebabnya adalah pelanggan ini masih memiliki data transaksi yang tercatat di dalam sistem, seperti:
-                    </p>
-                    <ul class="text-start mt-2">
-                        <li>Data Survey</li>
-                        <li>Data Pemesanan</li>
-                        <li>Data Penyewaan</li>
-                    </ul>
-                    <p class="mt-3">
-                        <small class="text-muted">Fitur "Hapus Pelanggan" akan secara otomatis mencoba menghapus semua data terkait ini. Jika masih gagal, mungkin ada data turunan lain (seperti pembayaran) yang perlu ditangani.</small>
-                    </p>
-                </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Konfirmasi Penghapusan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Apakah Anda yakin ingin menghapus data ini? Proses ini tidak bisa dibatalkan.</div><div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button><a href="#" id="confirmDeleteButton" class="btn btn-secondary">Ya, Hapus</a></div></div></div></div>
+    
+    <div class="modal fade" id="errorModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title">Gagal Menghapus</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body">Data ini tidak bisa dihapus karena terhubung dengan data transaksi lain.<br><br><small class="text-muted">Hapus data anak (misal: penyewaan oleh pelanggan ini) terlebih dahulu untuk melanjutkan.</small></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mengerti</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <?= $this->include('layout/partials/modal_script') ?>

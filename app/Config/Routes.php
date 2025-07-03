@@ -91,6 +91,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('pembayaran/penyewaan/tambah', 'Admin::tambahPembayaranPenyewaan');
     $routes->post('pembayaran/simpan', 'Admin::simpanPembayaran');
     $routes->get('pembayaran/bukti/lihat/(:any)', 'Admin::lihatBukti/$1');
+    $routes->get('pembayaran/konfirmasi/(:any)', 'Admin::konfirmasiPembayaran/$1');
     
     // --- Manajemen Pengembalian ---
     $routes->get('pengembalian', 'Admin::dataPengembalian');

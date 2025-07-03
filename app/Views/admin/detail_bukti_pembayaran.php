@@ -2,59 +2,52 @@
 
 <?= $this->section('content') ?>
 <style>
-    .bukti-detail-container {
-        display: flex;
-        gap: 20px;
+    .bukti-container {
         background-color: #fff;
-        padding: 20px;
+        padding: 2rem;
         border-radius: 15px;
-        justify-content: center;
-        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .bukti-image img {
-        max-width: 300px;
+    .bukti-image-wrapper {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    .bukti-image {
+        max-width: 100%;
+        max-height: 500px;
+        border: 1px solid #ddd;
+        padding: 5px;
         border-radius: 10px;
     }
-    .bukti-info {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 15px;
-        max-width: 400px;
-    }
-    .bukti-info .berhasil {
-        background-color: #28a745;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 50px;
-        display: inline-block;
-        font-weight: bold;
-    }
-    .action-buttons {
-        text-align: right;
-        margin-top: 20px;
-    }
-     .action-buttons .btn {
-        margin-left: 10px;
+    .info-pembayaran h5 {
+        font-weight: 600;
     }
 </style>
 
-<div class="container-fluid" style="background-color: #ff9933; padding: 40px; border-radius: 15px;">
-    
-    <div class="bukti-detail-container">
-        <div class="bukti-image">
-            <img src="<?= base_url('assets/contoh_bukti.png') ?>" alt="Bukti Transfer">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold m-0">Detail Bukti Pembayaran</h4>
+    <a href="javascript:history.back()" class="btn btn-secondary">Kembali</a>
+</div>
+
+<div class="bukti-container">
+    <?php if ($pembayaran && !empty($pembayaran['bukti_pembayaran'])): ?>
+        <div class="bukti-image-wrapper">
+            <img src="<?= base_url('uploads/bukti/' . esc($pembayaran['bukti_pembayaran'])) ?>" alt="Bukti Transfer" class="bukti-image">
         </div>
-        <div class="bukti-info">
-            <p>
-                Dari 2100132349 <br>
-                Ke 4980175516
-            </p>
-            <h3><b>Paket A</b></h3>
-            <h2><b>Rp. 1.905.000,00</b></h2>
-            <p class="mt-3">*Pembayaran atas nama, <br> samuel orief rosario</p>
-            <span class="berhasil">Berhasil</span>
+        <hr>
+        <div class="info-pembayaran mt-4">
+            <h5>Informasi Tambahan</h5>
+            <p><strong>ID Bayar:</strong> <?= esc($pembayaran['id_bayar']) ?></p>
+            <p><strong>Metode:</strong> <?= esc($pembayaran['metode_pembayaran']) ?></p>
+            <p><strong>Tanggal Bayar:</strong> <?= date('d F Y', strtotime($pembayaran['tanggal_pembayaran'])) ?></p>
+            <p><strong>Status:</strong> <span class="badge bg-success"><?= esc($pembayaran['status_pembayaran']) ?></span></p>
         </div>
-    </div>
+    <?php else: ?>
+        <div class="text-center p-5">
+            <h5 class="text-danger">Bukti pembayaran tidak ditemukan.</h5>
+            <p class="text-muted">File mungkin belum diunggah atau telah terhapus.</p>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?= $this->endSection() ?>

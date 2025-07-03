@@ -37,6 +37,7 @@
                 <h5><?= esc($page_title ?? 'Kembali') ?></h5>
             </a>
             <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/pemesanan') ?>">Data Pemesanan</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-stok/alat-berat') ?>">Cek Stok Alat</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('admin/cek-stok/material') ?>">Cek Stok Material</a></li>
