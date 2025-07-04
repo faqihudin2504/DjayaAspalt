@@ -56,17 +56,15 @@
                                 ?>
                                 <span class="badge <?= $badge_class ?>"><?= $status ?></span>
                             </td>
-                            <td class="d-flex justify-content-center">
-                                <?php if($item['bukti_pembayaran']): ?>
-                                    <a href="<?= base_url('admin/pembayaran/bukti/lihat/' . $item['id_bayar']) ?>" class="btn btn-info btn-sm me-1">Lihat Bukti</a>
-                                <?php else: ?>
-                                    <span class="text-muted fst-italic me-2">T/A</span>
+                            <td>
+                                <?php if ($item['bukti_pembayaran']): ?>
+                                    <a href="<?= base_url('admin/pembayaran/bukti/lihat/' . $item['id_bayar']) ?>" class="btn btn-info btn-sm">Lihat Bukti</a>
                                 <?php endif; ?>
-
-                                <?php if($item['status_pembayaran'] == 'Menunggu'): ?>
-                                    <a href="<?= base_url('admin/pembayaran/konfirmasi/' . $item['id_bayar']) ?>" class="btn btn-success btn-sm" onclick="return confirm('Anda yakin ingin mengonfirmasi pembayaran ini?')">
-                                        Konfirmasi
-                                    </a>
+                                
+                                <?php if (!empty($item['id_pesanan'])): ?>
+                                    <a href="<?= base_url('admin/pemesanan/view/' . $item['id_pesanan']) ?>" class="btn btn-dark btn-sm">Rincian</a>
+                                <?php elseif (!empty($item['id_sewa'])): ?>
+                                    <a href="<?= base_url('admin/penyewaan/view/' . $item['id_sewa']) ?>" class="btn btn-dark btn-sm">Rincian</a>
                                 <?php endif; ?>
                             </td>
                         </tr>

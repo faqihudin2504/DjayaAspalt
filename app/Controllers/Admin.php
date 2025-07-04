@@ -215,8 +215,112 @@ class Admin extends BaseController
     public function hapusPaket($id) { $model = new PaketModel(); try { $model->delete($id); return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil dihapus.'); } catch (\Exception $e) { return redirect()->to('admin/cek-paket')->with('show_error_modal', true); } }
     
     // --- CRUD Pemesanan ---
-    public function tambahPemesanan() { $model = new PelangganModel(); return view('admin/tambah_pemesanan', ['page_title' => 'Tambah Pemesanan', 'pelanggan_list' => $model->findAll(), 'back_url' => 'admin/pemesanan']); }
-    public function simpanPemesanan() { $model = new PemesananModel(); $data = $this->request->getPost(); $data['id_pesanan'] = 'PES' . date('ymdHis'); $model->save($data); return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil ditambahkan.'); }
+    public function tambahPemesanan()
+        {
+            $pelangganModel = new PelangganModel();
+            $alatModel = new AlatModel(); // Panggil model untuk material
+            
+            $data = [
+                'page_title'     => 'Tambah Pemesanan',
+                'pelanggan_list' => $pelangganModel->findAll(),
+                'material_list'  => $alatModel->where('kategori', 'Material')->findAll() // Ambil data material
+            ];
+            return view('admin/tambah_pemesanan', $data);
+        }
+        
+        public function viewPemesanan($id)
+    {
+        $pemesananModel = new \App\Models\PemesananModel();
+        $detailModel = new \App\Models\DetailPemesananModel();
+
+        // Ambil data utama pemesanan beserta nama pelanggan
+        $pemesanan = $pemesananModel->select('pemesanan.*, pelanggan.nama_lengkap, pelanggan.no_telpon')
+                                    ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
+                                    ->where('pemesanan.id_pesanan', $id)
+                                    ->first();
+
+        if (!$pemesanan) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        // Ambil data detail material untuk pemesanan ini
+        $detail_material = $detailModel->where('id_pesanan', $id)->findAll();
+
+        // =============================================================
+        // BAGIAN PERBAIKAN: HITUNG TOTAL HARGA AKHIR SECARA MANUAL
+        // =============================================================
+        $totalHargaMaterial = 0;
+        foreach ($detail_material as $item) {
+            $totalHargaMaterial += $item['sub_total'];
+        }
+        
+        // Tambahkan total harga akhir ke dalam array pemesanan
+        $pemesanan['total_harga_akhir'] = $pemesanan['harga_paketdipesan'] + $totalHargaMaterial;
+        // =============================================================
+
+        $data = [
+            'page_title'      => 'Detail Pemesanan',
+            'pemesanan'       => $pemesanan,
+            'detail_material' => $detail_material,
+            'back_url'        => 'admin/pemesanan'
+        ];
+
+        return view('admin/view_pemesanan', $data);
+    }
+
+    public function simpanPemesanan()
+    {
+        $db = \Config\Database::connect();
+        $pemesananModel = new \App\Models\PemesananModel();
+        $detailPemesananModel = new \App\Models\DetailPemesananModel();
+
+        $db->transStart();
+
+        try {
+            $idPesananBaru = 'PES' . date('ymdHis');
+            $hargaPaket = (int)$this->request->getPost('harga_paketdipesan');
+
+            $totalHargaMaterial = 0;
+            $materials = $this->request->getPost('material');
+
+            if (!empty($materials)) {
+                foreach ($materials as $material) {
+                    if (empty($material['id']) || empty($material['jumlah'])) continue;
+                    $subTotal = (int)$material['jumlah'] * (int)$material['harga'];
+                    $detailPemesananModel->save([
+                        'id_pesanan'        => $idPesananBaru,
+                        'id_material'       => $material['id'],
+                        'jumlah_material'   => $material['jumlah'],
+                        'harga_saat_pesan'  => $material['harga'],
+                        'sub_total'         => $subTotal
+                    ]);
+                    $totalHargaMaterial += $subTotal;
+                }
+            }
+
+            // Data utama pemesanan dengan total harga akhir yang sudah dihitung
+            $pemesananData = [
+                'id_pesanan'        => $idPesananBaru,
+                'id_pelanggan'      => $this->request->getPost('id_pelanggan'),
+                'nama_paketdipesan' => $this->request->getPost('nama_paketdipesan'),
+                'harga_paketdipesan'=> $hargaPaket,
+                'tanggal_pemesanan' => $this->request->getPost('tanggal_pemesanan'),
+                'total_harga_akhir' => $hargaPaket + $totalHargaMaterial // Perhitungan Total
+            ];
+
+            $pemesananModel->save($pemesananData);
+
+            $db->transComplete();
+
+            session()->setFlashdata('success', 'Data pemesanan baru berhasil ditambahkan.');
+            return redirect()->to('/admin/pemesanan');
+
+        } catch (\Exception $e) {
+            $db->transRollback();
+            log_message('error', '[SIMPAN PEMESANAN] ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+        }
+    }  
     public function editPemesanan($id) { $pemesananModel = new PemesananModel(); $pelangganModel = new PelangganModel(); $data = ['page_title' => 'Edit Data Pemesanan', 'pemesanan' => $pemesananModel->find($id), 'pelanggan_list' => $pelangganModel->findAll(), 'back_url' => 'admin/pemesanan']; return view('admin/edit_pemesanan', $data); }
     public function updatePemesanan($id) { $model = new PemesananModel(); $model->update($id, $this->request->getPost()); return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil diperbarui.'); }
     public function hapusPemesanan($id) { $model = new PemesananModel(); try { $model->delete($id); return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil dihapus.'); } catch (\Exception $e) { return redirect()->to('/admin/pemesanan')->with('show_error_modal', true); } }
@@ -230,7 +334,25 @@ class Admin extends BaseController
     public function hapusPenyewaan($id) { $model = new PenyewaanModel(); try { $model->delete($id); return redirect()->to('/admin/penyewaan')->with('success', 'Data penyewaan berhasil dihapus.'); } catch (\Exception $e) { return redirect()->to('/admin/penyewaan')->with('show_error_modal', true); } }
     
     // --- CRUD Pembayaran ---
-    public function tambahPembayaranPemesanan() { $model = new PemesananModel(); $data = ['page_title' => 'Tambah Pembayaran Pemesanan', 'transaksi_list' => $model->getPemesananWithDetails(), 'tipe' => 'pemesanan', 'back_url' => 'admin/pembayaran/pemesanan']; return view('admin/pembayaran_tambah', $data); }
+    public function tambahPembayaranPemesanan()
+        {
+            $pemesananModel = new PemesananModel();
+            
+            // Ambil data pemesanan, sekarang termasuk total harga akhirnya
+            $transaksi_list = $pemesananModel->select('pemesanan.*, pelanggan.nama_lengkap')
+                ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
+                ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
+                ->findAll();
+
+            $data = [
+                'page_title' => 'Tambah Pembayaran Pemesanan',
+                'transaksi_list' => $transaksi_list,
+                'tipe' => 'pemesanan',
+                'back_url' => 'admin/pembayaran/pemesanan'
+            ];
+            return view('admin/pembayaran_tambah', $data);
+        }    
+        
     public function tambahPembayaranPenyewaan() { $model = new PenyewaanModel(); $data = ['page_title' => 'Tambah Pembayaran Penyewaan', 'transaksi_list' => $model->getPenyewaanWithDetails(), 'tipe' => 'penyewaan', 'back_url' => 'admin/pembayaran/penyewaan']; return view('admin/pembayaran_tambah', $data); }
     public function simpanPembayaran()
     {

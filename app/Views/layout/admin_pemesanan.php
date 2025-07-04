@@ -19,7 +19,6 @@
             border-right: 1px solid #dee2e6;
             flex-shrink: 0;
         }
-        /* Style untuk judul submenu yang bisa diklik */
         .sidebar-header a {
             display: flex;
             align-items: center;
@@ -43,14 +42,21 @@
             border-left: 3px solid transparent;
             border-radius: 0 5px 5px 0;
         }
-        /* Style untuk menu yang aktif */
         .sub-sidebar .nav-link.active, .sub-sidebar .nav-link:hover {
             color: #4361ee;
             background-color: #eef2ff;
             border-left-color: #4361ee;
         }
         .content-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
-        .topbar { /* Style topbar Anda tetap sama */ }
+        .topbar {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
         .main-content { padding: 2rem; background-color: #FFDAB9; flex-grow: 1; }
     </style>
 </head>
@@ -58,7 +64,7 @@
     <div class="main-wrapper">
         <div class="sub-sidebar">
             <div class="sidebar-header">
-                <a href="<?= base_url('admin/pemesanan') ?>">
+                <a href="<?= base_url('admin') ?>">
                     <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
                     <h4>Data Pemesanan</h4>
                 </a>
@@ -84,7 +90,7 @@
             <div class="topbar">
                 <div class="search-container w-50"><input class="form-control" type="search" placeholder="Cari..."></div>
                 <div class="topbar-profile">
-                    </div>
+                </div>
             </div>
             <div class="main-content">
                 <?= $this->renderSection('content') ?>
