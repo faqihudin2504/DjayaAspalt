@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($page_title ?? 'Manajemen Alat - Djaya Aspalt') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
@@ -63,10 +64,13 @@
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link <?= (strpos(uri_string(), 'admin/alat-berat') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/alat-berat') ?>">Daftar Alat Berat</a>
+                    <a class="nav-link <?= ($kategori_aktif == 'semua') ? 'active' : '' ?>" href="<?= base_url('admin/alat') ?>">Semua</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= (strpos(uri_string(), 'admin/material') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/material') ?>">Daftar Material</a>
+                    <a class="nav-link <?= ($kategori_aktif == 'alat-berat') ? 'active' : '' ?>" href="<?= base_url('admin/alat?kategori=alat-berat') ?>">Alat Berat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= ($kategori_aktif == 'material') ? 'active' : '' ?>" href="<?= base_url('admin/alat?kategori=material') ?>">Material</a>
                 </li>
             </ul>
         </div>

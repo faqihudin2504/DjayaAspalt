@@ -75,10 +75,7 @@
                     <a class="nav-link <?= (uri_string() == 'admin/cek-paket') ? 'active' : '' ?>" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= (strpos(uri_string(), 'admin/cek-stok/alat-berat') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/cek-stok/alat-berat') ?>">Cek Stok Alat</a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link <?= (strpos(uri_string(), 'admin/cek-stok/material') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/cek-stok/material') ?>">Cek Stok Material</a>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/alat') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/alat') ?>">Manajemen Alat</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= (strpos(uri_string(), 'admin/cek-pekerja') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>
